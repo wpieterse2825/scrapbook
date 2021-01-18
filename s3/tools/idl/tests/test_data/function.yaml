@@ -1,0 +1,31 @@
+---
+name: CreateBlob
+result:
+  type:
+    reference: handle
+    name: Blob
+  documentation:
+    english: Hello world
+    french: Bonjour le monde
+    spanish: Hola Mundo
+parameters:
+  - name: device
+    type:
+      reference: handle
+      name: Device
+    is_constant: false
+    is_pointer: false
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo
+  - name: parameters
+    type:
+      reference: structure
+      name: CreateBlobDetail
+    is_constant: true
+    is_pointer: true
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo

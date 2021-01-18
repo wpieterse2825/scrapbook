@@ -1,0 +1,3 @@
+load("//build/platform:generator.bzl", "platform_configurations")
+
+platform_configurations()

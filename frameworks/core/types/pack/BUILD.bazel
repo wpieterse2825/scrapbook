@@ -1,0 +1,13 @@
+load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
+
+cpp_library(
+    name = "export",
+    hdrs = [
+        "pack.inl",
+        "pack_array_type.inl",
+        "pack_intrinsic_type.inl",
+        "pack_mask_element_type.inl",
+        "pack_mask_intrinsic_type.inl",
+    ],
+    visibility = ["//frameworks/core/types:__pkg__"],
+)

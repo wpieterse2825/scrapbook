@@ -1,0 +1,65 @@
+load(
+    "@bazel_skylib//rules:common_settings.bzl",
+    "bool_flag",
+    "string_flag",
+)
+load(
+    "@rules_python//python:defs.bzl",
+    "py_binary",
+    "py_library",
+)
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+
+bool_flag(
+    name = "use_persistent_workers",
+    build_setting_default = True,
+    visibility = ["//visibility:public"],
+)
+
+string_flag(
+    name = "logging_level",
+    build_setting_default = "information",
+    values = [
+        "trace",
+        "debug",
+        "information",
+        "warning",
+        "error",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_binary(
+    name = "driver",
+    srcs = ["driver.py"],
+    main = "driver.py",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":linker",
+        "//tools/idl:driver",
+        "//tools/idl:driver_binary_input",
+        "//tools/idl:driver_binary_output",
+    ],
+)
+
+py_library(
+    name = "linker",
+    srcs = ["linker.py"],
+    visibility = ["//tools/idl/linker/archive:__subpackages__"],
+    deps = [
+        ":protocol_py_proto",
+        "//tools/idl/linker",
+    ],
+)
+
+py_proto_library(
+    name = "protocol_py_proto",
+    srcs = ["protocol.proto"],
+    visibility = ["//tools/idl:__subpackages__"],
+    deps = [
+        "//tools/idl/compiler/enumeration:protocol_py_proto",
+        "//tools/idl/compiler/function:protocol_py_proto",
+        "//tools/idl/compiler/handle:protocol_py_proto",
+        "//tools/idl/compiler/structure:protocol_py_proto",
+    ],
+)

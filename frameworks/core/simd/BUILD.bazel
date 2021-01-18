@@ -1,0 +1,22 @@
+load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
+
+cpp_library(
+    name = "internal",
+    hdrs = ["internal.hpp"],
+    visibility = ["//frameworks/core/simd:__subpackages__"],
+    deps = ["//frameworks/core/types:export"],
+)
+
+cpp_library(
+    name = "export",
+    hdrs = ["simd.hpp"],
+    defines = select({
+        "//build/platforms/cpu:is_x86_64": ["NM_CORE_SIMD_IMPLEMENTATION=2"],
+        "//conditions:default": ["NM_CORE_SIMD_IMPLEMENTATION=1"],
+    }),
+    visibility = ["//frameworks/core:__subpackages__"],
+    deps = select({
+        "//build/platforms/cpu:is_x86_64": ["//frameworks/core/simd/x86:export"],
+        "//conditions:default": ["//frameworks/core/simd/common:export"],
+    }),
+)

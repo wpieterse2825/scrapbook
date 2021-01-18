@@ -1,0 +1,28 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+    "cc_proto_library",
+)
+
+proto_library(
+    name = "map_proto",
+    srcs = ["map.proto"],
+    visibility = ["//visibility:public"],
+)
+
+cc_proto_library(
+    name = "map_cc_proto",
+    visibility = ["//visibility:public"],
+    deps = [":map_proto"],
+)
+
+cc_binary(
+    name = "map",
+    srcs = ["main.cpp"],
+    data = ["delta4.pb"],
+    deps = [
+        ":map_cc_proto",
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)

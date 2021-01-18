@@ -1,0 +1,7 @@
+load("//build/platform/cpu:generator.bzl", "model_configurations")
+
+model_configurations(
+    manufacturer = "intel",
+    architecture = "haswell",
+    model = "1241v3",
+)

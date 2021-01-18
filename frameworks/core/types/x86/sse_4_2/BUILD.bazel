@@ -1,0 +1,22 @@
+load("//build/rules/implementation:implementation_collection.bzl", "implementation_collection")
+load("//frameworks:build_defines.bzl", "LEVEL_1")
+load("//frameworks/core:build_defines.bzl", "LEVEL_2")
+load("//frameworks/core/types:build_defines.bzl", "LEVEL_3")
+load("//frameworks/core/types/x86:build_defines.bzl", "LEVEL_3_PLATFORM")
+load(
+    "//frameworks/core/types/x86/sse_4_2:build_defines.bzl",
+    "LEVEL_3_DEPENDENT_IMPLEMENTATION",
+    "LEVEL_3_DEPENDENT_PLATFORM",
+    "LEVEL_3_IMPLEMENTATION",
+)
+
+implementation_collection(
+    name = LEVEL_3_IMPLEMENTATION,
+    level_1 = LEVEL_1,
+    level_2 = LEVEL_2,
+    level_3 = LEVEL_3,
+    level_3_dependent_implementation = LEVEL_3_DEPENDENT_IMPLEMENTATION,
+    level_3_dependent_platform = LEVEL_3_DEPENDENT_PLATFORM,
+    level_3_implementation = LEVEL_3_IMPLEMENTATION,
+    level_3_platform = LEVEL_3_PLATFORM,
+)

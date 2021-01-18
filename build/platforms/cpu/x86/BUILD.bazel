@@ -1,0 +1,101 @@
+package(default_visibility = ["//visibility:public"])
+
+constraint_value(
+    name = "simd_mmx",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_mmx",
+    constraint_values = [":simd_mmx"],
+)
+
+constraint_value(
+    name = "simd_sse_1",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_sse_1",
+    constraint_values = [":simd_sse_1"],
+)
+
+constraint_value(
+    name = "simd_sse_2",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_sse_2",
+    constraint_values = [":simd_sse_2"],
+)
+
+constraint_value(
+    name = "simd_sse_3",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_sse_3",
+    constraint_values = [":simd_sse_3"],
+)
+
+constraint_value(
+    name = "simd_ssse_3",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_ssse_3",
+    constraint_values = [":simd_ssse_3"],
+)
+
+constraint_value(
+    name = "simd_sse_4_1",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_sse_4_1",
+    constraint_values = [":simd_sse_4_1"],
+)
+
+constraint_value(
+    name = "simd_sse_4_2",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_sse_4_2",
+    constraint_values = [":simd_sse_4_2"],
+)
+
+constraint_value(
+    name = "simd_avx_1",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_avx_1",
+    constraint_values = [":simd_avx_1"],
+)
+
+constraint_value(
+    name = "simd_avx_2",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_avx_2",
+    constraint_values = [":simd_avx_2"],
+)
+
+constraint_value(
+    name = "simd_avx_512",
+    constraint_setting = "//build/platforms/cpu:simd_support",
+)
+
+config_setting(
+    name = "is_simd_avx_512",
+    constraint_values = [":simd_avx_512"],
+)

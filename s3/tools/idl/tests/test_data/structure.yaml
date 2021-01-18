@@ -1,0 +1,27 @@
+---
+name: CreateBlobDetail
+documentation:
+  english: Hello world
+  french: Bonjour le monde
+  spanish: Hola Mundo
+fields:
+  - name: surface_format
+    type:
+      reference: enumeration
+      name: SurfaceFormat
+    is_constant: false
+    is_pointer: false
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo
+  - name: size
+    type:
+      reference: native
+      name: unsigned_64
+    is_constant: false
+    is_pointer: false
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo

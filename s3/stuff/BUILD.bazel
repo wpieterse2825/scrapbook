@@ -1,0 +1,38 @@
+load(":rules.bzl", "worker_rule")
+
+cc_binary(
+    name = "tool",
+    srcs = ["stuff.cpp"],
+    linkopts = ["-lpthread"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//stuff/cxxopts",
+        "//stuff/taskflow",
+        "@bazel_tools//src/main/protobuf:worker_protocol_cc_proto",
+    ],
+)
+
+worker_rule(
+    name = "tf1",
+    input = "tf1.txt",
+)
+
+worker_rule(
+    name = "tf2",
+    input = "tf2.txt",
+)
+
+filegroup(
+    name = "stuff",
+    srcs = [
+        ":tf1",
+        ":tf2",
+    ],
+)
+
+cc_binary(
+    name = "thing",
+    srcs = ["thing.cpp"],
+    #linkopts = ["-lpthread"],
+    #deps = ["//stuff/taskflow"],
+)

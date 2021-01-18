@@ -1,0 +1,7 @@
+load("@rules_python//python:defs.bzl", "py_test")
+
+py_test(
+    name = "generator",
+    srcs = ["generator.py"],
+    deps = ["//tools/idl/generator"],
+)

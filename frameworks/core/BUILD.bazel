@@ -1,0 +1,23 @@
+load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
+load("//build/rules/cpp:cpp_test.bzl", "cpp_test")
+
+cpp_library(
+    name = "core",
+    hdrs = ["core.hpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//frameworks/core/concepts:export",
+        "//frameworks/core/simd:export",
+        "//frameworks/core/traits:export",
+        "//frameworks/core/types:export",
+    ],
+)
+
+cpp_test(
+    name = "test_core",
+    srcs = ["core_test.cpp"],
+    deps = [
+        ":core",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package tools.idl.compiler.function;
+
+import "tools/idl/compiler/shared.proto";
+
+message Function {
+    string name = 1;
+    FunctionResult result = 2;
+    repeated FunctionParameter parameters = 3;
+    map<string, string> documentation = 4;
+}
+
+message FunctionResult {
+    tools.idl.compiler.Type type = 1;
+    map<string, string> documentation = 2;
+}
+
+message FunctionParameter {
+    tools.idl.compiler.Type type = 1;
+    string name = 2;
+    bool is_constant = 3;
+    bool is_pointer = 4;
+    map<string, string> documentation = 5;
+}

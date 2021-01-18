@@ -1,0 +1,32 @@
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+py_test(
+    name = "compiler_compile",
+    srcs = ["compiler_compile.py"],
+    deps = ["//tools/idl/compiler"],
+)
+
+py_test(
+    name = "compiler_documentation",
+    srcs = ["compiler_documentation.py"],
+    deps = ["//tools/idl/compiler"],
+)
+
+py_test(
+    name = "compiler_type",
+    srcs = ["compiler_type.py"],
+    deps = ["//tools/idl/compiler"],
+)
+
+py_test(
+    name = "compiler",
+    srcs = ["compiler.py"],
+    deps = ["//tools/idl/compiler"],
+)
+
+py_library(
+    name = "shared",
+    srcs = ["shared.py"],
+    visibility = ["//tools/idl/compiler:__subpackages__"],
+    deps = ["//tools/idl:driver_multiple_documents_error"],
+)

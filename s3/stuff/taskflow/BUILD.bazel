@@ -1,0 +1,5 @@
+cc_library(
+    name = "taskflow",
+    hdrs = glob(["**/*.hpp"]),
+    visibility = ["//visibility:public"],
+)

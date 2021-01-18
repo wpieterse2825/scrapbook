@@ -1,0 +1,29 @@
+---
+name: SurfaceFormat
+type:
+  reference: native
+  name: unsigned_64
+item_prefix: SURFACE_FORMAT
+documentation:
+  english: Hello world
+  french: Bonjour le monde
+  spanish: Hola Mundo
+items:
+  - name: UNKNOWN
+    value: "0"
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo
+  - name: RGBA8
+    value: "1"
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo
+  - name: BGRA8
+    value: "2"
+    documentation:
+      english: Hello world
+      french: Bonjour le monde
+      spanish: Hola Mundo

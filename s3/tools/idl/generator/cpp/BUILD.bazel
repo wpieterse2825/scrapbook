@@ -1,0 +1,49 @@
+load(
+    "@bazel_skylib//rules:common_settings.bzl",
+    "bool_flag",
+    "string_flag",
+)
+load(
+    "@rules_python//python:defs.bzl",
+    "py_binary",
+    "py_library",
+)
+
+bool_flag(
+    name = "use_persistent_workers",
+    build_setting_default = True,
+    visibility = ["//visibility:public"],
+)
+
+string_flag(
+    name = "logging_level",
+    build_setting_default = "information",
+    values = [
+        "trace",
+        "debug",
+        "information",
+        "warning",
+        "error",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+py_binary(
+    name = "driver",
+    srcs = ["driver.py"],
+    main = "driver.py",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":generator",
+        "//tools/idl:driver",
+        "//tools/idl:driver_binary_input",
+        "//tools/idl:driver_text_output",
+    ],
+)
+
+py_library(
+    name = "generator",
+    srcs = ["generator.py"],
+    visibility = ["//tools/idl/generator/cpp:__subpackages__"],
+    deps = ["//tools/idl/generator"],
+)

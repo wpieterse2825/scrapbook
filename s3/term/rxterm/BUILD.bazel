@@ -1,0 +1,5 @@
+cc_library(
+    name = "rxterm",
+    hdrs = glob(["**/*.hpp"]),
+    visibility = ["//visibility:public"],
+)

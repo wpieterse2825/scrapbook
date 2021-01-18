@@ -1,0 +1,11 @@
+constraint_setting(
+    name = "manufacturer",
+)
+
+constraint_setting(
+    name = "architecture",
+)
+
+constraint_setting(
+    name = "model",
+)

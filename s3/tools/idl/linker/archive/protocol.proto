@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package tools.idl.linker.linker;
+
+import "tools/idl/compiler/handle/protocol.proto";
+import "tools/idl/compiler/enumeration/protocol.proto";
+import "tools/idl/compiler/structure/protocol.proto";
+import "tools/idl/compiler/function/protocol.proto";
+
+message Archive {
+    repeated tools.idl.compiler.handle.Handle handles = 1;
+    repeated tools.idl.compiler.enumeration.Enumeration enumerations = 2;
+    repeated tools.idl.compiler.structure.Structure structures = 3;
+    repeated tools.idl.compiler.function.Function functions = 4;
+}

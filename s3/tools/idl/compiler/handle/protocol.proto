@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package tools.idl.compiler.handle;
+
+message Handle {
+    string name = 1;
+    map<string, string> documentation = 2;
+}
