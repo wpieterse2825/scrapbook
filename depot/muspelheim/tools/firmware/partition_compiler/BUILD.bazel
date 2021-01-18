@@ -1,0 +1,19 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "partition_compiler",
+    srcs = [
+        "main.c",
+    ],
+    visibility = [
+        "//muspelheim:__subpackages__",
+    ],
+)

@@ -1,0 +1,7 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+import asgard/configuration.bazelrc
+import muspelheim/configuration.bazelrc

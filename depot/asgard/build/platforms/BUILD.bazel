@@ -1,0 +1,78 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "is_16_bits",
+    constraint_values = ["//asgard/build/platforms:16_bits"],
+)
+
+config_setting(
+    name = "is_32_bits",
+    constraint_values = ["//asgard/build/platforms:32_bits"],
+)
+
+config_setting(
+    name = "is_64_bits",
+    constraint_values = ["//asgard/build/platforms:64_bits"],
+)
+
+config_setting(
+    name = "is_128_bits",
+    constraint_values = ["//asgard/build/platforms:128_bits"],
+)
+
+config_setting(
+    name = "is_little_endian",
+    constraint_values = ["//asgard/build/platforms:little_endian"],
+)
+
+config_setting(
+    name = "is_big_endian",
+    constraint_values = ["//asgard/build/platforms:big_endian"],
+)
+
+constraint_value(
+    name = "16_bits",
+    constraint_setting = "//asgard/build/platforms:bit_width",
+)
+
+constraint_value(
+    name = "32_bits",
+    constraint_setting = "//asgard/build/platforms:bit_width",
+)
+
+constraint_value(
+    name = "64_bits",
+    constraint_setting = "//asgard/build/platforms:bit_width",
+)
+
+constraint_value(
+    name = "128_bits",
+    constraint_setting = "//asgard/build/platforms:bit_width",
+)
+
+constraint_value(
+    name = "little_endian",
+    constraint_setting = "//asgard/build/platforms:endianess",
+)
+
+constraint_value(
+    name = "big_endian",
+    constraint_setting = "//asgard/build/platforms:endianess",
+)
+
+constraint_setting(
+    name = "processor",
+)
+
+constraint_setting(
+    name = "bit_width",
+)
+
+constraint_setting(
+    name = "endianess",
+)

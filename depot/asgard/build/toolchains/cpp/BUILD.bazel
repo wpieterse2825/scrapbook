@@ -1,0 +1,228 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_toolchain",
+)
+load(
+    ":cc_toolchain_configuration.bzl",
+    "cc_toolchain_configuration",
+)
+
+#
+# ARM Architecture Envelope Model V8 CPU processor toolchain.
+#
+
+toolchain(
+    name = "arm_aem_v8_64_little_cpp_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "//asgard/build/platforms/cpu:arm_aem_v8_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+    toolchain = ":arm_aem_v8_64_little_cpp_toolchain_bazel",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+cc_toolchain(
+    name = "arm_aem_v8_64_little_cpp_toolchain_bazel",
+    all_files = ":all_files",
+    ar_files = ":ar_files",
+    as_files = ":as_files",
+    compiler_files = ":compiler_files",
+    coverage_files = ":coverage_files",
+    dwp_files = ":dwp_files",
+    linker_files = ":linker_files",
+    objcopy_files = ":ovjcopy_files",
+    strip_files = ":strip_files",
+    supports_header_parsing = True,
+    supports_param_files = True,
+    toolchain_config = ":arm_aem_v8_64_little_cpp_toolchain_twt",
+)
+
+cc_toolchain_configuration(
+    name = "arm_aem_v8_64_little_cpp_toolchain_twt",
+    bit_width = "64",
+    endianess = "little",
+    processor = "arm_aem_v8",
+    toolchain_identifier = "arm_aem_v8_64_little_cpp",
+)
+
+#
+# QEmu Virtual ARM CPU processor toolchain.
+#
+
+toolchain(
+    name = "qemu_virtual_arm_64_little_cpp_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "//asgard/build/platforms/cpu:qemu_virtual_arm_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+    toolchain = ":qemu_virtual_arm_64_little_cpp_toolchain_bazel",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+cc_toolchain(
+    name = "qemu_virtual_arm_64_little_cpp_toolchain_bazel",
+    all_files = ":all_files",
+    ar_files = ":ar_files",
+    as_files = ":as_files",
+    compiler_files = ":compiler_files",
+    coverage_files = ":coverage_files",
+    dwp_files = ":dwp_files",
+    linker_files = ":linker_files",
+    objcopy_files = ":ovjcopy_files",
+    strip_files = ":strip_files",
+    supports_header_parsing = True,
+    supports_param_files = True,
+    toolchain_config = ":qemu_virtual_arm_64_little_cpp_toolchain_twt",
+)
+
+cc_toolchain_configuration(
+    name = "qemu_virtual_arm_64_little_cpp_toolchain_twt",
+    bit_width = "64",
+    endianess = "little",
+    processor = "qemu_virtual_arm",
+    toolchain_identifier = "qemu_virtual_arm_64_little_cpp",
+)
+
+#
+# QEmu Virtual RISC-V CPU processor toolchain.
+#
+
+toolchain(
+    name = "qemu_virtual_riscv_64_little_cpp_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "//asgard/build/platforms/cpu:qemu_virtual_riscv_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+    toolchain = ":qemu_virtual_riscv_64_little_cpp_toolchain_bazel",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+
+cc_toolchain(
+    name = "qemu_virtual_riscv_64_little_cpp_toolchain_bazel",
+    all_files = ":all_files",
+    ar_files = ":ar_files",
+    as_files = ":as_files",
+    compiler_files = ":compiler_files",
+    coverage_files = ":coverage_files",
+    dwp_files = ":dwp_files",
+    linker_files = ":linker_files",
+    objcopy_files = ":ovjcopy_files",
+    strip_files = ":strip_files",
+    supports_header_parsing = True,
+    supports_param_files = True,
+    toolchain_config = ":qemu_virtual_riscv_64_little_cpp_toolchain_twt",
+)
+
+cc_toolchain_configuration(
+    name = "qemu_virtual_riscv_64_little_cpp_toolchain_twt",
+    bit_width = "64",
+    endianess = "little",
+    processor = "qemu_virtual_riscv",
+    toolchain_identifier = "qemu_virtual_riscv_64_little_cpp",
+)
+
+#
+# Toolchain files.
+#
+
+filegroup(
+    name = "all_files",
+    srcs = [
+        ":ar_files",
+        ":as_files",
+        ":compiler_files",
+        ":coverage_files",
+        ":dwp_files",
+        ":linker_files",
+        ":ovjcopy_files",
+        ":strip_files",
+    ],
+)
+
+filegroup(
+    name = "ar_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:cpp_link_static_library",
+        "//third_party/llvm:llvm_ar",
+    ],
+)
+
+filegroup(
+    name = "as_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:assemble",
+        "//asgard/build/toolchains/cpp/tools:preprocess_assemble",
+        "//third_party/llvm:clang",
+    ],
+)
+
+filegroup(
+    name = "compiler_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:c_compile",
+        "//third_party/llvm:clang",
+    ],
+)
+
+filegroup(
+    name = "coverage_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:coverage",
+        "//third_party/llvm:llvm_cov",
+    ],
+)
+
+filegroup(
+    name = "dwp_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:dwarf",
+        "//third_party/llvm:llvm_dwp",
+    ],
+)
+
+filegroup(
+    name = "strip_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:strip",
+        "//third_party/llvm:llvm_strip",
+    ],
+)
+
+filegroup(
+    name = "linker_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:cpp_link_dynamic_library",
+        "//asgard/build/toolchains/cpp/tools:cpp_link_executable",
+        "//asgard/build/toolchains/cpp/tools:cpp_link_nodeps_dynamic_library",
+        "//third_party/llvm:clang",
+        "//third_party/llvm:ld_lld",
+    ],
+)
+
+filegroup(
+    name = "ovjcopy_files",
+    srcs = [
+        "//asgard/build/toolchains/cpp/tools:object_copy",
+        "//third_party/llvm:llvm_objcopy",
+    ],
+)

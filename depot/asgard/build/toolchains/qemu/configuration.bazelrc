@@ -1,0 +1,13 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+#
+# Register the available QEmu toolchains.
+#
+# NOTE: Do not use ':all' here so that we can control what toolchains are enabled.
+#
+
+build --extra_toolchains //asgard/build/toolchains/qemu:arm_64_qemu_toolchain
+build --extra_toolchains //asgard/build/toolchains/qemu:riscv_64_qemu_toolchain

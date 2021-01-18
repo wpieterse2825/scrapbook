@@ -1,0 +1,90 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "is_arm_aem_v8_processor",
+    constraint_values = [":arm_aem_v8_processor"],
+)
+
+constraint_value(
+    name = "arm_aem_v8_processor",
+    constraint_setting = "//asgard/build/platforms:processor",
+)
+
+config_setting(
+    name = "is_arm_aem_v8_64_little",
+    constraint_values = [
+        ":arm_aem_v8_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)
+
+platform(
+    name = "arm_aem_v8_64_little",
+    constraint_values = [
+        ":arm_aem_v8_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)
+
+config_setting(
+    name = "is_qemu_virtual_arm_processor",
+    constraint_values = [":qemu_virtual_arm_processor"],
+)
+
+constraint_value(
+    name = "qemu_virtual_arm_processor",
+    constraint_setting = "//asgard/build/platforms:processor",
+)
+
+config_setting(
+    name = "is_qemu_virtual_arm_64_little",
+    constraint_values = [
+        ":qemu_virtual_arm_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)
+
+platform(
+    name = "qemu_virtual_arm_64_little",
+    constraint_values = [
+        ":qemu_virtual_arm_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)
+
+config_setting(
+    name = "is_qemu_virtual_riscv_processor",
+    constraint_values = [":qemu_virtual_riscv_processor"],
+)
+
+constraint_value(
+    name = "qemu_virtual_riscv_processor",
+    constraint_setting = "//asgard/build/platforms:processor",
+)
+
+config_setting(
+    name = "is_qemu_virtual_riscv_64_little",
+    constraint_values = [
+        ":qemu_virtual_riscv_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)
+
+platform(
+    name = "qemu_virtual_riscv_64_little",
+    constraint_values = [
+        ":qemu_virtual_riscv_processor",
+        "//asgard/build/platforms:64_bits",
+        "//asgard/build/platforms:little_endian",
+    ],
+)

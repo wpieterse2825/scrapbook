@@ -1,0 +1,60 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+load(
+    "//asgard/build/toolchains/qemu:qemu_toolchain.bzl",
+    "qemu_toolchain",
+)
+
+toolchain_type(
+    name = "toolchain_type",
+    visibility = ["//visibility:public"],
+)
+
+#
+# ARM 64-bit processor emulator toolchain.
+#
+
+toolchain(
+    name = "arm_64_qemu_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    toolchain = "//asgard/build/toolchains/qemu:arm_64_qemu_toolchain_twt",
+    toolchain_type = "//asgard/build/toolchains/qemu:toolchain_type",
+)
+
+qemu_toolchain(
+    name = "arm_64_qemu_toolchain_twt",
+    binary = "//third_party/qemu:arm_64_system",
+)
+
+#
+# RISC-V 64-bit processor emulator.
+#
+
+toolchain(
+    name = "riscv_64_qemu_toolchain",
+    exec_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    toolchain = "//asgard/build/toolchains/qemu:riscv_64_qemu_toolchain_twt",
+    toolchain_type = "//asgard/build/toolchains/qemu:toolchain_type",
+)
+
+qemu_toolchain(
+    name = "riscv_64_qemu_toolchain_twt",
+    binary = "//third_party/qemu:riscv_64_system",
+)

@@ -1,0 +1,12 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+#
+# The following files provides a singular area where we can define experimental and incompatible Bazel flags for all build configurations.
+#
+import asgard/experimental_configuration.bazelrc
+import asgard/incompatible_configuration.bazelrc
+
+import asgard/build/configuration.bazelrc

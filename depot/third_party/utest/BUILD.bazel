@@ -1,0 +1,22 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_library",
+    "cc_test",
+)
+
+cc_library(
+    name = "utest",
+    hdrs = ["utest.h"],
+    visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "utest_test",
+    srcs = ["utest_test.c"],
+    deps = [":utest"],
+)

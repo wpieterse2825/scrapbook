@@ -1,0 +1,14 @@
+#
+# Copyright 2020 - The World Tree and the The World Tree contributors.
+# SPDX-License-Identifier: MIT
+#
+
+#
+# Enable specific Bazel incompatible features.
+#
+# NOTE: Ensure that these flags works with the specific Bazel version as specified in the root '.bazelversion' file. Do not check in local Bazel specific
+# features otherwise it will break CI.
+#
+
+# Enable the usage of toolchains with C/C++.
+build --incompatible_enable_cc_toolchain_resolution
