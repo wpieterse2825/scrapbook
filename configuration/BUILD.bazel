@@ -1,5 +1,5 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_setting")
-load("//configuration:board.bzl", "board", "board_thing")
+load("//configuration:board.bzl", "board", "board_configuration", "board_thing")
 
 string_setting(
     name = "board_name",
@@ -10,7 +10,12 @@ board_thing(
     name = "test_board_thing",
 )
 
+board_configuration(
+    name = "test_board_config",
+)
+
 board(
     name = "test_board",
+    config = "//configuration:test_board_config",
     thing = "//configuration:test_board_thing",
 )
