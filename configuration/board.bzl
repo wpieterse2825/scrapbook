@@ -27,21 +27,21 @@ board_thing = rule(
     implementation = _board_thing_impl,
     attrs = {
         "_board_name": attr.label(
-            default = Label("//:board_name"),
+            default = Label("//configuration:board_name"),
         ),
     },
 )
 
 def _board_transition_impl(settings, attrs):
     return {
-        "//:board_name": "chromebook",
+        "//configuration:board_name": "chromebook",
     }
 
 _board_transition = transition(
     implementation = _board_transition_impl,
     inputs = [],
     outputs = [
-        "//:board_name",
+        "//configuration:board_name",
     ],
 )
 
