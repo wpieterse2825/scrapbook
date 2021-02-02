@@ -1,0 +1,49 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "command_buffer",
+    srcs = [
+        "command_buffer.cpp",
+    ],
+)
+
+cc_binary(
+    name = "icd_extra",
+    srcs = [
+        "icd_extra.cpp",
+    ],
+)
+
+cc_binary(
+    name = "icd_plain",
+    srcs = [
+        "icd_plain.cpp",
+    ],
+)
+
+cc_binary(
+    name = "icd_vk",
+    srcs = [
+        "icd_vk.cpp",
+    ],
+    deps = [
+        "@com_github_google_benchmark//:benchmark_main",
+    ],
+)
+
+cc_binary(
+    name = "large_memory",
+    srcs = [
+        "large_memory.cpp",
+    ],
+)
+
+cc_binary(
+    name = "stream",
+    srcs = [
+        "stream.cpp",
+    ],
+)
