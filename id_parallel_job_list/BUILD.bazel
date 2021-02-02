@@ -1,0 +1,23 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "id_parallel_job_list",
+    srcs = [
+        "list.hpp",
+        "parallel_job_list.cpp",
+        "parallel_job_list.hpp",
+        "shared.hpp",
+        "main.cpp",
+        "thread.cpp",
+        "thread.hpp",
+    ],
+    copts = [
+        "-fpic",
+    ],
+    linkopts = [
+        "-lpthread",
+    ],
+)

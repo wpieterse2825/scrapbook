@@ -1,8 +1,8 @@
-#include "stuff/shared.hpp"
+#include "id_parallel_job_list/shared.hpp"
 
-#include "stuff/parallel_job_list.hpp"
+#include "id_parallel_job_list/parallel_job_list.hpp"
 
-#include "stuff/thread.hpp"
+#include "id_parallel_job_list/thread.hpp"
 
 static uint64_t sys_microTimeBase = 0;
 
@@ -28,8 +28,8 @@ uint64_t Sys_Microseconds() {
 
 constexpr int MAXIMUM_JOB_REGISTRATIONS     = 128;
 constexpr int MAXIMUM_THREADS               = 32;
-constexpr int MAXIMUM_JOB_THREADS           = 8;
-constexpr int INITIAL_NUMBER_OF_JOB_THREADS = 8;
+constexpr int MAXIMUM_JOB_THREADS           = 12;
+constexpr int INITIAL_NUMBER_OF_JOB_THREADS = 12;
 
 struct RegisteredJob {
     JobCallbackFunction user_callback;
@@ -215,10 +215,7 @@ int ParallelJobListThreads::JOB_SIGNAL;
 int ParallelJobListThreads::JOB_SYNCHRONIZE;
 int ParallelJobListThreads::JOB_LIST_DONE;
 
-ParallelJobListThreads::ParallelJobListThreads(JobListID       id,
-                                               JobListPriority priority,
-                                               unsigned int    maximum_jobs,
-                                               unsigned int    maximum_synchronizations)
+ParallelJobListThreads::ParallelJobListThreads(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations)
   : threaded(true)
   , done(true)
   , has_signal(false)
@@ -759,8 +756,7 @@ int JobThread::Run() {
         JobListPriority priority       = JobListPriority::None;
         if (lastStalledJobList < 0) {
             for (int index = 0; index < numJobLists; index++) {
-                if (threadJobListState[index].job_list->GetPriority() > priority &&
-                    !threadJobListState[index].job_list->WaitForOtherJobList()) {
+                if (threadJobListState[index].job_list->GetPriority() > priority && !threadJobListState[index].job_list->WaitForOtherJobList()) {
                     priority       = threadJobListState[index].job_list->GetPriority();
                     currentJobList = index;
                 }
@@ -779,7 +775,7 @@ int JobThread::Run() {
         }
 
         bool is_single_job = (priority == JobListPriority::High) ? false : jobs_prioritize;
-        int result = threadJobListState[currentJobList].job_list->RunJobs(thread_number, threadJobListState[currentJobList], is_single_job);
+        int  result        = threadJobListState[currentJobList].job_list->RunJobs(thread_number, threadJobListState[currentJobList], is_single_job);
         if ((result & ParallelJobListThreads::RUN_DONE) != 0) {
             for (int index = currentJobList; index < numJobLists - 1; index++) {
                 threadJobListState[index] = threadJobListState[index + 1];
@@ -811,9 +807,8 @@ class ParallelJobManagerLocal : public ParallelJobManager {
     virtual void Start();
     virtual void Stop();
 
-    virtual ParallelJobList*
-                 AllocateJobList(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations);
-    virtual void FreeJobList(ParallelJobList* job_list);
+    virtual ParallelJobList* AllocateJobList(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations);
+    virtual void             FreeJobList(ParallelJobList* job_list);
 
     virtual int              GetNumberOfAllocatedJobLists() const;
     virtual int              GetNumberOfFreeJobLists() const;
@@ -860,10 +855,8 @@ void ParallelJobManagerLocal::Stop() {
     }
 }
 
-ParallelJobList* ParallelJobManagerLocal::AllocateJobList(JobListID       id,
-                                                          JobListPriority priority,
-                                                          unsigned int    maximum_jobs,
-                                                          unsigned int    maximum_synchronizations) {
+ParallelJobList*
+ParallelJobManagerLocal::AllocateJobList(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations) {
     ParallelJobList* job_list = new ParallelJobList(id, priority, maximum_jobs, maximum_synchronizations);
 
     job_lists.Append(job_list);

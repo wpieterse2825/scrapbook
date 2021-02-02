@@ -1,14 +1,14 @@
 #pragma once
 
-#include "stuff/shared.hpp"
-#include "stuff/list.hpp"
+#include "id_parallel_job_list/shared.hpp"
+#include "id_parallel_job_list/list.hpp"
 
 #include <pthread.h>
 
 #define DEFAULT_THREAD_STACK_SIZE (256 * 1024)
 
-#define SYS_MEMORYBARRIER                                                                                                                  \
-    asm volatile("" ::: "memory");                                                                                                         \
+#define SYS_MEMORYBARRIER                                                                                                                                      \
+    asm volatile("" ::: "memory");                                                                                                                             \
     __sync_synchronize()
 
 enum class ThreadPriority {
@@ -251,8 +251,7 @@ class Thread {
 
     bool StartThread(const char* name, ThreadPriority priority = ThreadPriority::Normal, int32_t stack_size = DEFAULT_THREAD_STACK_SIZE);
 
-    bool
-    StartWorkerThread(const char* name, ThreadPriority priority = ThreadPriority::Normal, int32_t stack_size = DEFAULT_THREAD_STACK_SIZE);
+    bool StartWorkerThread(const char* name, ThreadPriority priority = ThreadPriority::Normal, int32_t stack_size = DEFAULT_THREAD_STACK_SIZE);
 
     void StopThread(bool wait = true);
 
@@ -312,10 +311,7 @@ class ThreadWorkerGroup {
 };
 
 template <class ThreadType>
-inline ThreadWorkerGroup<ThreadType>::ThreadWorkerGroup(const char*    name,
-                                                        int32_t        number_of_threads,
-                                                        ThreadPriority priority,
-                                                        int32_t        stack_size) {
+inline ThreadWorkerGroup<ThreadType>::ThreadWorkerGroup(const char* name, int32_t number_of_threads, ThreadPriority priority, int32_t stack_size) {
     can_run_inline    = (number_of_threads < 0);
     is_single_thread  = false;
     number_of_threads = abs(number_of_threads);

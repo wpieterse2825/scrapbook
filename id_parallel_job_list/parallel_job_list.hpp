@@ -1,9 +1,8 @@
 #pragma once
 
-#include "stuff/shared.hpp"
+#include "id_parallel_job_list/shared.hpp"
 
-#define REGISTER_PARALLEL_JOB(user_callback, name)                                                                                         \
-    static ParallelJobRegistration register_##user_callback((JobCallbackFunction)user_callback, name)
+#define REGISTER_PARALLEL_JOB(user_callback, name) static ParallelJobRegistration register_##user_callback((JobCallbackFunction)user_callback, name)
 
 typedef void (*JobCallbackFunction)(void* user_data);
 
@@ -78,9 +77,8 @@ class ParallelJobManager {
     virtual void Start() = 0;
     virtual void Stop()  = 0;
 
-    virtual ParallelJobList*
-                 AllocateJobList(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations) = 0;
-    virtual void FreeJobList(ParallelJobList* job_list) = 0;
+    virtual ParallelJobList* AllocateJobList(JobListID id, JobListPriority priority, unsigned int maximum_jobs, unsigned int maximum_synchronizations) = 0;
+    virtual void             FreeJobList(ParallelJobList* job_list)                                                                                    = 0;
 
     virtual void WaitForAllJobLists() = 0;
 

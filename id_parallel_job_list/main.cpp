@@ -1,7 +1,7 @@
 #include <iostream>
 #include <immintrin.h>
 
-#include "stuff/parallel_job_list.hpp"
+#include "id_parallel_job_list/parallel_job_list.hpp"
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
 
@@ -35,10 +35,10 @@ FPlane planes[] = {
   {+0.0f, +0.0f, -1.0f, 10.0f},
 };
 
-#define CROSS_PRODUCT(a, b)                                                                                                                \
-    _mm256_permute4x64_pd(_mm256_sub_pd(_mm256_mul_pd(a, _mm256_permute4x64_pd(b, _MM_SHUFFLE(3, 0, 2, 1))),                               \
-                                        _mm256_mul_pd(b, _mm256_permute4x64_pd(a, _MM_SHUFFLE(3, 0, 2, 1)))),                              \
-                          _MM_SHUFFLE(3, 0, 2, 1))
+#define CROSS_PRODUCT(a, b)                                                                                                                                    \
+    _mm256_permute4x64_pd(                                                                                                                                     \
+      _mm256_sub_pd(_mm256_mul_pd(a, _mm256_permute4x64_pd(b, _MM_SHUFFLE(3, 0, 2, 1))), _mm256_mul_pd(b, _mm256_permute4x64_pd(a, _MM_SHUFFLE(3, 0, 2, 1)))), \
+      _MM_SHUFFLE(3, 0, 2, 1))
 
 inline __m256d CrossProduct(const __m256d& lhs, const __m256d& rhs) {
     return CROSS_PRODUCT(lhs, rhs);
@@ -63,16 +63,8 @@ inline __m256 Vector_Axis_ScaledAdd(__m256 scale, __m256 lhs, __m256 rhs) {
     return axis_add;
 }
 
-inline void Vector_ScaledAdd(__m256  scale,
-                             __m256  lhs_x,
-                             __m256  lhs_y,
-                             __m256  lhs_z,
-                             __m256  rhs_x,
-                             __m256  rhs_y,
-                             __m256  rhs_z,
-                             __m256& result_x,
-                             __m256& result_y,
-                             __m256& result_z) {
+inline void Vector_ScaledAdd(
+  __m256 scale, __m256 lhs_x, __m256 lhs_y, __m256 lhs_z, __m256 rhs_x, __m256 rhs_y, __m256 rhs_z, __m256& result_x, __m256& result_y, __m256& result_z) {
     result_x = Vector_Axis_ScaledAdd(scale, lhs_x, rhs_x);
     result_y = Vector_Axis_ScaledAdd(scale, lhs_y, rhs_y);
     result_z = Vector_Axis_ScaledAdd(scale, lhs_z, rhs_z);

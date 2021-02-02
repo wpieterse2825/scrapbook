@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stuff/shared.hpp"
+#include "id_parallel_job_list/shared.hpp"
 
 /*
 ===============================================================================
@@ -28,9 +28,9 @@ template <typename _type_, memTag_t _tag_>
 void* idListArrayNew(int num, bool zeroBuffer) {
     _type_* ptr = NULL;
     if (zeroBuffer) {
-        ptr = (_type_*)malloc(sizeof(_type_) * num/*, _tag_*/);
+        ptr = (_type_*)malloc(sizeof(_type_) * num /*, _tag_*/);
     } else {
-        ptr = (_type_*)malloc(sizeof(_type_) * num/*, _tag_*/);
+        ptr = (_type_*)malloc(sizeof(_type_) * num /*, _tag_*/);
     }
     for (int i = 0; i < num; i++) {
         new (&ptr[i]) _type_;
@@ -167,7 +167,7 @@ class idList {
     int     size;
     int     granularity;
     _type_* list;
-    uint8_t    memTag;
+    uint8_t memTag;
 };
 
 /*
@@ -1017,7 +1017,7 @@ class idStaticList {
 
     void Clear();            // marks the list as empty.  does not deallocate or intialize data.
     int  Num() const;        // returns number of elements in list
-    int  Maximum() const;        // returns the maximum number of elements in the list
+    int  Maximum() const;    // returns the maximum number of elements in the list
     void SetNum(int newnum); // set number of elements in list
 
     // sets the number of elements in list and initializes any newly allocated elements to the given value
@@ -1030,10 +1030,10 @@ class idStaticList {
     const type& operator[](int index) const;
     type&       operator[](int index);
 
-    type*       Ptr();                   // returns a pointer to the list
-    const type* Ptr() const;             // returns a pointer to the list
-    type*       Alloc();                 // returns reference to a new data element at the end of the list.  returns NULL when full.
-    int         Append(const type& obj); // append element
+    type*       Ptr();                                         // returns a pointer to the list
+    const type* Ptr() const;                                   // returns a pointer to the list
+    type*       Alloc();                                       // returns reference to a new data element at the end of the list.  returns NULL when full.
+    int         Append(const type& obj);                       // append element
     int         Append(const idStaticList<type, size>& other); // append list
     int         AddUnique(const type& obj);                    // add unique element
     int         Insert(const type& obj, int index = 0);        // insert the element at the given index
