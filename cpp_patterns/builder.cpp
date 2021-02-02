@@ -3,89 +3,96 @@
 #include <vector>
 #include <iostream>
 
-class Message {
-  public:
-    std::vector<std::string> parts;
+namespace wynand_pieterse::scrapbook::cpp_patterns::builder {
+    class Message {
+      public:
+        std::vector<std::string> parts;
 
-    void Print() {
-        for (const auto& part : parts) {
-            std::cout << part << std::endl;
+        void Print() {
+            for (const auto& part : parts) {
+                std::cout << part << std::endl;
+            }
         }
-    }
-};
+    };
 
-class MessageBuilder {
-  public:
-    virtual ~MessageBuilder() {
-    }
+    class MessageBuilder {
+      public:
+        virtual ~MessageBuilder() {
+        }
 
-    virtual void Reset() = 0;
+        virtual void Reset() = 0;
 
-    virtual MessageBuilder& AddPartA() = 0;
-    virtual MessageBuilder& AddPartB() = 0;
-    virtual MessageBuilder& AddPartC() = 0;
+        virtual MessageBuilder& AddPartA() = 0;
+        virtual MessageBuilder& AddPartB() = 0;
+        virtual MessageBuilder& AddPartC() = 0;
 
-    virtual std::unique_ptr<Message> Build() = 0;
-};
+        virtual std::unique_ptr<Message> Build() = 0;
+    };
 
-class MessageBuilderImpl : public MessageBuilder {
-  private:
-    std::unique_ptr<Message> _message;
+    class MessageDirector {
+      private:
+        MessageBuilder* _builder;
 
-  public:
-    MessageBuilderImpl()
-      : _message {nullptr} {
-        Reset();
-    }
+      public:
+        MessageDirector(MessageBuilder* builder)
+          : _builder {builder} {
+        }
 
-    virtual void Reset() {
-        _message = std::unique_ptr<Message> {new Message {}};
-    }
+        void BuildMinimumViableProduct() {
+            _builder->AddPartA();
+            _builder->AddPartB();
+            _builder->AddPartC();
+        }
 
-    virtual MessageBuilder& AddPartA() {
-        _message->parts.emplace_back("Part A");
-        return *this;
-    }
+        void BuildOtherProduct() {
+            _builder->AddPartC();
+        }
+    };
 
-    virtual MessageBuilder& AddPartB() {
-        _message->parts.emplace_back("Part B");
-        return *this;
-    }
+    namespace implementation {
+        class MessageBuilderImpl : public MessageBuilder {
+          private:
+            std::unique_ptr<Message> _message;
 
-    virtual MessageBuilder& AddPartC() {
-        _message->parts.emplace_back("Part C");
-        return *this;
-    }
+          public:
+            MessageBuilderImpl()
+              : _message {nullptr} {
+                Reset();
+            }
 
-    virtual std::unique_ptr<Message> Build() {
-        auto result = std::move(_message);
+            virtual void Reset() {
+                _message = std::unique_ptr<Message> {new Message {}};
+            }
 
-        Reset();
-        return result;
-    }
-};
+            virtual MessageBuilder& AddPartA() {
+                _message->parts.emplace_back("Part A");
+                return *this;
+            }
 
-class MessageDirector {
-  private:
-    MessageBuilder* _builder;
+            virtual MessageBuilder& AddPartB() {
+                _message->parts.emplace_back("Part B");
+                return *this;
+            }
 
-  public:
-    MessageDirector(MessageBuilder* builder)
-      : _builder {builder} {
-    }
+            virtual MessageBuilder& AddPartC() {
+                _message->parts.emplace_back("Part C");
+                return *this;
+            }
 
-    void BuildMinimumViableProduct() {
-        _builder->AddPartA();
-        _builder->AddPartB();
-        _builder->AddPartC();
-    }
+            virtual std::unique_ptr<Message> Build() {
+                auto result = std::move(_message);
 
-    void BuildOtherProduct() {
-        _builder->AddPartC();
-    }
-};
+                Reset();
+                return result;
+            }
+        };
+    } // namespace implementation
+} // namespace wynand_pieterse::scrapbook::cpp_patterns::builder
 
 int main() {
+    using wynand_pieterse::scrapbook::cpp_patterns::builder::MessageDirector;
+    using wynand_pieterse::scrapbook::cpp_patterns::builder::implementation::MessageBuilderImpl;
+
     auto builder  = MessageBuilderImpl {};
     auto director = MessageDirector {&builder};
 
