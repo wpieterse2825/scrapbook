@@ -1,7 +1,7 @@
-load("//build/platform/cpu:database.bzl", _cpu_database = "database")
+load("//randoms/foundation/build/platform/cpu:database.bzl", _cpu_database = "database")
 
 def _generate_cpu_platform_constraints(model):
-    base_path = "//build/platform/cpu"
+    base_path = "//randoms/foundation/build/platform/cpu"
 
     manufacturer_path = "%s/%s" % (
         base_path,
@@ -54,7 +54,7 @@ def platform_configurations():
                             manufacturer_name,
                             architecture_name,
                             model_name,
-                            operating_mode,
+                            operating_modes,
                         ),
                         manufacturer = manufacturer_name,
                         architecture = architecture_name,

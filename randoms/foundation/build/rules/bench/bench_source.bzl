@@ -1,5 +1,5 @@
 load(
-    "//build/rules:build.bzl",
+    "//randoms/foundation/build/rules:build.bzl",
     _level_3_implementation_nice_name = "level_3_implementation_nice_name",
     _level_3_operation_nice_name = "level_3_operation_nice_name",
     _level_3_platform_nice_name = "level_3_platform_nice_name",
@@ -24,7 +24,7 @@ def _bench_source_impl(ctx):
     output_file = ctx.actions.declare_file(output_copy_name)
     output_content = ""
 
-    output_content += "#include \"%s/%s/%s/%s/%s/%s.hpp\"\n" % (
+    output_content += "#include \"randoms/foundation/%s/%s/%s/%s/%s/%s.hpp\"\n" % (
         level_1,
         level_2,
         level_3,
@@ -55,7 +55,7 @@ def _bench_source_impl(ctx):
 
     output_content += "\n"
 
-    output_content += "#include \"%s/%s/%s/bench_fixtures/%s.hpp\"\n" % (
+    output_content += "#include \"randoms/foundation/%s/%s/%s/bench_fixtures/%s.hpp\"\n" % (
         level_1,
         level_2,
         level_3,

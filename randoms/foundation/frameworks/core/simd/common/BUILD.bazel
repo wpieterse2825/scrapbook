@@ -1,17 +1,17 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
-load("//build/rules:build.bzl", "level_3_implementation_dependencies")
-load("//build/rules/header:platform_export_header.bzl", "platform_export_header")
-load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
-load("//frameworks:build_defines.bzl", "LEVEL_1")
-load("//frameworks/core:build_defines.bzl", "LEVEL_2")
-load("//frameworks/core/simd:build_defines.bzl", "LEVEL_3")
+load("//randoms/foundation/build/rules:build.bzl", "level_3_implementation_dependencies")
+load("//randoms/foundation/build/rules/header:platform_export_header.bzl", "platform_export_header")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", "cpp_library")
+load("//randoms/foundation/frameworks:build_defines.bzl", "LEVEL_1")
+load("//randoms/foundation/frameworks/core:build_defines.bzl", "LEVEL_2")
+load("//randoms/foundation/frameworks/core/simd:build_defines.bzl", "LEVEL_3")
 load(
-    "//frameworks/core/simd/common:build_defines.bzl",
+    "//randoms/foundation/frameworks/core/simd/common:build_defines.bzl",
     "BUILD_DEFINE_GENERAL",
     "IMPLEMENTATION_DEFAULT",
     "LEVEL_3_PLATFORM",
 )
-load("//frameworks/core/simd/common/general:build_defines.bzl", LEVEL_3_IMPLEMENTATION_GENERAL = "LEVEL_3_IMPLEMENTATION")
+load("//randoms/foundation/frameworks/core/simd/common/general:build_defines.bzl", LEVEL_3_IMPLEMENTATION_GENERAL = "LEVEL_3_IMPLEMENTATION")
 
 string_flag(
     name = "implementation",
@@ -26,7 +26,7 @@ config_setting(
     flag_values = {
         ":implementation": LEVEL_3_IMPLEMENTATION_GENERAL,
     },
-    visibility = ["//frameworks/core/simd:__subpackages__"],
+    visibility = ["//randoms/foundation/frameworks/core/simd:__subpackages__"],
 )
 
 cpp_library(
@@ -35,7 +35,7 @@ cpp_library(
     defines = select({
         ":is_implementation_general": [BUILD_DEFINE_GENERAL],
     }),
-    visibility = ["//frameworks/core/simd:__pkg__"],
+    visibility = ["//randoms/foundation/frameworks/core/simd:__pkg__"],
     deps = select({
         ":is_implementation_general": level_3_implementation_dependencies(
             level_1 = LEVEL_1,

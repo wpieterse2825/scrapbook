@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "frameworks/core/traits/implementation/is_same.hpp"
+#include "randoms/foundation/frameworks/core/traits/implementation/is_same.hpp"
 
 namespace next_mode::core::traits {
     TEST(TestSuite, Test) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frameworks/core/types/test_fixtures/internal.hpp"
+#include "randoms/foundation/frameworks/core/types/test_fixtures/internal.hpp"
 
 namespace next_mode::core::types::tests {
     template <typename Parameter>

@@ -1,12 +1,12 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
-package(default_visibility = ["//frameworks/core/concepts:__pkg__"])
+package(default_visibility = ["//randoms/foundation/frameworks/core/concepts:__pkg__"])
 
 cc_library(
     name = "common",
     hdrs = ["common.hpp"],
     visibility = ["//visibility:private"],
-    deps = ["//frameworks/core/traits:export"],
+    deps = ["//randoms/foundation/frameworks/core/traits:export"],
 )
 
 cc_library(

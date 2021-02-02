@@ -2,7 +2,7 @@
 
 #include <immintrin.h>
 
-#include "frameworks/core/types/x86/avx_2/pack.hpp"
+#include "randoms/foundation/frameworks/core/types/x86/avx_2/pack.hpp"
 
 namespace next_mode::core::types::detail {
     struct Pack_X86_AVX_512 : public Pack_X86_AVX_2 {

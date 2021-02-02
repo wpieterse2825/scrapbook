@@ -1,5 +1,5 @@
-load("//frameworks/core/types/common:build.bzl", _BUILD_DESCRIPTOR_COMMON = "BUILD_DESCRIPTOR")
-load("//frameworks/core/types/x86:build.bzl", _BUILD_DESCRIPTOR_X86 = "BUILD_DESCRIPTOR")
+load("//randoms/foundation/frameworks/core/types/common:build.bzl", _BUILD_DESCRIPTOR_COMMON = "BUILD_DESCRIPTOR")
+load("//randoms/foundation/frameworks/core/types/x86:build.bzl", _BUILD_DESCRIPTOR_X86 = "BUILD_DESCRIPTOR")
 
 BUILD_DESCRIPTOR = {
     "operations": {

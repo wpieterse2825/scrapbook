@@ -9,11 +9,11 @@
 #endif
 
 #if NM_CORE_TYPES_IMPLEMENTATION == NM_CORE_TYPES_IMPLEMENTATION_COMMON
-#    include "frameworks/core/types/common/common.hpp"
+#    include "randoms/foundation/frameworks/core/types/common/common.hpp"
 #endif
 
 #if NM_CORE_TYPES_IMPLEMENTATION == NM_CORE_TYPES_IMPLEMENTATION_X86
-#    include "frameworks/core/types/x86/x86.hpp"
+#    include "randoms/foundation/frameworks/core/types/x86/x86.hpp"
 #endif
 
 namespace next_mode {
@@ -60,4 +60,4 @@ namespace next_mode {
     using UTF32Character     = core::types::detail::Character_Export::UTF32Character;
 } // namespace next_mode
 
-#include "frameworks/core/types/pack/pack.inl"
+#include "randoms/foundation/frameworks/core/types/pack/pack.inl"

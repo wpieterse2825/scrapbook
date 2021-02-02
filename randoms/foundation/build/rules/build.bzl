@@ -1,5 +1,5 @@
 load(
-    "//frameworks:build.bzl",
+    "//randoms/foundation/frameworks:build.bzl",
     _FRAMEWORKS_BUILD_DESCRIPTOR = "BUILD_DESCRIPTOR",
 )
 
@@ -75,7 +75,7 @@ def level_3_visibility(
     result = []
 
     result.append(
-        "//%s/%s/%s:__subpackages__" % (
+        "//randoms/foundation/%s/%s/%s:__subpackages__" % (
             level_1,
             level_2,
             level_3,
@@ -142,7 +142,7 @@ def level_3_implementation_dependencies(
 
     for (operation_name, _) in level_3_operations_db.items():
         result.append(
-            "//%s/%s/%s/%s/%s:%s" % (
+            "//randoms/foundation/%s/%s/%s/%s/%s:%s" % (
                 level_1,
                 level_2,
                 level_3,

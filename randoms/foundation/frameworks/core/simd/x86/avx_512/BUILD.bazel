@@ -1,10 +1,10 @@
-load("//build/rules/implementation:implementation_collection.bzl", "implementation_collection")
-load("//frameworks:build_defines.bzl", "LEVEL_1")
-load("//frameworks/core:build_defines.bzl", "LEVEL_2")
-load("//frameworks/core/simd:build_defines.bzl", "LEVEL_3")
-load("//frameworks/core/simd/x86:build_defines.bzl", "LEVEL_3_PLATFORM")
+load("//randoms/foundation/build/rules/implementation:implementation_collection.bzl", "implementation_collection")
+load("//randoms/foundation/frameworks:build_defines.bzl", "LEVEL_1")
+load("//randoms/foundation/frameworks/core:build_defines.bzl", "LEVEL_2")
+load("//randoms/foundation/frameworks/core/simd:build_defines.bzl", "LEVEL_3")
+load("//randoms/foundation/frameworks/core/simd/x86:build_defines.bzl", "LEVEL_3_PLATFORM")
 load(
-    "//frameworks/core/simd/x86/avx_512:build_defines.bzl",
+    "//randoms/foundation/frameworks/core/simd/x86/avx_512:build_defines.bzl",
     "LEVEL_3_DEPENDENT_IMPLEMENTATION",
     "LEVEL_3_DEPENDENT_PLATFORM",
     "LEVEL_3_IMPLEMENTATION",

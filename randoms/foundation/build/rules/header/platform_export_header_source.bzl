@@ -1,5 +1,5 @@
 load(
-    "//build/rules:build.bzl",
+    "//randoms/foundation/build/rules:build.bzl",
     _level_3_implementations = "level_3_implementations",
     _level_3_operations = "level_3_operations",
     _level_3_platform_nice_name = "level_3_platform_nice_name",
@@ -86,7 +86,7 @@ def _platform_export_header_source_impl(ctx):
         )
 
         for (operation_name, _) in level_3_operations.items():
-            output_content += "#include \"%s/%s/%s/%s/%s/%s.hpp\"\n" % (
+            output_content += "#include \"randoms/foundation/%s/%s/%s/%s/%s/%s.hpp\"\n" % (
                 level_1,
                 level_2,
                 level_3,

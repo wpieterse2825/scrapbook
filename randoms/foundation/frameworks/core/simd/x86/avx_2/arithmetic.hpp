@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frameworks/core/simd/x86/avx_1/arithmetic.hpp"
+#include "randoms/foundation/frameworks/core/simd/x86/avx_1/arithmetic.hpp"
 
 namespace next_mode::core::simd::detail {
     struct Arithmetic_X86_AVX_2 : public Arithmetic_X86_AVX_1 {

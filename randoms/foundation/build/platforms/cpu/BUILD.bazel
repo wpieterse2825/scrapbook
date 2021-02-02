@@ -22,7 +22,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_mmx",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_mmx",
     ],
 )
 
@@ -31,7 +31,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_sse_1",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_sse_1",
     ],
 )
 
@@ -40,7 +40,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_sse_2",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_sse_2",
     ],
 )
 
@@ -49,7 +49,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_sse_3",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_sse_3",
     ],
 )
 
@@ -58,7 +58,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_ssse_3",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_ssse_3",
     ],
 )
 
@@ -67,7 +67,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_sse_4_1",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_sse_4_1",
     ],
 )
 
@@ -76,7 +76,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_sse_4_2",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_sse_4_2",
     ],
 )
 
@@ -85,7 +85,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_avx_1",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_avx_1",
     ],
 )
 
@@ -94,7 +94,7 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_avx_2",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_avx_2",
     ],
 )
 
@@ -103,6 +103,6 @@ platform(
     constraint_values = [
         "@platforms//cpu:x86_64",
         "@platforms//os:linux",
-        "//build/platforms/cpu/x86:simd_avx_512",
+        "//randoms/foundation/build/platforms/cpu/x86:simd_avx_512",
     ],
 )

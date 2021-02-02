@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "frameworks/core/traits/implementation/is_integer.hpp"
+#include "randoms/foundation/frameworks/core/traits/implementation/is_integer.hpp"
 
 namespace next_mode::core::traits {
     TEST(TestSuite, Test) {

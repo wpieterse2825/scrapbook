@@ -1,4 +1,4 @@
-load("//build/rules/header:empty_operation_header_source.bzl", _empty_operation_header_source = "empty_operation_header_source")
+load("//randoms/foundation/build/rules/header:empty_operation_header_source.bzl", _empty_operation_header_source = "empty_operation_header_source")
 
 def empty_operation_header(
         name,

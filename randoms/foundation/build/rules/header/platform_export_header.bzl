@@ -1,4 +1,4 @@
-load("//build/rules/header:platform_export_header_source.bzl", _platform_export_header_source = "platform_export_header_source")
+load("//randoms/foundation/build/rules/header:platform_export_header_source.bzl", _platform_export_header_source = "platform_export_header_source")
 
 def platform_export_header(
         name,

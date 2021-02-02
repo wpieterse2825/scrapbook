@@ -1,5 +1,5 @@
-load("//frameworks/core/simd/common:build.bzl", _BUILD_DESCRIPTOR_COMMON = "BUILD_DESCRIPTOR")
-load("//frameworks/core/simd/x86:build.bzl", _BUILD_DESCRIPTOR_X86 = "BUILD_DESCRIPTOR")
+load("//randoms/foundation/frameworks/core/simd/common:build.bzl", _BUILD_DESCRIPTOR_COMMON = "BUILD_DESCRIPTOR")
+load("//randoms/foundation/frameworks/core/simd/x86:build.bzl", _BUILD_DESCRIPTOR_X86 = "BUILD_DESCRIPTOR")
 
 BUILD_DESCRIPTOR = {
     "operations": {

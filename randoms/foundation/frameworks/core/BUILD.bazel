@@ -1,15 +1,15 @@
-load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
-load("//build/rules/cpp:cpp_test.bzl", "cpp_test")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", "cpp_library")
+load("//randoms/foundation/build/rules/cpp:cpp_test.bzl", "cpp_test")
 
 cpp_library(
     name = "core",
     hdrs = ["core.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "//frameworks/core/concepts:export",
-        "//frameworks/core/simd:export",
-        "//frameworks/core/traits:export",
-        "//frameworks/core/types:export",
+        "//randoms/foundation/frameworks/core/concepts:export",
+        "//randoms/foundation/frameworks/core/simd:export",
+        "//randoms/foundation/frameworks/core/traits:export",
+        "//randoms/foundation/frameworks/core/types:export",
     ],
 )
 

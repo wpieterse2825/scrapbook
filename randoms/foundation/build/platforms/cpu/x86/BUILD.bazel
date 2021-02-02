@@ -2,7 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 constraint_value(
     name = "simd_mmx",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -12,7 +12,7 @@ config_setting(
 
 constraint_value(
     name = "simd_sse_1",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -22,7 +22,7 @@ config_setting(
 
 constraint_value(
     name = "simd_sse_2",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -32,7 +32,7 @@ config_setting(
 
 constraint_value(
     name = "simd_sse_3",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -42,7 +42,7 @@ config_setting(
 
 constraint_value(
     name = "simd_ssse_3",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -52,7 +52,7 @@ config_setting(
 
 constraint_value(
     name = "simd_sse_4_1",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -62,7 +62,7 @@ config_setting(
 
 constraint_value(
     name = "simd_sse_4_2",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -72,7 +72,7 @@ config_setting(
 
 constraint_value(
     name = "simd_avx_1",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -82,7 +82,7 @@ config_setting(
 
 constraint_value(
     name = "simd_avx_2",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(
@@ -92,7 +92,7 @@ config_setting(
 
 constraint_value(
     name = "simd_avx_512",
-    constraint_setting = "//build/platforms/cpu:simd_support",
+    constraint_setting = "//randoms/foundation/build/platforms/cpu:simd_support",
 )
 
 config_setting(

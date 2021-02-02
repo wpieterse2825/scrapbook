@@ -19,7 +19,7 @@ def architecture_configurations(manufacturer, architecture):
     native.constraint_value(
         name = "constraint",
         visibility = ["//visibility:public"],
-        constraint_setting = "//build/platform/cpu:architecture",
+        constraint_setting = "//randoms/foundation/build/platform/cpu:architecture",
     )
 
 def manufacturer_configurations(manufacturer):
@@ -34,5 +34,5 @@ def manufacturer_configurations(manufacturer):
     native.constraint_value(
         name = "constraint",
         visibility = ["//visibility:public"],
-        constraint_setting = "//build/platform/cpu:manufacturer",
+        constraint_setting = "//randoms/foundation/build/platform/cpu:manufacturer",
     )

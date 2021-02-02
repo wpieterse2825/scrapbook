@@ -1,12 +1,12 @@
 load(
-    "//build/rules:build.bzl",
+    "//randoms/foundation/build/rules:build.bzl",
     _level_3_operation_names = "level_3_operations",
     _level_3_visibility = "level_3_visibility",
 )
-load("//build/rules/cpp:cpp_library.bzl", _cpp_library = "cpp_library")
-load("//build/rules/header:empty_operation_header.bzl", _empty_operation_header = "empty_operation_header")
-load("//build/rules/test:test.bzl", _test = "test")
-load("//build/rules/bench:bench.bzl", _bench = "bench")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", _cpp_library = "cpp_library")
+load("//randoms/foundation/build/rules/header:empty_operation_header.bzl", _empty_operation_header = "empty_operation_header")
+load("//randoms/foundation/build/rules/test:test.bzl", _test = "test")
+load("//randoms/foundation/build/rules/bench:bench.bzl", _bench = "bench")
 
 def implementation_collection(
         name,
@@ -36,7 +36,7 @@ def implementation_collection(
         if found == False:
             if level_3_dependent_platform == "" and level_3_dependent_implementation == "":
                 fail(
-                    "The common implementation at //%s/%s/%s does not define a header for the %s operation!" % (
+                    "The common implementation at //randoms/foundation/%s/%s/%s does not define a header for the %s operation!" % (
                         level_1,
                         level_2,
                         level_3,
@@ -56,7 +56,7 @@ def implementation_collection(
                 level_3_dependent_implementation = level_3_dependent_implementation,
             )
 
-    base_path = "//%s/%s/%s" % (
+    base_path = "//randoms/foundation/%s/%s/%s" % (
         level_1,
         level_2,
         level_3,

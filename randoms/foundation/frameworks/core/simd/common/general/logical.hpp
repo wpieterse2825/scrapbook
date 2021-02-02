@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frameworks/core/simd/internal.hpp"
+#include "randoms/foundation/frameworks/core/simd/internal.hpp"
 
 namespace next_mode::core::simd::detail {
     struct Logical_Common_General {};

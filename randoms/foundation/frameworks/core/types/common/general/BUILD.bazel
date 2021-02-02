@@ -1,9 +1,9 @@
-load("//build/rules/implementation:implementation_collection.bzl", "implementation_collection")
-load("//frameworks:build_defines.bzl", "LEVEL_1")
-load("//frameworks/core:build_defines.bzl", "LEVEL_2")
-load("//frameworks/core/types:build_defines.bzl", "LEVEL_3")
-load("//frameworks/core/types/common:build_defines.bzl", "LEVEL_3_PLATFORM")
-load("//frameworks/core/types/common/general:build_defines.bzl", "LEVEL_3_IMPLEMENTATION")
+load("//randoms/foundation/build/rules/implementation:implementation_collection.bzl", "implementation_collection")
+load("//randoms/foundation/frameworks:build_defines.bzl", "LEVEL_1")
+load("//randoms/foundation/frameworks/core:build_defines.bzl", "LEVEL_2")
+load("//randoms/foundation/frameworks/core/types:build_defines.bzl", "LEVEL_3")
+load("//randoms/foundation/frameworks/core/types/common:build_defines.bzl", "LEVEL_3_PLATFORM")
+load("//randoms/foundation/frameworks/core/types/common/general:build_defines.bzl", "LEVEL_3_IMPLEMENTATION")
 
 implementation_collection(
     name = LEVEL_3_IMPLEMENTATION,

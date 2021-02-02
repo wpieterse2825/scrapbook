@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "frameworks/core/core.hpp"
+#include "randoms/foundation/frameworks/core/core.hpp"
 
 namespace next_mode {
     TEST(TestSuite, Test) {

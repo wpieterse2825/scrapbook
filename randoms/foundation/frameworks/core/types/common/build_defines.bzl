@@ -1,4 +1,4 @@
-load("//frameworks/core/types/common/general:build_defines.bzl", _LEVEL_3_IMPLEMENTATION_GENERAL = "LEVEL_3_IMPLEMENTATION")
+load("//randoms/foundation/frameworks/core/types/common/general:build_defines.bzl", _LEVEL_3_IMPLEMENTATION_GENERAL = "LEVEL_3_IMPLEMENTATION")
 
 LEVEL_3_PLATFORM = "common"
 

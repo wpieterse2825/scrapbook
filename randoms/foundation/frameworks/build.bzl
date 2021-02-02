@@ -1,4 +1,4 @@
-load("//frameworks/core:build.bzl", _BUILD_DESCRIPTOR_CORE = "BUILD_DESCRIPTOR")
+load("//randoms/foundation/frameworks/core:build.bzl", _BUILD_DESCRIPTOR_CORE = "BUILD_DESCRIPTOR")
 
 BUILD_DESCRIPTOR = {
     "level_2": {

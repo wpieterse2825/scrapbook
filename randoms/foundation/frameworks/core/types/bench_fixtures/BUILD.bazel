@@ -1,13 +1,13 @@
-load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
-load("//build/rules/bench:bench_fixtures.bzl", "bench_fixtures")
-load("//frameworks:build_defines.bzl", "LEVEL_1")
-load("//frameworks/core:build_defines.bzl", "LEVEL_2")
-load("//frameworks/core/types:build_defines.bzl", "LEVEL_3")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", "cpp_library")
+load("//randoms/foundation/build/rules/bench:bench_fixtures.bzl", "bench_fixtures")
+load("//randoms/foundation/frameworks:build_defines.bzl", "LEVEL_1")
+load("//randoms/foundation/frameworks/core:build_defines.bzl", "LEVEL_2")
+load("//randoms/foundation/frameworks/core/types:build_defines.bzl", "LEVEL_3")
 
 cpp_library(
     name = "internal",
     hdrs = ["internal.hpp"],
-    visibility = ["//frameworks/core/types:__subpackages__"],
+    visibility = ["//randoms/foundation/frameworks/core/types:__subpackages__"],
     deps = ["@com_github_google_benchmark//:benchmark_main"],
 )
 

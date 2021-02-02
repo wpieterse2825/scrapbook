@@ -1,7 +1,7 @@
-#include "frameworks/core/types/pack/pack_intrinsic_type.inl"
-#include "frameworks/core/types/pack/pack_array_type.inl"
-#include "frameworks/core/types/pack/pack_mask_intrinsic_type.inl"
-#include "frameworks/core/types/pack/pack_mask_element_type.inl"
+#include "randoms/foundation/frameworks/core/types/pack/pack_intrinsic_type.inl"
+#include "randoms/foundation/frameworks/core/types/pack/pack_array_type.inl"
+#include "randoms/foundation/frameworks/core/types/pack/pack_mask_intrinsic_type.inl"
+#include "randoms/foundation/frameworks/core/types/pack/pack_mask_element_type.inl"
 
 namespace next_mode {
     template <typename ElementTypeI, int WidthI>

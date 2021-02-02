@@ -1,6 +1,6 @@
 #pragma once
 
-#include "frameworks/core/simd/bench_fixtures/internal.hpp"
+#include "randoms/foundation/frameworks/core/simd/bench_fixtures/internal.hpp"
 
 namespace next_mode::core::simd::benches {
     template <typename Implementation, typename ElementType, int Width>

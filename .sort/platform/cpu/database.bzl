@@ -1,4 +1,4 @@
-load("//build/platform/cpu:datasheet.bzl", _MANUFACTURERS = "MANUFACTURERS")
+load("//randoms/foundation/build/platform/cpu:datasheet.bzl", _MANUFACTURERS = "MANUFACTURERS")
 
 def _model_operating_modes(db):
     results = []

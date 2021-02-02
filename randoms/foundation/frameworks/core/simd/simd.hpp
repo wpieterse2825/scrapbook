@@ -7,11 +7,11 @@
 #endif
 
 #if NM_CORE_SIMD_IMPLEMENTATION == NM_CORE_SIMD_IMPLEMENTATION_COMMON
-#    include "frameworks/core/simd/common/common.hpp"
+#    include "randoms/foundation/frameworks/core/simd/common/common.hpp"
 #endif
 
 #if NM_CORE_SIMD_IMPLEMENTATION == NM_CORE_SIMD_IMPLEMENTATION_X86
-#    include "frameworks/core/simd/x86/x86.hpp"
+#    include "randoms/foundation/frameworks/core/simd/x86/x86.hpp"
 #endif
 
 namespace next_mode {

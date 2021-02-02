@@ -1,6 +1,6 @@
-load("//build/rules/cpp:cpp_binary.bzl", _cpp_binary = "cpp_binary")
+load("//randoms/foundation/build/rules/cpp:cpp_binary.bzl", _cpp_binary = "cpp_binary")
 load(
-    "//build/rules/bench:bench_source.bzl",
+    "//randoms/foundation/build/rules/bench:bench_source.bzl",
     _bench_source = "bench_source",
     _bench_source_name = "bench_source_name",
 )
@@ -40,7 +40,7 @@ def bench(
         srcs = [source_name],
         deps = [
             ":%s" % level_3_operation,
-            "//%s/%s/%s/bench_fixtures:%s" % (
+            "//randoms/foundation/%s/%s/%s/bench_fixtures:%s" % (
                 level_1,
                 level_2,
                 level_3,

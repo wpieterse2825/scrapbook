@@ -2,7 +2,7 @@
 
 #include <immintrin.h>
 
-#include "frameworks/core/types/x86/general/pack.hpp"
+#include "randoms/foundation/frameworks/core/types/x86/general/pack.hpp"
 
 namespace next_mode::core::types::detail {
     struct Pack_X86_MMX : public Pack_X86_General {

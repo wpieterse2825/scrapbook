@@ -1,7 +1,7 @@
-load("//build/rules:build.bzl", _level_3_operations = "level_3_operations")
-load("//build/rules/cpp:cpp_test.bzl", _cpp_test = "cpp_test")
+load("//randoms/foundation/build/rules:build.bzl", _level_3_operations = "level_3_operations")
+load("//randoms/foundation/build/rules/cpp:cpp_test.bzl", _cpp_test = "cpp_test")
 load(
-    "//build/rules/test:test_source.bzl",
+    "//randoms/foundation/build/rules/test:test_source.bzl",
     _test_source = "test_source",
     _test_source_name = "test_source_name",
 )
@@ -41,7 +41,7 @@ def test(
         srcs = [source_name],
         deps = [
             ":%s" % level_3_operation,
-            "//%s/%s/%s/test_fixtures:%s" % (
+            "//randoms/foundation/%s/%s/%s/test_fixtures:%s" % (
                 level_1,
                 level_2,
                 level_3,

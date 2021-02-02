@@ -1,4 +1,4 @@
-load("//build/rules/cpp:cpp_library.bzl", "cpp_library")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", "cpp_library")
 
 cpp_library(
     name = "export",
@@ -9,5 +9,5 @@ cpp_library(
         "pack_mask_element_type.inl",
         "pack_mask_intrinsic_type.inl",
     ],
-    visibility = ["//frameworks/core/types:__pkg__"],
+    visibility = ["//randoms/foundation/frameworks/core/types:__pkg__"],
 )

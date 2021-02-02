@@ -1,9 +1,9 @@
 load(
-    "//build/rules:build.bzl",
+    "//randoms/foundation/build/rules:build.bzl",
     _level_3_operation_names = "level_3_operation_names",
     _level_3_visibility = "level_3_visibility",
 )
-load("//build/rules/cpp:cpp_library.bzl", _cpp_library = "cpp_library")
+load("//randoms/foundation/build/rules/cpp:cpp_library.bzl", _cpp_library = "cpp_library")
 
 def test_fixtures(
         name,
