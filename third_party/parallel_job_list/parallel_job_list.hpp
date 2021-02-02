@@ -1,6 +1,6 @@
 #pragma once
 
-#include "id_parallel_job_list/shared.hpp"
+#include "third_party/parallel_job_list/shared.hpp"
 
 #define REGISTER_PARALLEL_JOB(user_callback, name) static ParallelJobRegistration register_##user_callback((JobCallbackFunction)user_callback, name)
 
