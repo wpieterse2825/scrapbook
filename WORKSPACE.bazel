@@ -1,4 +1,6 @@
-workspace(name = "scrapbook")
+workspace(
+    name = "scrapbook",
+)
 
 load(
     "@bazel_tools//tools/build_defs/repo:http.bzl",
@@ -7,19 +9,36 @@ load(
 
 http_archive(
     name = "bazel_skylib",
-    sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
+    sha256 = "4f3962c8b78238a8ce817593292061f72264f95ea635fc74345034b7f5e34499",
+    strip_prefix = "bazel-skylib-f80bc733d4b9f83d427ce3442be2e07427b2cc8d",
     urls = [
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/archive/f80bc733d4b9f83d427ce3442be2e07427b2cc8d.zip",
+    ],
+)
+
+http_archive(
+    name = "rules_cc",
+    sha256 = "ad81ad11d63e97873dda3289383dd733f99f12fadeeadb14227a45e894437dd8",
+    strip_prefix = "rules_cc-ab2abd3ddc241b4e0067c80b3bdd4e384172cd6d",
+    urls = [
+        "https://github.com/bazelbuild/rules_cc/archive/ab2abd3ddc241b4e0067c80b3bdd4e384172cd6d.zip",
+    ],
+)
+
+http_archive(
+    name = "rules_python",
+    sha256 = "09d08c6168b5a732cec1366392fb84f6d9f05a1019dcd126eef1150cdf63e92a",
+    strip_prefix = "rules_python-8537cea11d867333c07c465d536778c1b7560cde",
+    urls = [
+        "https://github.com/bazelbuild/rules_python/archive/8537cea11d867333c07c465d536778c1b7560cde.zip",
     ],
 )
 
 http_archive(
     name = "rules_proto",
-    sha256 = "2a20fd8af3cad3fbab9fd3aec4a137621e0c31f858af213a7ae0f997723fc4a9",
+    #sha256 = "aa1ee19226f707d44bee44c720915199c20c84a23318bb0597ed4e5c873ccbd5",
     strip_prefix = "rules_proto-a0761ed101b939e19d83b2da5f59034bffc19c12",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/a0761ed101b939e19d83b2da5f59034bffc19c12.tar.gz",
         "https://github.com/bazelbuild/rules_proto/archive/a0761ed101b939e19d83b2da5f59034bffc19c12.tar.gz",
     ],
 )
@@ -40,3 +59,30 @@ load(
 rules_proto_dependencies()
 
 rules_proto_toolchains()
+
+http_archive(
+    name = "com_github_google_googletest",
+    sha256 = "2b9ce7cfb1ed140cff3e9828e3948e105a5635b8579febef094ce302915a6b04",
+    strip_prefix = "googletest-273f8cb059a4e7b089731036392422b5ef489791",
+    urls = [
+        "https://github.com/google/googletest/archive/273f8cb059a4e7b089731036392422b5ef489791.zip",
+    ],
+)
+
+http_archive(
+    name = "com_github_google_benchmark",
+    sha256 = "da89d07439a4ba0e649a3d957af639db15b3d2ee65731a4b58e674a59f82b893",
+    strip_prefix = "benchmark-8df87f6c879cbcabd17c5cfcec7b89687df36953",
+    urls = [
+        "https://github.com/google/benchmark/archive/8df87f6c879cbcabd17c5cfcec7b89687df36953.zip",
+    ],
+)
+
+http_archive(
+    name = "com_google_absl",
+    sha256 = "46e8249a18be8968777890803b57f9d7a5e5f3b6e432951f121114161cb51427",
+    strip_prefix = "abseil-cpp-184d2f8364bcb05e413ec4c72cad0cf86e712d1c",
+    urls = [
+        "https://github.com/abseil/abseil-cpp/archive/184d2f8364bcb05e413ec4c72cad0cf86e712d1c.zip",
+    ],
+)
