@@ -1,7 +1,7 @@
 #pragma once
 
-#include "third_party/parallel_job_list/shared.hpp"
-#include "third_party/parallel_job_list/list.hpp"
+#include "parallel_job_list/shared.hpp"
+#include "parallel_job_list/list.hpp"
 
 #include <pthread.h>
 

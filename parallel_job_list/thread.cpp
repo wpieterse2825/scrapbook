@@ -1,4 +1,4 @@
-#include "third_party/parallel_job_list/thread.hpp"
+#include "parallel_job_list/thread.hpp"
 
 #include <sched.h>
 #include <errno.h>

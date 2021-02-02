@@ -31,7 +31,7 @@ cc_binary(
         "delta4.pb"
     ],
     deps = [
-        "//randoms/doom_3_map:map_cc_proto",
+        "//doom_3_map:map_cc_proto",
         "@bazel_tools//tools/cpp/runfiles",
     ],
 )

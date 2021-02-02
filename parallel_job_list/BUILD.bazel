@@ -1,12 +1,12 @@
 load(
     "@rules_cc//cc:defs.bzl",
     "cc_binary",
-    "cc_library",
 )
 
-cc_library(
+cc_binary(
     name = "parallel_job_list",
     srcs = [
+        "main.cpp",
         "list.hpp",
         "parallel_job_list.cpp",
         "parallel_job_list.hpp",
@@ -17,20 +17,7 @@ cc_library(
     copts = [
         "-fpic",
     ],
-)
-
-cc_binary(
-    name = "executor",
-    srcs = [
-        "executor.cpp",
-    ],
-    copts = [
-        "-fpic",
-    ],
     linkopts = [
         "-lpthread",
-    ],
-    deps = [
-        "//third_party/parallel_job_list",
     ],
 )

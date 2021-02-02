@@ -9,7 +9,7 @@
 
 #include "src/main/protobuf/worker_protocol.pb.h"
 
-#include "cxxopts.hpp"
+#include "third_party/cxxopts/cxxopts.hpp"
 
 using namespace google::protobuf::io;
 
