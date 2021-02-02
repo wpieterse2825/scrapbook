@@ -6,7 +6,7 @@
 
 #include "tools/cpp/runfiles/runfiles.h"
 
-#include "map/map.pb.h"
+#include "randoms/doom_3_map/map.pb.h"
 
 using bazel::tools::cpp::runfiles::Runfiles;
 
@@ -146,21 +146,6 @@ uint8_t ComparePlanes(FPlane comparend, FPlaneSIMDSet comparitor) {
 #include <chrono>
 
 int main(int argc, char** argv) {
-    /*
-    uint64_t bitmap[] = {
-      0b1000000000000000000000000000000000000000000000000000000000000001,
-      0b1000000000000000000000000000000000000000000000000000000000000001,
-    };
-
-    uint32_t output[128] = {0};
-
-    size_t result = BitmaskDecode(bitmap, 2, output);
-
-    for (size_t index = 0; index < result; index++) {
-        std::cout << output[index] << std::endl;
-    }
-    */
-
     std::string               runfiles_error {""};
     std::unique_ptr<Runfiles> runfiles {Runfiles::Create(argv[0], &runfiles_error)};
 
@@ -170,7 +155,7 @@ int main(int argc, char** argv) {
         std::cout << "ERROR: Failed to initialize run-files : " << runfiles_error << std::endl;
     }
 
-    std::string  map_path = runfiles->Rlocation("compusim/map/delta4.pb");
+    std::string  map_path = runfiles->Rlocation("scrapbook/randoms/doom_3_map/delta4.pb");
     std::fstream map_file {map_path, std::ios::in | std::ios::binary};
     Map          map_object;
 
