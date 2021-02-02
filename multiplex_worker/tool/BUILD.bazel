@@ -1,0 +1,14 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "tool",
+    srcs = [
+        "main.cpp",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

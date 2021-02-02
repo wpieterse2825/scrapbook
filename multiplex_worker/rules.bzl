@@ -1,4 +1,4 @@
-def _rule_impl(ctx):
+def _multiplex_worker_thing_impl(ctx):
     tool = ctx.executable._tool
 
     src = ctx.file.input
@@ -16,34 +16,49 @@ def _rule_impl(ctx):
     )
 
     ctx.actions.run(
-        inputs = [src, args_file],
-        outputs = [dst],
-        arguments = ["@%s" % args_file.path],
+        inputs = [
+            src,
+            args_file,
+        ],
+        outputs = [
+            dst,
+        ],
+        arguments = [
+            "@%s" % args_file.path,
+        ],
         executable = tool,
-        tools = [tool],
+        tools = [
+            tool,
+        ],
         execution_requirements = {
             "supports-workers": "1",
-            "supports-multiplex-workers": "1",
+            "requires-worker-protocol": "json",
         },
     )
 
     return [
         DefaultInfo(
-            files = depset([dst]),
+            files = depset(
+                [
+                    dst,
+                ],
+            ),
         ),
     ]
 
-worker_rule = rule(
-    implementation = _rule_impl,
+multiplex_worker_thing = rule(
+    implementation = _multiplex_worker_thing_impl,
     attrs = {
         "input": attr.label(
             mandatory = True,
-            allow_single_file = [".txt"],
+            allow_single_file = [
+                ".txt",
+            ],
         ),
         "_tool": attr.label(
             executable = True,
-            cfg = "exec",
-            default = "//multi/worker",
+            cfg = "host",
+            default = "//multiplex_worker/tool",
         ),
     },
 )

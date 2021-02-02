@@ -1,0 +1,14 @@
+load(
+    "//multiplex_worker:rules.bzl",
+    "multiplex_worker_thing",
+)
+
+multiplex_worker_thing(
+    name = "test",
+    input = "test.txt",
+)
+
+multiplex_worker_thing(
+    name = "bob",
+    input = "bob.txt",
+)
