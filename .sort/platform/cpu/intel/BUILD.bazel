@@ -1,5 +1,0 @@
-load("//randoms/foundation/build/platform/cpu:generator.bzl", "manufacturer_configurations")
-
-manufacturer_configurations(
-    manufacturer = "intel",
-)

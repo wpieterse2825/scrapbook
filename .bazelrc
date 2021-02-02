@@ -16,3 +16,7 @@ build --host_cxxopt='-mavx2'
 build --copt='-mavx2'
 build --cxxopt='-std=c++2a'
 build --cxxopt='-mavx2'
+
+build --extra_toolchains //idl_compiler/compiler:compiler_toolchain
+build --extra_toolchains //idl_compiler/generator:generator_toolchain
+build --extra_toolchains //idl_compiler/linker:linker_toolchain

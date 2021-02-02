@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package idl_compiler.compiler;
+
+enum TypeReference {
+    UNKNOWN = 0;
+    NATIVE = 1;
+    HANDLE = 2;
+    ENUMERATION = 3;
+    STRUCTURE = 4;
+    FUNCTION = 5;
+}
+
+message Type {
+    TypeReference reference = 1;
+    string name = 2;
+}

@@ -1,6 +1,0 @@
-load("//randoms/foundation/build/platform/cpu:generator.bzl", "architecture_configurations")
-
-architecture_configurations(
-    manufacturer = "intel",
-    architecture = "haswell",
-)

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package idl_compiler.compiler.structure;
+
+import "idl_compiler/compiler/shared.proto";
+
+message Structure {
+    string name = 1;
+    repeated StructureField fields = 2;
+    map<string, string> documentation = 3;
+}
+
+message StructureField {
+    idl_compiler.compiler.Type type = 1;
+    string name = 2;
+    bool is_constant = 3;
+    bool is_pointer = 4;
+
+    map<string, string> documentation = 5;
+}

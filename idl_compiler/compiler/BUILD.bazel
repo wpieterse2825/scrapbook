@@ -1,0 +1,35 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("//idl_compiler/compiler:build.bzl", "idl_compiler_toolchain")
+
+py_library(
+    name = "compiler",
+    srcs = ["compiler.py"],
+    visibility = ["//idl_compiler/compiler:__subpackages__"],
+    deps = [
+        ":shared_py_proto",
+        "//idl_compiler:shared",
+    ],
+)
+
+py_proto_library(
+    name = "shared_py_proto",
+    srcs = ["shared.proto"],
+    visibility = ["//idl_compiler:__subpackages__"],
+)
+
+toolchain(
+    name = "compiler_toolchain",
+    toolchain = ":compiler_toolchain_impl",
+    toolchain_type = ":toolchain_type",
+)
+
+toolchain_type(name = "toolchain_type")
+
+idl_compiler_toolchain(
+    name = "compiler_toolchain_impl",
+    enumeration_compiler = "//idl_compiler/compiler/enumeration:driver",
+    function_compiler = "//idl_compiler/compiler/function:driver",
+    handle_compiler = "//idl_compiler/compiler/handle:driver",
+    structure_compiler = "//idl_compiler/compiler/structure:driver",
+)
