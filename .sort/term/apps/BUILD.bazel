@@ -1,5 +1,0 @@
-cc_binary(
-    name = "apps",
-    srcs = ["main.cpp"],
-    deps = ["//term/rxterm"],
-)

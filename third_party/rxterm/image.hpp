@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "term/rxterm/pixel.hpp"
-#include "term/rxterm/style.hpp"
-#include "term/rxterm/utils.hpp"
+#include "third_party/rxterm/pixel.hpp"
+#include "third_party/rxterm/style.hpp"
+#include "third_party/rxterm/utils.hpp"
 
 namespace rxterm {
 

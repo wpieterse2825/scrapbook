@@ -1,11 +1,11 @@
 #ifndef RXTERM_COMPONENTS_FLOWLAYOUT_HPP
 #define RXTERM_COMPONENTS_FLOWLAYOUT_HPP
 
-#include "term/rxterm/image.hpp"
-#include "term/rxterm/components/component.hpp"
-#include "term/rxterm/utils.hpp"
-#include "term/rxterm/style.hpp"
-#include "term/rxterm/reflow.hpp"
+#include "third_party/rxterm/image.hpp"
+#include "third_party/rxterm/components/component.hpp"
+#include "third_party/rxterm/utils.hpp"
+#include "third_party/rxterm/style.hpp"
+#include "third_party/rxterm/reflow.hpp"
 #include <algorithm>
 
 namespace rxterm {

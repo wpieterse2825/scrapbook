@@ -1,4 +1,0 @@
-cc_binary(
-    name = "cmd",
-    srcs = ["main.cpp"],
-)

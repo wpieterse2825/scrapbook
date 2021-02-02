@@ -1,10 +1,10 @@
 #ifndef RXTERM_COMPONENTS_TEXT_HPP
 #define RXTERM_COMPONENTS_TEXT_HPP
 
-#include "term/rxterm/image.hpp"
-#include "term/rxterm/utils.hpp"
-#include "term/rxterm/style.hpp"
-#include "term/rxterm/reflow.hpp"
+#include "third_party/rxterm/image.hpp"
+#include "third_party/rxterm/utils.hpp"
+#include "third_party/rxterm/style.hpp"
+#include "third_party/rxterm/reflow.hpp"
 #include <algorithm>
 #include <numeric>
 

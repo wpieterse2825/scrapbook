@@ -4,11 +4,11 @@ load(
 )
 
 cc_binary(
-    name = "tool",
+    name = "modern_terminal",
     srcs = [
         "main.cpp",
     ],
-    visibility = [
-        "//visibility:public",
+    deps = [
+        "//third_party/rxterm",
     ],
 )
