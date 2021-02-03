@@ -1,0 +1,37 @@
+load(
+    "@rules_proto//proto:defs.bzl",
+    "proto_library",
+)
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+    "cc_proto_library",
+)
+
+proto_library(
+    name = "map_proto",
+    srcs = [
+        "map.proto",
+    ],
+)
+
+cc_proto_library(
+    name = "map_cc_proto",
+    deps = [
+        "//randoms/doom_3_map:map_proto",
+    ],
+)
+
+cc_binary(
+    name = "doom_3_map",
+    srcs = [
+        "main.cpp",
+    ],
+    data = [
+        "//randoms/doom_3_map/maps:delta4",
+    ],
+    deps = [
+        "//randoms/doom_3_map:map_cc_proto",
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)

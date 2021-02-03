@@ -1,0 +1,34 @@
+load("@rules_python//python:defs.bzl", "py_test")
+load(":skylark.bzl", "skylark_test_suite")
+
+skylark_test_suite(
+    name = "skylark",
+)
+
+sh_test(
+    name = "driver",
+    srcs = ["driver.sh"],
+    data = ["//old_projects/idl_compiler/compiler/structure:driver"],
+    deps = [
+        "//third_party/bazel_shell_test:unit_test",
+        "@bazel_tools//tools/bash/runfiles",
+    ],
+)
+
+py_test(
+    name = "compiler",
+    srcs = ["compiler.py"],
+    deps = [
+        "//old_projects/idl_compiler/compiler/structure:compiler",
+        "//old_projects/idl_compiler/compiler/tests:shared",
+    ],
+)
+
+sh_test(
+    name = "integration",
+    srcs = ["integration.sh"],
+    deps = [
+        "//third_party/bazel_shell_test:unit_test",
+        "@bazel_tools//tools/bash/runfiles",
+    ],
+)

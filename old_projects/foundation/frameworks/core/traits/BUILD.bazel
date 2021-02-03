@@ -1,0 +1,16 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "export",
+    hdrs = ["traits.hpp"],
+    visibility = ["//old_projects/foundation/frameworks/core:__subpackages__"],
+    deps = [
+        "//old_projects/foundation/frameworks/core/traits/implementation:boolean_constant",
+        "//old_projects/foundation/frameworks/core/traits/implementation:integral_constant",
+        "//old_projects/foundation/frameworks/core/traits/implementation:is_decimal",
+        "//old_projects/foundation/frameworks/core/traits/implementation:is_integer",
+        "//old_projects/foundation/frameworks/core/traits/implementation:is_same",
+        "//old_projects/foundation/frameworks/core/traits/implementation:is_signed",
+        "//old_projects/foundation/frameworks/core/traits/implementation:is_unsigned",
+    ],
+)

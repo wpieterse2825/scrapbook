@@ -1,0 +1,118 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+package(default_visibility = ["//old_projects/foundation/frameworks/core/traits:__pkg__"])
+
+cc_library(
+    name = "common",
+    hdrs = ["common.hpp"],
+    visibility = ["//visibility:private"],
+    deps = ["//old_projects/foundation/frameworks/core/types:export"],
+)
+
+cc_library(
+    name = "boolean_constant",
+    hdrs = ["boolean_constant.hpp"],
+    deps = [
+        ":common",
+        ":integral_constant",
+    ],
+)
+
+cc_library(
+    name = "integral_constant",
+    hdrs = ["integral_constant.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "is_decimal",
+    hdrs = ["is_decimal.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "is_integer",
+    hdrs = ["is_integer.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "is_same",
+    hdrs = ["is_same.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "is_signed",
+    hdrs = ["is_signed.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "is_unsigned",
+    hdrs = ["is_unsigned.hpp"],
+    deps = [":common"],
+)
+
+cc_test(
+    name = "test_boolean_constant",
+    srcs = ["boolean_constant_test.cpp"],
+    deps = [
+        ":boolean_constant",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_integral_constant",
+    srcs = ["integral_constant_test.cpp"],
+    deps = [
+        ":integral_constant",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_is_decimal",
+    srcs = ["is_decimal_test.cpp"],
+    deps = [
+        ":is_decimal",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_is_integer",
+    srcs = ["is_integer_test.cpp"],
+    deps = [
+        ":is_integer",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_is_same",
+    srcs = ["is_same_test.cpp"],
+    deps = [
+        ":is_same",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_is_signed",
+    srcs = ["is_signed_test.cpp"],
+    deps = [
+        ":is_signed",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_is_unsigned",
+    srcs = ["is_unsigned_test.cpp"],
+    deps = [
+        ":is_unsigned",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)

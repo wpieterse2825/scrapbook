@@ -1,0 +1,108 @@
+package(default_visibility = ["//visibility:public"])
+
+constraint_setting(
+    name = "simd_support",
+)
+
+config_setting(
+    name = "is_x86_64",
+    constraint_values = ["@platforms//cpu:x86_64"],
+)
+
+platform(
+    name = "local_x86_64_linux",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_mmx",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_mmx",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_sse_1",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_sse_1",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_sse_2",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_sse_2",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_sse_3",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_sse_3",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_ssse_3",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_ssse_3",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_sse_4_1",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_sse_4_1",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_sse_4_2",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_sse_4_2",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_avx_1",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_avx_1",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_avx_2",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_avx_2",
+    ],
+)
+
+platform(
+    name = "local_x86_64_linux_avx_512",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+        "//old_projects/foundation/build/platforms/cpu/x86:simd_avx_512",
+    ],
+)

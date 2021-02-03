@@ -1,0 +1,37 @@
+load("@rules_python//python:defs.bzl", "py_test")
+
+py_test(
+    name = "driver",
+    srcs = ["driver.py"],
+    deps = ["//old_projects/idl_compiler:driver"],
+)
+
+py_test(
+    name = "driver_binary_input",
+    srcs = ["driver_binary_input.py"],
+    deps = ["//old_projects/idl_compiler:driver_binary_input"],
+)
+
+py_test(
+    name = "driver_text_input",
+    srcs = ["driver_text_input.py"],
+    deps = ["//old_projects/idl_compiler:driver_text_input"],
+)
+
+py_test(
+    name = "driver_binary_output",
+    srcs = ["driver_binary_output.py"],
+    deps = ["//old_projects/idl_compiler:driver_binary_output"],
+)
+
+py_test(
+    name = "driver_text_output",
+    srcs = ["driver_text_output.py"],
+    deps = ["//old_projects/idl_compiler:driver_text_output"],
+)
+
+py_test(
+    name = "shared",
+    srcs = ["shared.py"],
+    deps = ["//old_projects/idl_compiler:shared"],
+)

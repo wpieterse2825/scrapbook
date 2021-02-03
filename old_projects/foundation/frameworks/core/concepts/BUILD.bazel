@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "export",
+    hdrs = ["concepts.hpp"],
+    visibility = ["//old_projects/foundation/frameworks/core:__subpackages__"],
+    deps = [
+        "//old_projects/foundation/frameworks/core/concepts/implementation:decimal",
+        "//old_projects/foundation/frameworks/core/concepts/implementation:integer",
+        "//old_projects/foundation/frameworks/core/concepts/implementation:signed",
+        "//old_projects/foundation/frameworks/core/concepts/implementation:unsigned",
+    ],
+)

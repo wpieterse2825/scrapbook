@@ -1,0 +1,34 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//old_projects/foundation/frameworks/core/concepts:__pkg__"])
+
+cc_library(
+    name = "common",
+    hdrs = ["common.hpp"],
+    visibility = ["//visibility:private"],
+    deps = ["//old_projects/foundation/frameworks/core/traits:export"],
+)
+
+cc_library(
+    name = "decimal",
+    hdrs = ["decimal.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "integer",
+    hdrs = ["integer.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "signed",
+    hdrs = ["signed.hpp"],
+    deps = [":common"],
+)
+
+cc_library(
+    name = "unsigned",
+    hdrs = ["unsigned.hpp"],
+    deps = [":common"],
+)
