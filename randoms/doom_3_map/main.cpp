@@ -8,17 +8,20 @@
 using bazel::tools::cpp::runfiles::Runfiles;
 
 int main(int argument_count, char** arguments) {
+    std::string map_name{"delta4"};
     std::string               runfiles_error {""};
     std::unique_ptr<Runfiles> runfiles {Runfiles::Create(arguments[0], &runfiles_error)};
 
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+    std::cout << "Doom 3 map processor (" << map_name << ".pb):" << std::endl;
 
     if (runfiles == nullptr) {
         std::cout << "ERROR: Failed to initialize run-files : " << runfiles_error << std::endl;
         return 1;
     }
 
-    std::string  map_path = runfiles->Rlocation("scrapbook/randoms/doom_3_map/maps/delta4.pb");
+    std::string  map_path = runfiles->Rlocation("scrapbook/randoms/doom_3_map/maps/" + map_name + ".pb");
     std::fstream map_file {map_path, std::ios::in | std::ios::binary};
     if (!map_file) {
         std::cout << "ERROR: Failed to open map-file : " << map_path << std::endl;
@@ -56,11 +59,11 @@ int main(int argument_count, char** arguments) {
         }
     }
 
-    std::cout << "entities   : " << entities << std::endl;
-    std::cout << "primitives : " << primitives << std::endl;
-    std::cout << "brushes    : " << brushes << std::endl;
-    std::cout << "sides      : " << sides << std::endl;
-    std::cout << "patches    : " << patches << std::endl;
+    std::cout << " - Entities   : " << entities << std::endl;
+    std::cout << " - Primitives : " << primitives << std::endl;
+    std::cout << " - Brushes    : " << brushes << std::endl;
+    std::cout << " - Sides      : " << sides << std::endl;
+    std::cout << " - Patches    : " << patches << std::endl;
 
     google::protobuf::ShutdownProtobufLibrary();
     return 0;
