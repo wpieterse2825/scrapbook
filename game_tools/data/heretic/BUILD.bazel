@@ -1,0 +1,9 @@
+filegroup(
+    name = "heretic",
+    srcs = [
+        "HERETIC.WAD",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

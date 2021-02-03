@@ -1,0 +1,10 @@
+filegroup(
+    name = "hexen",
+    srcs = [
+        "HEXDD.WAD",
+        "HEXEN.WAD",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

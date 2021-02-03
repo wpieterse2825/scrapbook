@@ -5,7 +5,7 @@ bazel-testlogs
 
 game_tools/data/blood/*
 game_tools/data/doom/*
-game_tools/data/duke3d/*
+game_tools/data/duke_nukem_3d/*
 game_tools/data/heretic/*
 game_tools/data/hexen/*
 game_tools/data/shadow_warrior/*
@@ -14,7 +14,7 @@ game_tools/data/wolfenstein_3d/*
 
 !game_tools/data/blood/BUILD.bazel
 !game_tools/data/doom/BUILD.bazel
-!game_tools/data/duke3d/BUILD.bazel
+!game_tools/data/duke_nukem_3d/BUILD.bazel
 !game_tools/data/heretic/BUILD.bazel
 !game_tools/data/hexen/BUILD.bazel
 !game_tools/data/shadow_warrior/BUILD.bazel
