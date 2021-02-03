@@ -6,8 +6,8 @@ load(
 cc_binary(
     name = "parallel_job_list",
     srcs = [
-        "main.cpp",
         "list.hpp",
+        "main.cpp",
         "parallel_job_list.cpp",
         "parallel_job_list.hpp",
         "shared.hpp",

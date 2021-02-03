@@ -22,8 +22,8 @@ class Instance : public VirtualBase {
   public:
     virtual void Destroy() = 0;
 
-    virtual size_t GetDeviceSize() = 0;
-    virtual void CreateDevice(void* buffer, Device** device) = 0;
+    virtual size_t GetDeviceSize()                             = 0;
+    virtual void   CreateDevice(void* buffer, Device** device) = 0;
 };
 
 class InstanceDecorator : public Instance {

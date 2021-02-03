@@ -112,8 +112,8 @@ void Process(CommandBuffer& command_buffer) {
 }
 
 int main() {
-    CommandBuffer command_buffer{};
-    
+    CommandBuffer command_buffer {};
+
     std::cout << "==================================================" << std::endl;
     std::cout << "Command Buffer:" << std::endl;
 

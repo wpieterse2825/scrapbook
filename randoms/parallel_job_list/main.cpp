@@ -33,7 +33,7 @@ int main() {
     parallel_job_manager->Start();
 
     auto start_time = Sys_Microseconds();
-    auto job_list = parallel_job_manager->AllocateJobList(JobListID::Renderer_FrontEnd, JobListPriority::Medium, 8192, 0);
+    auto job_list   = parallel_job_manager->AllocateJobList(JobListID::Renderer_FrontEnd, JobListPriority::Medium, 8192, 0);
     for (size_t index = 0; index < ARRAY_SIZE(passes); index++) {
         auto pass = &passes[index];
 

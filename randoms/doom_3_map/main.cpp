@@ -8,7 +8,7 @@
 using bazel::tools::cpp::runfiles::Runfiles;
 
 int main(int argument_count, char** arguments) {
-    std::string map_name{"delta4"};
+    std::string               map_name {"delta4"};
     std::string               runfiles_error {""};
     std::unique_ptr<Runfiles> runfiles {Runfiles::Create(arguments[0], &runfiles_error)};
 
@@ -34,11 +34,11 @@ int main(int argument_count, char** arguments) {
         return 1;
     }
 
-    uint64_t entities = 0;
+    uint64_t entities   = 0;
     uint64_t primitives = 0;
-    uint64_t brushes  = 0;
-    uint64_t sides    = 0;
-    uint64_t patches  = 0;
+    uint64_t brushes    = 0;
+    uint64_t sides      = 0;
+    uint64_t patches    = 0;
     for (const auto& entity : map_object.entities()) {
         entities++;
 

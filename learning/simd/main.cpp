@@ -393,7 +393,7 @@ void PrintSIMDRegister(const simd::ri_32_256& simd_register) {
 void RotateDown() {
     int32_t input[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
-    auto input_register   = simd::load_from(input);
+    auto input_register = simd::load_from(input);
 
     auto rotated_by_0_register = simd::rotate_down<0>(input_register);
     auto rotated_by_1_register = simd::rotate_down<1>(input_register);
@@ -419,7 +419,7 @@ void RotateDown() {
 void RotateUp() {
     int32_t input[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
-    auto input_register   = simd::load_from(input);
+    auto input_register = simd::load_from(input);
 
     auto rotated_by_0_register = simd::rotate_up<0>(input_register);
     auto rotated_by_1_register = simd::rotate_up<1>(input_register);

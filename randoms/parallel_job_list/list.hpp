@@ -140,12 +140,12 @@ class idList {
     //------------------------
 
     template <memTag_t _t_>
-    operator idList<_type_, _t_> &() {
+    operator idList<_type_, _t_>&() {
         return *reinterpret_cast<idList<_type_, _t_>*>(this);
     }
 
     template <memTag_t _t_>
-    operator const idList<_type_, _t_> &() const {
+    operator const idList<_type_, _t_>&() const {
         return *reinterpret_cast<const idList<_type_, _t_>*>(this);
     }
 
