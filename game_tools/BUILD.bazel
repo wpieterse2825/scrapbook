@@ -1,0 +1,33 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_library",
+)
+
+cc_library(
+    name = "game_tools",
+    srcs = [
+        "allocator.cpp",
+        "archive.cpp",
+        "archive_reader.cpp",
+        "archive_writer.cpp",
+        "memory_archive_reader.cpp",
+        "memory_archive_writer.cpp",
+        "shared.cpp",
+        "system_allocator.cpp",
+        "system_allocator.hpp",
+        "virtual_base.cpp",
+    ],
+    hdrs = [
+        "allocator.hpp",
+        "archive.hpp",
+        "archive_reader.hpp",
+        "archive_writer.hpp",
+        "memory_archive_reader.hpp",
+        "memory_archive_writer.hpp",
+        "shared.hpp",
+        "virtual_base.hpp",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

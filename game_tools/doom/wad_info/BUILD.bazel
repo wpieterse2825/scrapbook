@@ -12,6 +12,7 @@ cc_binary(
         "//game_tools/data/doom",
     ],
     deps = [
+        "//game_tools/doom",
         "@bazel_tools//tools/cpp/runfiles",
     ],
 )
