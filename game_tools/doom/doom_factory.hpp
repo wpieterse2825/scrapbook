@@ -10,8 +10,8 @@
 namespace wpieterse2825::scrapbook::game_tools::doom {
     class DoomFactory : public VirtualBase {
       public:
-        virtual DoomWadReader*         CreateReader(Allocator* allocator, ArchiveReader& archive) = 0;
-        virtual DoomWadBuilderArchive* CreateBuilderArchive(Allocator* allocator)                 = 0;
+        virtual DoomWadReader*         CreateWADReader(Allocator* allocator, ArchiveReader& archive) = 0;
+        virtual DoomWadBuilderArchive* CreateWADBuilderArchive(Allocator* allocator)                 = 0;
     };
 
     DoomFactory* GetDoomFactory();

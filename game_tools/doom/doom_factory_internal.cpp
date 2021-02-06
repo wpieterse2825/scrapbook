@@ -4,11 +4,11 @@
 #include "game_tools/doom/doom_factory_internal.hpp"
 
 namespace wpieterse2825::scrapbook::game_tools::doom {
-    DoomWadReader* DoomFactoryInternal::CreateReader(Allocator* allocator, ArchiveReader& archive) {
+    DoomWadReader* DoomFactoryInternal::CreateWADReader(Allocator* allocator, ArchiveReader& archive) {
         return allocator->AllocateObject<DoomWadReaderInternal>(allocator, archive);
     }
 
-    DoomWadBuilderArchive* DoomFactoryInternal::CreateBuilderArchive(Allocator* allocator) {
+    DoomWadBuilderArchive* DoomFactoryInternal::CreateWADBuilderArchive(Allocator* allocator) {
         return allocator->AllocateObject<DoomWadBuilderArchiveInternal>(allocator);
     }
 

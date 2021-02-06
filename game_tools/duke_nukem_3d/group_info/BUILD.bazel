@@ -12,6 +12,7 @@ cc_binary(
         "//game_tools/data/duke_nukem_3d",
     ],
     deps = [
+        "//game_tools/duke_nukem_3d",
         "@bazel_tools//tools/cpp/runfiles",
     ],
 )

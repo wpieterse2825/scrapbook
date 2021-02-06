@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include <iostream>
 
 #include "tools/cpp/runfiles/runfiles.h"
@@ -19,9 +17,8 @@ void DisplayDetails(Allocator* allocator, DoomFactory* factory, const char* file
     std::cout << " - Processing " << filename << " - ";
 
     auto [buffer, buffer_size] = ReadFile(filename);
-
     auto archive = MemoryArchiveReader {buffer, buffer_size};
-    auto reader  = factory->CreateReader(allocator, archive);
+    auto reader  = factory->CreateWADReader(allocator, archive);
 
     if (reader->Signature() == DoomWadSignature::Base) {
         std::cout << "Base" << std::endl;
@@ -41,7 +38,7 @@ void DisplayDetails(Allocator* allocator, DoomFactory* factory, const char* file
 
     allocator->DeallocateObject(reader);
     buffer_size = 0;
-    free(buffer);
+    ::free(buffer);
 }
 
 void DisplayDetails(Allocator* allocator, DoomFactory* factory, const std::string& filename) {

@@ -1,256 +1,130 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <cassert>
-#include <memory>
-#include <array>
-#include <vector>
 #include <iostream>
-#include <fstream>
 
 #include "tools/cpp/runfiles/runfiles.h"
 
-using bazel::tools::cpp::runfiles::Runfiles;
+#include "game_tools/shared.hpp"
+#include "game_tools/allocator.hpp"
+#include "game_tools/archive_writer.hpp"
+#include "game_tools/memory_archive_reader.hpp"
 
-class Exception {
+using namespace bazel::tools::cpp::runfiles;
+
+using namespace wpieterse2825::scrapbook::game_tools;
+
+class DukeNukem3DGroupReader : public VirtualBase {
   public:
+    virtual std::array<char, 12> Signature()  = 0;
+    virtual uint32_t             EntryCount() = 0;
+
+    virtual uint32_t IndexForName(uint64_t name)                                                     = 0;
+    virtual uint32_t IndexForNameAfter(uint64_t name, uint64_t start_name)                           = 0;
+    virtual uint32_t IndexForNameBetween(uint64_t name, uint64_t prefix_name, uint64_t postfix_name) = 0;
+
+    virtual uint64_t            IndexName(uint32_t index)    = 0;
+    virtual uint32_t            IndexSize(uint32_t index)    = 0;
+    virtual MemoryArchiveReader IndexArchive(uint32_t index) = 0;
 };
 
-class OutOfMemoryException : public Exception {
+class DukeNukem3DGroupReaderInternal : public DukeNukem3DGroupReader {
   public:
-};
+    virtual std::array<char, 12> Signature() override {
+        auto result = std::array<char, 12> {};
+        return result;
+    }
 
-class IOException : public Exception {
-  public:
-};
+    virtual uint32_t EntryCount() {
+        return 0;
+    }
 
-class OpenIOException : public Exception {
-  public:
-};
+    virtual uint32_t IndexForName(uint64_t name) override {
+        return 0;
+    }
 
-class ReadIOException : public Exception {
-  public:
-};
+    virtual uint32_t IndexForNameAfter(uint64_t name, uint64_t start_name) override {
+        return 0;
+    }
 
-class InvalidFormatException : public Exception {
-  public:
-};
+    virtual uint32_t IndexForNameBetween(uint64_t name, uint64_t prefix_name, uint64_t postfix_name) override {
+        return 0;
+    }
 
-class InvalidSignatureException : public InvalidFormatException {
-  public:
-};
+    virtual uint64_t IndexName(uint32_t index) override {
+        return 0;
+    }
 
-class VirtualBase {
-  public:
-    virtual ~VirtualBase() {
+    virtual uint32_t IndexSize(uint32_t index) override {
+        return 0;
+    }
+
+    virtual MemoryArchiveReader IndexArchive(uint32_t index) override {
+        return MemoryArchiveReader {nullptr, 0};
     }
 };
 
-struct BuildGroupFileEntry {
-    std::array<char, 16> name;
-    uint32_t             size;
-    uint8_t*             buffer;
+class DukeNukem3DGroupBuilder : public VirtualBase {
+  public:
+};
 
-    BuildGroupFileEntry()
-      : name {}
-      , size {0}
-      , buffer {nullptr} {
+class DukeNukem3DGroupBuilderArchive : public DukeNukem3DGroupBuilder {
+  public:
+    virtual size_t GetSize() = 0;
+
+    virtual void Finalize(ArchiveWriter& archive) = 0;
+    virtual void Reset()                          = 0;
+};
+
+class DukeNukem3DGroupBuilderArchiveInternal : public DukeNukem3DGroupBuilderArchive {
+  public:
+    virtual size_t GetSize() override {
+        return 0;
     }
-};
 
-class BuildGroupFileIterator : public VirtualBase {
-  public:
-    BuildGroupFileIterator(BuildGroupFileEntry* entries, uint32_t entry_count);
-
-    bool IsDone();
-    void Next();
-
-    BuildGroupFileEntry* GetCurrentEntry();
-
-  private:
-    BuildGroupFileEntry* _current_entry;
-    BuildGroupFileEntry* _last_entry;
-};
-
-BuildGroupFileIterator::BuildGroupFileIterator(BuildGroupFileEntry* entries, uint32_t entry_count)
-  : _current_entry {entries}
-  , _last_entry {entries + entry_count} {
-}
-
-bool BuildGroupFileIterator::IsDone() {
-    return _current_entry == _last_entry;
-}
-
-void BuildGroupFileIterator::Next() {
-    _current_entry++;
-}
-
-BuildGroupFileEntry* BuildGroupFileIterator::GetCurrentEntry() {
-    return _current_entry;
-}
-
-class BuildGroupFile : public VirtualBase {
-  public:
-    virtual BuildGroupFileIterator Iterate() = 0;
+    virtual void Finalize(ArchiveWriter& archive) {
+    }
+    virtual void Reset() {
+    }
 };
 
 class DukeNukem3DFactory : public VirtualBase {
   public:
-    virtual std::unique_ptr<BuildGroupFile> LoadArchive(const uint8_t* buffer, size_t buffer_length) = 0;
-    virtual std::unique_ptr<BuildGroupFile> LoadArchive(const std::string& filename)                 = 0;
+    virtual DukeNukem3DGroupReader*         CreateGroupReader(Allocator* allocator, ArchiveReader& archive) = 0;
+    virtual DukeNukem3DGroupBuilderArchive* CreateGroupBuilderArchive(Allocator* allocator)                 = 0;
 };
 
-struct BuildGroupFileHeaderInternal {
-    uint8_t  signature[12];
-    uint32_t entry_count;
-};
-
-struct BuildGroupFileEntryInternal {
-    uint8_t  filename[12];
-    uint32_t size;
-};
-
-class DukeNukem3DGroupFile : public BuildGroupFile {
+class DukeNukem3DFactoryInternal : public DukeNukem3DFactory {
   public:
-    virtual void Load(const uint8_t* buffer, size_t buffer_length);
-    virtual void Load(const std::string& filename);
+    virtual DukeNukem3DGroupReader* CreateGroupReader(Allocator* allocator, ArchiveReader& archive) override {
+        return nullptr;
+    }
 
-    virtual BuildGroupFileIterator Iterate() override;
-
-  private:
-    uint32_t                               _entry_count;
-    std::unique_ptr<BuildGroupFileEntry[]> _entries_cover;
-    std::unique_ptr<uint8_t[]>             _buffer_cover;
+    virtual DukeNukem3DGroupBuilderArchive* CreateGroupBuilderArchive(Allocator* allocator) override {
+        return nullptr;
+    }
 };
 
-void DukeNukem3DGroupFile::Load(const uint8_t* buffer, size_t buffer_length) {
-    auto input_header  = reinterpret_cast<const BuildGroupFileHeaderInternal*>(buffer);
-    auto input_entries = reinterpret_cast<const BuildGroupFileEntryInternal*>(buffer + sizeof(BuildGroupFileHeaderInternal));
+static DukeNukem3DFactoryInternal duke_nukem_3d_factory {};
 
-    // TODO(wpieterse): Verify signature.
-
-    _entry_count = input_header->entry_count;
-
-    auto output_buffer_size = 0;
-    for (auto entry_index = uint32_t {0}; entry_index < _entry_count; entry_index++) {
-        auto input_entry = input_entries[entry_index];
-
-        output_buffer_size += input_entry.size;
-    }
-
-    _entries_cover      = std::make_unique<BuildGroupFileEntry[]>(_entry_count);
-    auto output_entries = _entries_cover.get();
-    if (output_entries == nullptr) {
-        throw OutOfMemoryException {};
-    }
-
-    _buffer_cover      = std::make_unique<uint8_t[]>(output_buffer_size);
-    auto output_buffer = _buffer_cover.get();
-    if (output_buffer == nullptr) {
-        throw OutOfMemoryException {};
-    }
-
-    auto input_buffer_offset  = sizeof(BuildGroupFileHeaderInternal) + (sizeof(BuildGroupFileEntryInternal) * _entry_count);
-    auto output_buffer_offset = 0;
-    for (auto entry_index = uint32_t {0}; entry_index < _entry_count; entry_index++) {
-        auto& input_entry  = input_entries[entry_index];
-        auto& output_entry = output_entries[entry_index];
-
-        for (auto name_index = 0; name_index < 12; name_index++) {
-            output_entry.name[name_index] = input_entry.filename[name_index];
-        }
-
-        output_entry.size   = input_entry.size;
-        output_entry.buffer = output_buffer + output_buffer_offset;
-
-        ::memcpy(output_entry.buffer, buffer + input_buffer_offset, input_entry.size);
-
-        input_buffer_offset += input_entry.size;
-        output_buffer_offset += input_entry.size;
-    }
+DukeNukem3DFactory* GetDukeNukem3DFactory() {
+    return &duke_nukem_3d_factory;
 }
 
-void DukeNukem3DGroupFile::Load(const std::string& filename) {
-    std::fstream input_file {filename, std::ios::in | std::ios::binary | std::ios::ate};
-    if (input_file.is_open() == false) {
-        throw OpenIOException {};
-    }
-
-    auto input_buffer_size  = input_file.tellg();
-    auto input_buffer_cover = std::make_unique<uint8_t[]>(input_buffer_size);
-    auto input_buffer       = input_buffer_cover.get();
-    if (input_buffer == nullptr) {
-        throw OutOfMemoryException {};
-    }
-
-    input_file.seekg(0, std::ios::beg);
-    input_file.read(reinterpret_cast<char*>(input_buffer), input_buffer_size);
-    if (input_file.bad() == true) {
-        throw ReadIOException {};
-    }
-
-    Load(input_buffer, input_buffer_size);
-}
-
-BuildGroupFileIterator DukeNukem3DGroupFile::Iterate() {
-    return BuildGroupFileIterator {_entries_cover.get(), _entry_count};
-}
-
-class DukeNukem3DFactoryInternal final : public DukeNukem3DFactory {
-  public:
-    virtual std::unique_ptr<BuildGroupFile> LoadArchive(const uint8_t* buffer, size_t buffer_length) override;
-    virtual std::unique_ptr<BuildGroupFile> LoadArchive(const std::string& filename) override;
-};
-
-std::unique_ptr<BuildGroupFile> DukeNukem3DFactoryInternal::LoadArchive(const uint8_t* buffer, size_t buffer_length) {
-    auto group_file = new DukeNukem3DGroupFile {};
-
-    try {
-        group_file->Load(buffer, buffer_length);
-    } catch (...) {
-        delete group_file;
-        throw;
-    }
-
-    return std::unique_ptr<BuildGroupFile> {group_file};
-}
-
-std::unique_ptr<BuildGroupFile> DukeNukem3DFactoryInternal::LoadArchive(const std::string& filename) {
-    auto group_file = new DukeNukem3DGroupFile {};
-
-    try {
-        group_file->Load(filename);
-    } catch (...) {
-        delete group_file;
-        throw;
-    }
-
-    return std::unique_ptr<BuildGroupFile> {group_file};
-}
-
-bool DisplayStatistics(DukeNukem3DFactory* group_factory, const std::string& filename) {
+void DisplayDetails(Allocator* allocator, DukeNukem3DFactory* group_factory, const char* filename) {
     std::cout << " - Parsing " << filename << std::endl;
 
-    try {
-        auto group_file = group_factory->LoadArchive(filename);
+    auto [buffer, buffer_size] = ReadFile(filename);
+    auto archive               = MemoryArchiveReader {buffer, buffer_size};
 
-        for (auto iterator = group_file->Iterate(); iterator.IsDone() == false; iterator.Next()) {
-            auto current_entry = iterator.GetCurrentEntry();
+    buffer_size = 0;
+    ::free(buffer);
+}
 
-            std::cout << "     - " << current_entry->name.begin() << " - " << current_entry->size << " - " << reinterpret_cast<void*>(current_entry->buffer)
-                      << std::endl;
-        }
-    } catch (const std::exception& exception) {
-        std::cout << "ERROR : " << exception.what() << std::endl;
-        return false;
-    }
-
-    return true;
+void DisplayDetails(Allocator* allocator, DukeNukem3DFactory* factory, const std::string& filename) {
+    DisplayDetails(allocator, factory, filename.c_str());
 }
 
 int main(int argument_count, char** arguments) {
-    std::string               runfiles_error {""};
-    std::unique_ptr<Runfiles> runfiles {Runfiles::Create(arguments[0], &runfiles_error)};
+    auto runfiles_error = std::string {""};
+    auto runfiles       = std::unique_ptr<Runfiles> {Runfiles::Create(arguments[0], &runfiles_error)};
 
     std::cout << "Duke Nukem 3D Group Information:" << std::endl;
 
@@ -259,23 +133,10 @@ int main(int argument_count, char** arguments) {
         return 1;
     }
 
-    auto group_file_factory = DukeNukem3DFactoryInternal {};
+    auto allocator = GetSystemAllocator();
+    auto factory   = GetDukeNukem3DFactory();
 
-    // if (DisplayStatistics(&group_file_factory, runfiles->Rlocation("scrapbook/game_tools/data/duke_nukem_3d/nwinter.grp")) == false) {
-    //     return 1;
-    // }
-
-    if (DisplayStatistics(&group_file_factory, runfiles->Rlocation("scrapbook/game_tools/data/duke_nukem_3d/duke3d.grp")) == false) {
-        return 1;
-    }
-
-    // if (DisplayStatistics(&group_file_factory, runfiles->Rlocation("scrapbook/game_tools/data/duke_nukem_3d/dukedc.grp")) == false) {
-    //     return 1;
-    // }
-
-    // if (DisplayStatistics(&group_file_factory, runfiles->Rlocation("scrapbook/game_tools/data/duke_nukem_3d/vacation.grp")) == false) {
-    //     return 1;
-    // }
+    DisplayDetails(allocator, factory, runfiles->Rlocation("scrapbook/game_tools/data/duke_nukem_3d/duke3d.grp"));
 
     return 0;
 }
