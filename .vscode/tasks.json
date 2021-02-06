@@ -1,24 +1,4 @@
 {
-    "tasks": [
-        {
-            "label": "Build DOOM WAD Information",
-            "command": "bazel",
-            "args": [
-                "build",
-                "--compilation_mode=dbg",
-                "//game_tools/doom/wad_info",
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-        }
-    ],
+    "tasks": [],
     "version": "2.0.0"
 }
