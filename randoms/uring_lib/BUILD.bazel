@@ -4,8 +4,11 @@ load(
 )
 
 cc_binary(
-    name = "uring",
+    name = "uring_lib",
     srcs = [
         "main.cpp",
+    ],
+    linkopts = [
+        "-luring",
     ],
 )
