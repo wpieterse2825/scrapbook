@@ -3,10 +3,28 @@ load(
     "cc_binary",
 )
 
+filegroup(
+    name = "input_1",
+    srcs = [
+        "input_1.txt",
+    ],
+)
+
+filegroup(
+    name = "input_2",
+    srcs = [
+        "input_2.txt",
+    ],
+)
+
 cc_binary(
-    name = "uring_lib",
+    name = "wadder",
     srcs = [
         "main.cpp",
+    ],
+    data = [
+        "//randoms/wadder:input_1",
+        "//randoms/wadder:input_2",
     ],
     linkopts = [
         "-luring",

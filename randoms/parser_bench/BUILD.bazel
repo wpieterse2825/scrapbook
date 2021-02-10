@@ -1,0 +1,14 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "parser_bench",
+    srcs = [
+        "main.cpp",
+    ],
+    deps = [
+        "//third_party/celero",
+    ],
+)
