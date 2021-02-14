@@ -1,0 +1,18 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "rasterizer",
+    srcs = [
+        "main.cpp",
+    ],
+    copts = [
+        "-I/usr/include/SDL2",
+        "-D_REENTRANT",
+    ],
+    linkopts = [
+        "-lSDL2",
+    ],
+)
