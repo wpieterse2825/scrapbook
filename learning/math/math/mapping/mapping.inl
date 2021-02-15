@@ -45,11 +45,10 @@ namespace math::mapping {
 
     template <Decimal Type>
     inline auto Absolute(Type value) -> Type {
-        constexpr auto is_float        = std::is_same_v<Type, float>;
-        constexpr auto is_double       = std::is_same_v<Type, double>;
-        constexpr auto is_long_double  = std::is_same_v<Type, long double>;
-        constexpr auto is_long_integer = std::is_same_v<Type, long>;
-        constexpr auto is_correct      = is_float | is_double | is_long_double | is_long_integer;
+        constexpr auto is_float       = std::is_same_v<Type, float>;
+        constexpr auto is_double      = std::is_same_v<Type, double>;
+        constexpr auto is_long_double = std::is_same_v<Type, long double>;
+        constexpr auto is_correct     = is_float | is_double | is_long_double;
 
         static_assert(is_correct == true);
 
@@ -63,10 +62,6 @@ namespace math::mapping {
 
         if constexpr (is_long_double == true) {
             return ::fabsl(value);
-        }
-
-        if constexpr (is_long_integer == true) {
-            return ::abs(value);
         }
     }
 } // namespace math::mapping

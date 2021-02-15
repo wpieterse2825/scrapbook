@@ -21,4 +21,11 @@ cc_binary(
         "math/trigonometry/trigonometry.inl",
         "math/vector/vector.inl",
     ],
+    copts = [
+        "-I/usr/include/SDL2",
+        "-D_REENTRANT",
+    ],
+    linkopts = [
+        "-lSDL2",
+    ],
 )
