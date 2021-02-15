@@ -11,10 +11,12 @@ build --incompatible_enable_cc_toolchain_resolution
 
 build --host_copt='-mavx2'
 build --host_cxxopt='-std=c++2a'
+build --host_cxxopt='-fconcepts'
 build --host_cxxopt='-mavx2'
 
 build --copt='-mavx2'
 build --cxxopt='-std=c++2a'
+build --cxxopt='-fconcepts'
 build --cxxopt='-mavx2'
 
 # This is for the tools in 'old_projects/idl_compiler'.
