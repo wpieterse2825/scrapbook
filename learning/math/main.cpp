@@ -1365,22 +1365,22 @@ namespace math {
         template <typename ElementType, size_t Rows, size_t Columns>
         inline auto Multiply(const math::Matrix<ElementType, Rows, Columns>& lhs, const math::Vector<ElementType, Columns>& rhs)
           -> math::Vector<ElementType, Columns> {
+            constexpr auto zero_positive = math::constants::ZeroPositive<ElementType>();
+
             auto result = math::Vector<ElementType, Columns> {};
 
-            size_t             i, j;
-            const ElementType *mPtr, *vPtr;
-            ElementType*       dstPtr;
+            for (auto row = size_t {0}; row < Rows; row++) {
+                math::vector::Write(result, row, zero_positive);
 
-            mPtr   = &lhs.elements[0][0];
-            vPtr   = &rhs.elements[0];
-            dstPtr = &result.elements[0];
-            for (i = 0; i < Rows; i++) {
-                ElementType sum = mPtr[0] * vPtr[0];
-                for (j = 1; j < Columns; j++) {
-                    sum += mPtr[j] * vPtr[j];
+                for (auto column = size_t {0}; column < Columns; column++) {
+                    const auto current_value = math::vector::Read(result, row);
+                    const auto lhs_value     = math::matrix::Read(lhs, row, column);
+                    const auto rhs_value     = math::vector::Read(rhs, column);
+                    const auto sum           = math::arithmetic::Multiply(lhs_value, rhs_value);
+                    const auto result_value  = math::arithmetic::Plus(current_value, sum);
+
+                    math::vector::Write(result, row, result_value);
                 }
-                dstPtr[i] = sum;
-                mPtr += Columns;
             }
 
             return result;
@@ -1803,7 +1803,7 @@ int main() {
     std::cout << std::endl;
 
     auto projection = math::matrix::cartesian_projection::CreateIdentity<float>();
-    projection      = math::matrix::cartesian_projection::orthographic::CreateExpanded(projection, -5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f);
+    projection      = math::matrix::cartesian_projection::orthographic::CreateExpanded(projection, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
     math::matrix::Print(projection);
     std::cout << std::endl;
 
@@ -1815,9 +1815,9 @@ int main() {
     std::cout << std::endl;
 
     auto vertex = math::vector::CreateZero<float, 4>();
-    math::vector::Write(vertex, 0, 0.0f);
+    math::vector::Write(vertex, 0, -0.5f);
     math::vector::Write(vertex, 1, 0.0f);
-    math::vector::Write(vertex, 2, 1.0f);
+    math::vector::Write(vertex, 2, 0.0f);
     math::vector::Write(vertex, 3, 1.0f);
     vertex = math::matrix::Multiply(model_view_projection, vertex);
     math::vector::Print(vertex);
