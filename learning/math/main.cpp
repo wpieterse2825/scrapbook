@@ -19,32 +19,30 @@
 #include "learning/math/math/matrix/geometry/projection_space/orthographic_projection/orthographic_projection.inl"
 
 int main() {
-    auto model = math::matrix::CreateIdentity<double, 4, 4>();
-    model      = math::matrix::geometry::model_space::Create(model, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-    math::matrix::Print(model);
-    std::cout << std::endl;
-
-    auto view = math::matrix::CreateIdentity<double, 4, 4>();
-    view      = math::matrix::geometry::view_space::Create(view, 0.0, 0.0, 1920.0, 1080.0);
-    math::matrix::Print(view);
-    std::cout << std::endl;
-
-    auto projection = math::matrix::CreateIdentity<double, 4, 4>();
-    projection = math::matrix::geometry::projection_space::orthographic_projection::Create(projection, -5.0, 5.0, -5.0, 5.0, -5.0, 5.0);
-    math::matrix::Print(projection);
-    std::cout << std::endl;
-
-    auto model_view_projection = math::matrix::CreateIdentity<double, 4, 4>();
-    model_view_projection      = math::matrix::geometry::Create(model_view_projection, model, view, projection);
-    math::matrix::Print(model_view_projection);
-    std::cout << std::endl;
+    auto model      = math::matrix::geometry::model_space::Create(1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    auto view       = math::matrix::geometry::view_space::Create(0.0, 0.0, 1920.0, 1080.0);
+    auto projection = math::matrix::geometry::projection_space::orthographic_projection::Create(-5.0, 5.0, -5.0, 5.0, -5.0, 5.0);
+    auto mvp        = math::matrix::geometry::Create(model, view, projection);
 
     auto vertex = math::vector::CreateZero<double, 4>();
     math::vector::Write(vertex, 0, 0.0);
     math::vector::Write(vertex, 1, 0.0);
     math::vector::Write(vertex, 2, 0.0);
     math::vector::Write(vertex, 3, 1.0);
-    vertex = math::matrix::Multiply(model_view_projection, vertex);
+    vertex = math::matrix::Multiply(mvp, vertex);
+
+    math::matrix::Print(model);
+    std::cout << std::endl;
+
+    math::matrix::Print(view);
+    std::cout << std::endl;
+
+    math::matrix::Print(projection);
+    std::cout << std::endl;
+
+    math::matrix::Print(mvp);
+    std::cout << std::endl;
+
     math::vector::Print(vertex);
     std::cout << std::endl;
 

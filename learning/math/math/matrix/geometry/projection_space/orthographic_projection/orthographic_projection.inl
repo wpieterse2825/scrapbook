@@ -21,6 +21,13 @@ namespace math::matrix::geometry::projection_space::orthographic_projection {
 
         return math::matrix::Multiply(value, result);
     }
+
+    template <typename Type>
+    inline auto Create(Type left, Type right, Type top, Type bottom, Type near, Type far) -> Matrix<Type, 4, 4> {
+        auto result = math::matrix::CreateIdentity<Type, 4, 4>();
+
+        return math::matrix::geometry::projection_space::orthographic_projection::Create(result, left, right, top, bottom, near, far);
+    }
 } // namespace math::matrix::geometry::projection_space::orthographic_projection
 
 namespace math::matrix::geometry::projection_space::orthographic_projection::detail::constants {

@@ -340,6 +340,10 @@ namespace math::matrix::geometry {
                        const Matrix<Type, 4, 4>& model,
                        const Matrix<Type, 4, 4>& view,
                        const Matrix<Type, 4, 4>& projection) -> Matrix<Type, 4, 4>;
+
+    template <typename Type>
+    inline auto Create(const Matrix<Type, 4, 4>& model, const Matrix<Type, 4, 4>& view, const Matrix<Type, 4, 4>& projection)
+      -> Matrix<Type, 4, 4>;
 } // namespace math::matrix::geometry
 
 namespace math::matrix::geometry::model_space {
@@ -354,15 +358,32 @@ namespace math::matrix::geometry::model_space {
                        Type                      translate_x,
                        Type                      translate_y,
                        Type                      translate_z) -> Matrix<Type, 4, 4>;
+
+    template <typename Type>
+    inline auto Create(Type scale_x,
+                       Type scale_y,
+                       Type scale_z,
+                       Type rotate_x,
+                       Type rotate_y,
+                       Type rotate_z,
+                       Type translate_x,
+                       Type translate_y,
+                       Type translate_z) -> Matrix<Type, 4, 4>;
 } // namespace math::matrix::geometry::model_space
 
 namespace math::matrix::geometry::view_space {
     template <typename Type>
-    auto Create(const Matrix<Type, 4, 4>& value, Type x, Type y, Type width, Type height) -> Matrix<Type, 4, 4>;
-}
+    inline auto Create(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
+
+    template <typename Type>
+    inline auto Create(Type x_offset, Type y_offset, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
+} // namespace math::matrix::geometry::view_space
 
 namespace math::matrix::geometry::projection_space::orthographic_projection {
     template <typename Type>
     inline auto Create(const Matrix<Type, 4, 4>& value, Type left, Type right, Type top, Type bottom, Type near, Type far)
       -> Matrix<Type, 4, 4>;
-}
+
+    template <typename Type>
+    inline auto Create(Type left, Type right, Type top, Type bottom, Type near, Type far) -> Matrix<Type, 4, 4>;
+} // namespace math::matrix::geometry::projection_space::orthographic_projection

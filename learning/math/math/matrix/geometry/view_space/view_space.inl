@@ -1,24 +1,31 @@
 namespace math::matrix::geometry::view_space::detail {
     template <typename Type>
-    auto ScaleToWindow(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
+    inline auto ScaleToWindow(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
 
     template <typename Type>
-    auto OffsetExtent(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
+    inline auto OffsetExtent(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4>;
 
     template <typename Type>
-    auto OffsetOrigin(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset) -> Matrix<Type, 4, 4>;
+    inline auto OffsetOrigin(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset) -> Matrix<Type, 4, 4>;
 } // namespace math::matrix::geometry::view_space::detail
 
 namespace math::matrix::geometry::view_space {
     template <typename Type>
-    auto Create(const Matrix<Type, 4, 4>& value, Type x, Type y, Type width, Type height) -> Matrix<Type, 4, 4> {
+    inline auto Create(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
         auto result = math::matrix::CreateIdentity<Type, 4, 4>();
 
-        result = math::matrix::geometry::view_space::detail::OffsetOrigin(result, x, y);
-        result = math::matrix::geometry::view_space::detail::OffsetExtent(result, width, height);
-        result = math::matrix::geometry::view_space::detail::ScaleToWindow(result, width, height);
+        result = math::matrix::geometry::view_space::detail::OffsetOrigin(result, x_offset, y_offset);
+        result = math::matrix::geometry::view_space::detail::OffsetExtent(result, x_size, y_size);
+        result = math::matrix::geometry::view_space::detail::ScaleToWindow(result, x_size, y_size);
 
         return math::matrix::Multiply(value, result);
+    }
+
+    template <typename Type>
+    inline auto Create(Type x_offset, Type y_offset, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
+        auto result = math::matrix::CreateIdentity<Type, 4, 4>();
+
+        return math::matrix::geometry::view_space::Create(result, x_offset, y_offset, x_size, y_size);
     }
 } // namespace math::matrix::geometry::view_space
 
@@ -41,7 +48,7 @@ namespace math::matrix::geometry::view_space::detail::constants {
 
 namespace math::matrix::geometry::view_space::detail {
     template <typename Type>
-    auto ScaleToWindow(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
+    inline auto ScaleToWindow(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
         constexpr auto two_positive   = math::Constants<Type>::TwoPositive;
         constexpr auto scale_x_row    = math::matrix::geometry::view_space::detail::constants::ScaleXRow;
         constexpr auto scale_x_column = math::matrix::geometry::view_space::detail::constants::ScaleXColumn;
@@ -60,7 +67,7 @@ namespace math::matrix::geometry::view_space::detail {
     }
 
     template <typename Type>
-    auto OffsetExtent(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
+    inline auto OffsetExtent(const Matrix<Type, 4, 4>& value, Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
         constexpr auto two_positive    = math::Constants<Type>::TwoPositive;
         constexpr auto extent_x_row    = math::matrix::geometry::view_space::detail::constants::ExtentXRow;
         constexpr auto extent_x_column = math::matrix::geometry::view_space::detail::constants::ExtentXColumn;
@@ -79,7 +86,7 @@ namespace math::matrix::geometry::view_space::detail {
     }
 
     template <typename Type>
-    auto OffsetOrigin(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset) -> Matrix<Type, 4, 4> {
+    inline auto OffsetOrigin(const Matrix<Type, 4, 4>& value, Type x_offset, Type y_offset) -> Matrix<Type, 4, 4> {
         constexpr auto origin_x_row    = math::matrix::geometry::view_space::detail::constants::OriginXRow;
         constexpr auto origin_x_column = math::matrix::geometry::view_space::detail::constants::OriginXColumn;
         constexpr auto origin_y_row    = math::matrix::geometry::view_space::detail::constants::OriginYRow;

@@ -53,7 +53,23 @@ namespace math::matrix::geometry::model_space {
         result = math::matrix::geometry::model_space::detail::TranslateY(result, translate_y);
         result = math::matrix::geometry::model_space::detail::TranslateZ(result, translate_z);
 
-        return result;
+        return math::matrix::Multiply(value, result);
+    }
+
+    template <typename Type>
+    inline auto Create(Type scale_x,
+                       Type scale_y,
+                       Type scale_z,
+                       Type rotate_x,
+                       Type rotate_y,
+                       Type rotate_z,
+                       Type translate_x,
+                       Type translate_y,
+                       Type translate_z) -> Matrix<Type, 4, 4> {
+        auto result = math::matrix::CreateIdentity<Type, 4, 4>();
+
+        return math::matrix::geometry::model_space::Create(
+          result, scale_x, scale_y, scale_z, rotate_x, rotate_y, rotate_z, translate_x, translate_y, translate_z);
     }
 } // namespace math::matrix::geometry::model_space
 
