@@ -1,26 +1,20 @@
 load(
     "@rules_cc//cc:defs.bzl",
-    "cc_binary",
+    "cc_library",
 )
 
-cc_binary(
+cc_library(
     name = "math",
     srcs = [
-        "main.cpp",
-        "math/math.hpp",
-        "math/math.inl",
-        "math/matrix/geometry/model_space.inl",
-        "math/matrix/geometry/orthographic_projection.inl",
-        "math/matrix/geometry/view_space.inl",
-        "math/matrix/matrix.inl",
-        "math/plane/plane.inl",
-        "math/vector/vector.inl",
+        "math.hpp",
+        "math.inl",
     ],
-    copts = [
-        "-I/usr/include/SDL2",
-        "-D_REENTRANT",
+    visibility = [
+        "//visibility:public",
     ],
-    linkopts = [
-        "-lSDL2",
+    deps = [
+        "//learning/math/matrix",
+        "//learning/math/plane",
+        "//learning/math/vector",
     ],
 )

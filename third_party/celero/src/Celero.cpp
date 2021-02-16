@@ -26,7 +26,7 @@
 #include <celero/Exceptions.h>
 #include <celero/Executor.h>
 #include <celero/JUnit.h>
-#include <celero/PrintVector.h>
+#include <celero/Print.h>
 #include <celero/ResultTable.h>
 #include <celero/TestVector.h>
 #include <celero/UserDefinedMeasurement.h>

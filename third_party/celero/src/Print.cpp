@@ -18,7 +18,7 @@
 
 #include <celero/Benchmark.h>
 #include <celero/Console.h>
-#include <celero/PrintVector.h>
+#include <celero/Print.h>
 #include <celero/TestVector.h>
 #include <celero/Timer.h>
 #include <celero/UserDefinedMeasurementCollector.h>

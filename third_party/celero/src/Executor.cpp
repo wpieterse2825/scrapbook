@@ -22,7 +22,7 @@
 #include <celero/Console.h>
 #include <celero/Exceptions.h>
 #include <celero/Executor.h>
-#include <celero/PrintVector.h>
+#include <celero/Print.h>
 #include <celero/TestVector.h>
 #include <celero/UserDefinedMeasurementCollector.h>
 #include <celero/Utilities.h>

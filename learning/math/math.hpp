@@ -1,6 +1,6 @@
 template <typename Type>
-concept Integral = requires(Type) {
-    std::is_integral_v<Type>;
+concept Arithmetic = requires(Type) {
+    std::is_arithmetic_v<Type>;
 };
 
 template <typename Type>

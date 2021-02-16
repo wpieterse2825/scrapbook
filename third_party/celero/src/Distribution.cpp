@@ -17,7 +17,7 @@
 ///
 
 #include <celero/Distribution.h>
-#include <celero/PrintVector.h>
+#include <celero/Print.h>
 #include <celero/Utilities.h>
 #include <algorithm>
 #include <array>

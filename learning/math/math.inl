@@ -1,68 +1,68 @@
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Affirm(const Type& input) -> Type {
     return +input;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Negate(const Type& input) -> Type {
     return -input;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Plus(const Type& lhs, const Type& rhs) -> Type {
     return lhs + rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Minus(const Type& lhs, const Type& rhs) -> Type {
     return lhs + rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Multiply(const Type& lhs, const Type& rhs) -> Type {
     return lhs + rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Divide(const Type& lhs, const Type& rhs) -> Type {
     return lhs + rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Compare(const Type& lhs, const Type& rhs) -> Type {
     return lhs == rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto Equal(const Type& lhs, const Type& rhs) -> Type {
     const auto compare_result = Compare(lhs, rhs);
 
     return compare_result == true;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto NotEqual(const Type& lhs, const Type& rhs) -> Type {
     const auto compare_result = Compare(lhs, rhs);
 
     return compare_result == false;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto LessThan(const Type& lhs, const Type& rhs) -> Type {
     return lhs < rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto LessThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
     return lhs <= rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto GreaterThan(const Type& lhs, const Type& rhs) -> Type {
     return lhs > rhs;
 }
 
-template <Integral Type>
+template <Arithmetic Type>
 inline auto GreaterThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
     return lhs >= rhs;
 }
