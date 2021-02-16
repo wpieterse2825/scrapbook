@@ -374,7 +374,7 @@ namespace simd {
     }
 } // namespace simd
 
-void PrintSIMDRegister(const simd::ri_32_256& simd_register) {
+void PrintVectorSIMDRegister(const simd::ri_32_256& simd_register) {
     int32_t output[8] = {0};
     simd::save_to(simd_register, output);
 
@@ -405,15 +405,15 @@ void RotateDown() {
     auto rotated_by_7_register = simd::rotate_down<7>(input_register);
     auto rotated_by_8_register = simd::rotate_down<8>(input_register);
 
-    PrintSIMDRegister(rotated_by_0_register);
-    PrintSIMDRegister(rotated_by_1_register);
-    PrintSIMDRegister(rotated_by_2_register);
-    PrintSIMDRegister(rotated_by_3_register);
-    PrintSIMDRegister(rotated_by_4_register);
-    PrintSIMDRegister(rotated_by_5_register);
-    PrintSIMDRegister(rotated_by_6_register);
-    PrintSIMDRegister(rotated_by_7_register);
-    PrintSIMDRegister(rotated_by_8_register);
+    PrintVectorSIMDRegister(rotated_by_0_register);
+    PrintVectorSIMDRegister(rotated_by_1_register);
+    PrintVectorSIMDRegister(rotated_by_2_register);
+    PrintVectorSIMDRegister(rotated_by_3_register);
+    PrintVectorSIMDRegister(rotated_by_4_register);
+    PrintVectorSIMDRegister(rotated_by_5_register);
+    PrintVectorSIMDRegister(rotated_by_6_register);
+    PrintVectorSIMDRegister(rotated_by_7_register);
+    PrintVectorSIMDRegister(rotated_by_8_register);
 }
 
 void RotateUp() {
@@ -431,15 +431,15 @@ void RotateUp() {
     auto rotated_by_7_register = simd::rotate_up<7>(input_register);
     auto rotated_by_8_register = simd::rotate_up<8>(input_register);
 
-    PrintSIMDRegister(rotated_by_0_register);
-    PrintSIMDRegister(rotated_by_1_register);
-    PrintSIMDRegister(rotated_by_2_register);
-    PrintSIMDRegister(rotated_by_3_register);
-    PrintSIMDRegister(rotated_by_4_register);
-    PrintSIMDRegister(rotated_by_5_register);
-    PrintSIMDRegister(rotated_by_6_register);
-    PrintSIMDRegister(rotated_by_7_register);
-    PrintSIMDRegister(rotated_by_8_register);
+    PrintVectorSIMDRegister(rotated_by_0_register);
+    PrintVectorSIMDRegister(rotated_by_1_register);
+    PrintVectorSIMDRegister(rotated_by_2_register);
+    PrintVectorSIMDRegister(rotated_by_3_register);
+    PrintVectorSIMDRegister(rotated_by_4_register);
+    PrintVectorSIMDRegister(rotated_by_5_register);
+    PrintVectorSIMDRegister(rotated_by_6_register);
+    PrintVectorSIMDRegister(rotated_by_7_register);
+    PrintVectorSIMDRegister(rotated_by_8_register);
 }
 
 int main() {

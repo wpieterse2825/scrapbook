@@ -16,7 +16,7 @@
 /// limitations under the License.
 ///
 
-#include <celero/Print.h>
+#include <celero/PrintVector.h>
 #include <celero/Utilities.h>
 
 #ifdef WIN32

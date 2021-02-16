@@ -26,7 +26,7 @@
 #include <celero/Exceptions.h>
 #include <celero/Executor.h>
 #include <celero/JUnit.h>
-#include <celero/Print.h>
+#include <celero/PrintVector.h>
 #include <celero/ResultTable.h>
 #include <celero/TestVector.h>
 #include <celero/UserDefinedMeasurement.h>
@@ -111,7 +111,7 @@ void celero::Run(int argc, char** argv)
 #endif
 
 	cmdline::parser args;
-	args.add("list", 'l', "Prints a list of all available benchmarks.");
+	args.add("list", 'l', "PrintVectors a list of all available benchmarks.");
 	args.add<std::string>("group", 'g', "Runs a specific group of benchmarks.", false, "");
 	args.add<std::string>("outputTable", 't', "Saves a results table to the named file.", false, "");
 	args.add<std::string>("junit", 'j', "Saves a JUnit XML-formatted file to the named file.", false, "");
@@ -244,8 +244,8 @@ void celero::Run(int argc, char** argv)
 
 	std::vector<std::string> userDefinedFieldsOrder(userDefinedFields.begin(), userDefinedFields.end());
 
-	Printer::get().initialize(userDefinedFieldsOrder);
-	Printer::get().TableBanner();
+	PrintVectorer::get().initialize(userDefinedFieldsOrder);
+	PrintVectorer::get().TableBanner();
 
 	const auto startTime = celero::timer::GetSystemTime();
 

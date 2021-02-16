@@ -22,7 +22,7 @@
 #include <celero/Console.h>
 #include <celero/Exceptions.h>
 #include <celero/Executor.h>
-#include <celero/Print.h>
+#include <celero/PrintVector.h>
 #include <celero/TestVector.h>
 #include <celero/UserDefinedMeasurementCollector.h>
 #include <celero/Utilities.h>
@@ -218,18 +218,18 @@ void executor::RunBaseline(std::shared_ptr<Benchmark> bmark)
 			auto r = baselineExperiment->getResult(i);
 			assert(r != nullptr);
 
-			Printer::get().TableRowExperimentHeader(r->getExperiment());
+			PrintVectorer::get().TableRowExperimentHeader(r->getExperiment());
 
 			// Do a quick sample, if necessary, and adjust sample and iteration sizes, if necessary.
 			if(AdjustSampleAndIterationSize(r) == true)
 			{
 				// Describe the beginning of the run.
-				Printer::get().TableRowProblemSpaceHeader(r);
+				PrintVectorer::get().TableRowProblemSpaceHeader(r);
 
 				if(ExecuteProblemSpace(r))
 				{
 					// Describe the end of the run.
-					Printer::get().TableResult(r);
+					PrintVectorer::get().TableResult(r);
 				}
 			}
 			else
@@ -281,8 +281,8 @@ void executor::Run(std::shared_ptr<Experiment> e)
 	{
 		if(baseline->getResultSize() != 0 && baseline->getResult(0)->getFailure())
 		{
-			Printer::get().TableRowExperimentHeader(e.get());
-			Printer::get().TableRowFailure("Baseline failure, skip");
+			PrintVectorer::get().TableRowExperimentHeader(e.get());
+			PrintVectorer::get().TableRowFailure("Baseline failure, skip");
 
 			// Add result output failed result
 			e->addProblemSpace(0);
@@ -343,7 +343,7 @@ void executor::Run(std::shared_ptr<Experiment> e)
 	{
 		auto r = e->getResult(i);
 
-		Printer::get().TableRowExperimentHeader(r->getExperiment());
+		PrintVectorer::get().TableRowExperimentHeader(r->getExperiment());
 
 		// Do a quick sample, if necessary, and adjust sample and iteration sizes, if necessary.
 		const auto adjustSuccess = AdjustSampleAndIterationSize(r);
@@ -351,12 +351,12 @@ void executor::Run(std::shared_ptr<Experiment> e)
 		if(adjustSuccess == true)
 		{
 			// Describe the beginning of the run.
-			Printer::get().TableRowProblemSpaceHeader(r);
+			PrintVectorer::get().TableRowProblemSpaceHeader(r);
 
 			if(ExecuteProblemSpace(r))
 			{
 				// Describe the end of the run.
-				Printer::get().TableResult(r);
+				PrintVectorer::get().TableResult(r);
 			}
 		}
 		else

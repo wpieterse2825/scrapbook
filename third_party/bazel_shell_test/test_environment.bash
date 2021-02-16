@@ -91,7 +91,7 @@ function setup_bazelrc() {
 # Set the user root properly for this test invocation.
 startup --output_user_root=${bazel_root}
 
-# Print all progress messages because we regularly grep the output in tests.
+# PrintVector all progress messages because we regularly grep the output in tests.
 common --show_progress_rate_limit=-1
 
 # Disable terminal-specific features.

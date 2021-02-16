@@ -74,7 +74,7 @@ class ModernFactory final : public AbstractFactory {
     }
 };
 
-void CreateAndPrintProducts(std::unique_ptr<AbstractFactory> factory) {
+void CreateAndPrintVectorProducts(std::unique_ptr<AbstractFactory> factory) {
     auto product_a = factory->CreateProductA();
     std::cout << " - " << product_a->Name() << std::endl;
 
@@ -86,7 +86,7 @@ int main() {
     std::cout << "==================================================" << std::endl;
     std::cout << "Abstract Factory (Victorian):" << std::endl;
     auto factory_victorian = std::unique_ptr<AbstractFactory> {new VictorianFactory {}};
-    CreateAndPrintProducts(std::move(factory_victorian));
+    CreateAndPrintVectorProducts(std::move(factory_victorian));
     std::cout << "==================================================" << std::endl;
 
     std::cout << std::endl;
@@ -94,7 +94,7 @@ int main() {
     std::cout << "==================================================" << std::endl;
     std::cout << "Abstract Factory (Modern):" << std::endl;
     auto factory_modern = std::unique_ptr<AbstractFactory> {new ModernFactory {}};
-    CreateAndPrintProducts(std::move(factory_modern));
+    CreateAndPrintVectorProducts(std::move(factory_modern));
     std::cout << "==================================================" << std::endl;
 
     return 0;

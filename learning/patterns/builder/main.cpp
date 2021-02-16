@@ -7,7 +7,7 @@ class Message final {
   public:
     std::vector<std::string> parts;
 
-    void Print() {
+    void PrintVector() {
         for (const auto& part : parts) {
             std::cout << " - " << part << std::endl;
         }
@@ -93,7 +93,7 @@ int main() {
     std::cout << "Builder Director (Minimum Viable Product):" << std::endl;
     director.BuildMinimumViableProduct();
     auto message = builder.Build();
-    message->Print();
+    message->PrintVector();
     std::cout << "==================================================" << std::endl;
 
     std::cout << std::endl;
@@ -102,7 +102,7 @@ int main() {
     std::cout << "Builder Director (Other Product):" << std::endl;
     director.BuildOtherProduct();
     message = builder.Build();
-    message->Print();
+    message->PrintVector();
     std::cout << "==================================================" << std::endl;
 
     return 0;

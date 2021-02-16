@@ -26,23 +26,23 @@
 namespace celero
 {
 	///
-	/// \class Printer
+	/// \class PrintVectorer
 	///
 	/// \author	John farrier
 	///
-	class Printer
+	class PrintVectorer
 	{
 	public:
 		///
 		/// Singleton implementation.
-		static Printer& get()
+		static PrintVectorer& get()
 		{
-			static Printer p;
+			static PrintVectorer p;
 			return p;
 		}
 
 		///
-		/// Initialize the Printer object with specific user-defined columns.
+		/// Initialize the PrintVectorer object with specific user-defined columns.
 		///
 		void initialize(std::vector<std::string> userDefinedColumns);
 
@@ -55,7 +55,7 @@ namespace celero
 		void TableResult(std::shared_ptr<celero::ExperimentResult> x);
 
 	private:
-		Printer() = default;
+		PrintVectorer() = default;
 
 		std::vector<std::string> userDefinedColumns;
 		std::vector<size_t> columnWidths;

@@ -94,25 +94,25 @@ class ComponentBSub final : public Component {
 
 class VisitorImpl final : public Visitor {
   private:
-    void PrintName(const char* name) {
+    void PrintVectorName(const char* name) {
         std::cout << " - " << name << std::endl;
     }
 
   public:
     void Visit(ComponentA* component) override {
-        PrintName(component->Name());
+        PrintVectorName(component->Name());
     }
 
     void Visit(ComponentASub* component) override {
-        PrintName(component->Name());
+        PrintVectorName(component->Name());
     }
 
     void Visit(ComponentB* component) override {
-        PrintName(component->Name());
+        PrintVectorName(component->Name());
     }
 
     void Visit(ComponentBSub* component) override {
-        PrintName(component->Name());
+        PrintVectorName(component->Name());
     }
 };
 

@@ -11,7 +11,7 @@ static int32_t Sys_SetThreadName(pthread_t thread_handle, const char* name) {
 
     int32_t ret = pthread_setname_np(thread_handle, name);
     if (ret != 0) {
-        idLib::common->Printf("Setting threadname \"%s\" failed, reason: %s (%i)\n", name, strerror(errno), errno);
+        idLib::common->PrintVectorf("Setting threadname \"%s\" failed, reason: %s (%i)\n", name, strerror(errno), errno);
     }
 
     return ret;
@@ -20,7 +20,7 @@ static int32_t Sys_SetThreadName(pthread_t thread_handle, const char* name) {
 static int32_t Sys_GetThreadName(pthread_t thread_handle, char* name_buffer, size_t name_buffer_length) {
     int32_t ret = pthread_getname_np(thread_handle, name_buffer, name_buffer_length);
     if (ret != 0) {
-        idLib::common->Printf("Getting threadname failed, reason: %s (%i)\n", strerror(errno), errno);
+        idLib::common->PrintVectorf("Getting threadname failed, reason: %s (%i)\n", strerror(errno), errno);
     }
 
     return ret;

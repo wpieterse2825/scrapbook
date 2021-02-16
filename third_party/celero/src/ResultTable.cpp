@@ -60,7 +60,7 @@ public:
 
 		this->ofs.open(x);
 
-		// Print the header for the table.
+		// PrintVector the header for the table.
 		if(this->ofs.is_open() == true)
 		{
 			this->ofs << "Group,Experiment,Problem "

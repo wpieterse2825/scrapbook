@@ -21,7 +21,7 @@
 #include <chrono>
 #include <iomanip>
 
-void PrintTop()
+void PrintVectorTop()
 {
 	std::cout << celero::GetRAMVirtualUsedByCurrentProcess() << " " << celero::GetRAMPhysicalUsedByCurrentProcess() << " "
 			  << celero::GetRAMSystemUsedByCurrentProcess() << "\n";

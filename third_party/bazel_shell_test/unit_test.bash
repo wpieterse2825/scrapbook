@@ -159,7 +159,7 @@ function __show_log() {
 }
 
 # Usage: __pad <title> <pad-char>
-# Print $title padded to 80 columns with $pad_char.
+# PrintVector $title padded to 80 columns with $pad_char.
 function __pad() {
     local title=$1
     local pad=$2
@@ -217,7 +217,7 @@ function testenv_tear_down() {
 }
 
 # Usage: fail <message> [<message> ...]
-# Print failure message with context information, and mark the test as
+# PrintVector failure message with context information, and mark the test as
 # a failure.  The context includes a stacktrace including the longest sequence
 # of calls outside this module.  (We exclude the top and bottom portions of
 # the stack because they just add noise.)  Also prints the contents of
@@ -235,7 +235,7 @@ function fail() {
 }
 
 # Usage: warn <message>
-# Print a test warning with context information.
+# PrintVector a test warning with context information.
 # The context includes a stacktrace including the longest sequence
 # of calls outside this module.  (We exclude the top and bottom portions of
 # the stack because they just add noise.)
@@ -250,7 +250,7 @@ function warn() {
 }
 
 # Usage: show_stack
-# Prints the portion of the stack that does not belong to this module,
+# PrintVectors the portion of the stack that does not belong to this module,
 # i.e. the user's code that called a failing assertion.  Stack may not
 # be available if Bash is reading commands from stdin; an error is
 # printed in that case.
@@ -276,7 +276,7 @@ __show_stack() {
 }
 
 # Usage: expect_log <regexp> [error-message]
-# Asserts that $TEST_log matches regexp.  Prints the contents of
+# Asserts that $TEST_log matches regexp.  PrintVectors the contents of
 # $TEST_log and the specified (optional) error message otherwise, and
 # returns non-zero.
 function expect_log() {
@@ -289,7 +289,7 @@ function expect_log() {
 }
 
 # Usage: expect_log_warn <regexp> [error-message]
-# Warns if $TEST_log does not match regexp.  Prints the contents of
+# Warns if $TEST_log does not match regexp.  PrintVectors the contents of
 # $TEST_log and the specified (optional) error message on mismatch.
 function expect_log_warn() {
     local pattern=$1
@@ -302,7 +302,7 @@ function expect_log_warn() {
 
 # Usage: expect_log_once <regexp> [error-message]
 # Asserts that $TEST_log contains one line matching <regexp>.
-# Prints the contents of $TEST_log and the specified (optional)
+# PrintVectors the contents of $TEST_log and the specified (optional)
 # error message otherwise, and returns non-zero.
 function expect_log_once() {
     local pattern=$1
@@ -312,7 +312,7 @@ function expect_log_once() {
 
 # Usage: expect_log_n <regexp> <count> [error-message]
 # Asserts that $TEST_log contains <count> lines matching <regexp>.
-# Prints the contents of $TEST_log and the specified (optional)
+# PrintVectors the contents of $TEST_log and the specified (optional)
 # error message otherwise, and returns non-zero.
 function expect_log_n() {
     local pattern=$1
@@ -325,7 +325,7 @@ function expect_log_n() {
 }
 
 # Usage: expect_not_log <regexp> [error-message]
-# Asserts that $TEST_log does not match regexp.  Prints the contents
+# Asserts that $TEST_log does not match regexp.  PrintVectors the contents
 # of $TEST_log and the specified (optional) error message otherwise, and
 # returns non-zero.
 function expect_not_log() {
@@ -351,7 +351,7 @@ function expect_query_targets() {
 
 # Usage: expect_log_with_timeout <regexp> <timeout> [error-message]
 # Waits for the given regexp in the $TEST_log for up to timeout seconds.
-# Prints the contents of $TEST_log and the specified (optional)
+# PrintVectors the contents of $TEST_log and the specified (optional)
 # error message otherwise, and returns non-zero.
 function expect_log_with_timeout() {
     local pattern=$1
@@ -451,7 +451,7 @@ function assert_not_equals() {
 }
 
 # Usage: assert_contains <regexp> <file> [error-message]
-# Asserts that file matches regexp.  Prints the contents of
+# Asserts that file matches regexp.  PrintVectors the contents of
 # file and the specified (optional) error message otherwise, and
 # returns non-zero.
 function assert_contains() {
@@ -466,7 +466,7 @@ function assert_contains() {
 }
 
 # Usage: assert_not_contains <regexp> <file> [error-message]
-# Asserts that file does not match regexp.  Prints the contents of
+# Asserts that file does not match regexp.  PrintVectors the contents of
 # file and the specified (optional) error message otherwise, and
 # returns non-zero.
 function assert_not_contains() {

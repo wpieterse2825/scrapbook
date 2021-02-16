@@ -28,7 +28,7 @@ cat_jvm_log () {
   fi
 }
 
-# Print message in "$1" then exit with status "$2"
+# PrintVector message in "$1" then exit with status "$2"
 die () {
   # second argument is optional, defaulting to 1
   local status_code=${2:-1}
@@ -65,7 +65,7 @@ die () {
   fi
 }
 
-# Print message in "$1" then record that a non-fatal error occurred in
+# PrintVector message in "$1" then record that a non-fatal error occurred in
 # ERROR_COUNT
 ERROR_COUNT="${ERROR_COUNT:-0}"
 error () {
