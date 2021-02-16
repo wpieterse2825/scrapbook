@@ -1,6 +1,6 @@
 template <typename Type, size_t Rows, size_t Columns>
 inline auto ZeroMatrix() -> Matrix<Type, Rows, Columns> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = Matrix<Type, Rows, Columns> {};
 
@@ -15,7 +15,7 @@ inline auto ZeroMatrix() -> Matrix<Type, Rows, Columns> {
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto DiagonalMatrix(Type value) -> Matrix<Type, Rows, Columns> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = Matrix<Type, Rows, Columns> {};
 
@@ -34,7 +34,7 @@ inline auto DiagonalMatrix(Type value) -> Matrix<Type, Rows, Columns> {
 
 template <typename Type, size_t Elements>
 inline auto DiagonalMatrix(const Vector<Type, Elements>& value) -> Matrix<Type, Elements, Elements> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = Matrix<Type, Elements, Elements> {};
 
@@ -53,7 +53,7 @@ inline auto DiagonalMatrix(const Vector<Type, Elements>& value) -> Matrix<Type, 
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IdentityMatrix() -> Matrix<Type, Rows, Columns> {
-    constexpr auto one_positive = Constants<Type>::OnePositive;
+    constexpr auto one_positive = MathConstants<Type>::OnePositive;
 
     return DiagonalMatrix<Type, Rows, Columns>(one_positive);
 }
@@ -78,7 +78,7 @@ inline auto Compare(const Matrix<Type, Rows, Columns>& lhs, const Matrix<Type, R
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto Compare(const Matrix<Type, Rows, Columns>& lhs, const Matrix<Type, Columns, Rows>& rhs) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return Compare(lhs, rhs, zero_positive);
 }
@@ -149,7 +149,7 @@ inline auto Multiply(const Matrix<Type, Rows, Columns>& lhs, Type rhs) -> Matrix
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto Multiply(const Matrix<Type, Rows, Columns>& lhs, const Vector<Type, Columns>& rhs) -> Vector<Type, Columns> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = Vector<Type, Columns> {};
 
@@ -173,7 +173,7 @@ inline auto Multiply(const Matrix<Type, Rows, Columns>& lhs, const Vector<Type, 
 template <typename Type, size_t LHSRows, size_t LHSColumns, size_t RHSRows, size_t RHSColumns>
 inline auto Multiply(const Matrix<Type, LHSRows, LHSColumns>& lhs, const Matrix<Type, RHSRows, RHSColumns>& rhs)
   -> Matrix<Type, LHSRows, RHSColumns> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = Matrix<Type, LHSRows, RHSColumns> {};
 
@@ -224,7 +224,7 @@ inline auto Inverse(const Matrix<Type, Rows, Columns>& value) -> Matrix<Type, Ro
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto Determinant(const Matrix<Type, Rows, Columns>& value) -> Type {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = zero_positive;
 
@@ -237,7 +237,7 @@ inline auto Determinant(const Matrix<Type, Rows, Columns>& value) -> Type {
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto Trace(const Matrix<Type, Rows, Columns>& value) -> Type {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto result = zero_positive;
 
@@ -256,8 +256,8 @@ inline auto Trace(const Matrix<Type, Rows, Columns>& value) -> Type {
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto Difference(const Matrix<Type, Rows, Columns>& lhs, const Matrix<Type, Rows, Columns>& rhs) -> Type {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
-    constexpr auto one_negative  = Constants<Type>::OneNegative;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
+    constexpr auto one_negative  = MathConstants<Type>::OneNegative;
 
     auto result = one_negative;
 
@@ -372,7 +372,7 @@ inline auto IsZero(const Matrix<Type, Rows, Columns>& value, Type epsilon) -> bo
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsZero(const Matrix<Type, Rows, Columns>& value) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return IsZero(value, zero_positive);
 }
@@ -401,15 +401,15 @@ inline auto IsDiagonal(const Matrix<Type, Rows, Columns>& value, Type epsilon) -
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsDiagonal(const Matrix<Type, Rows, Columns>& value) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return IsDiagonal(value, zero_positive);
 }
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsIdentity(const Matrix<Type, Rows, Columns>& value, Type epsilon) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
-    constexpr auto one_positive  = Constants<Type>::OnePositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
+    constexpr auto one_positive  = MathConstants<Type>::OnePositive;
 
     static_assert(Rows == Columns);
 
@@ -436,7 +436,7 @@ inline auto IsIdentity(const Matrix<Type, Rows, Columns>& value, Type epsilon) -
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsIdentity(const Matrix<Type, Rows, Columns>& value) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return IsIdentity(value, zero_positive);
 }
@@ -467,7 +467,7 @@ inline auto IsSymmetric(const Matrix<Type, Rows, Columns>& value, Type epsilon) 
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsSymmetric(const Matrix<Type, Rows, Columns>& value) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return IsSymmetric(value, zero_positive);
 }
@@ -503,7 +503,7 @@ inline auto IsTriDiagonal(const Matrix<Type, Rows, Columns>& value, Type epsilon
 
 template <typename Type, size_t Rows, size_t Columns>
 inline auto IsTriDiagonal(const Matrix<Type, Rows, Columns>& value) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return IsTriDiagonal(value, zero_positive);
 }

@@ -11,11 +11,6 @@
 #include "learning/math/math.inl"
 #include "learning/math/vector/vector.inl"
 
-constexpr auto SampleCount    = 10;
-constexpr auto IterationCount = 10000000;
-
-constexpr auto Elements = 127;
-
 template <typename Type, size_t Dimensions>
 class SingleItemFixture : public celero::TestFixture {
   public:

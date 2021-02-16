@@ -45,7 +45,7 @@ inline auto WriteDistance(Plane<Type, Dimensions>& output, const Type& input) ->
 
 template <typename Type, size_t Dimensions>
 inline auto PlaneFromZero() -> Plane<Type, Dimensions> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     auto output = Plane<Type, Dimensions> {};
 
@@ -97,7 +97,7 @@ inline auto Compare(const Plane<Type, Dimensions>& lhs, const Plane<Type, Dimens
 
 template <typename Type, size_t Dimensions>
 inline auto Compare(const Plane<Type, Dimensions>& lhs, const Plane<Type, Dimensions>& rhs) -> bool {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return Compare(lhs, rhs);
 }
@@ -241,14 +241,14 @@ inline auto PointSide(const Plane<Type, Dimensions>& input_plane, const Vector<T
 
 template <typename Type, size_t Dimensions>
 inline auto PointSide(const Plane<Type, Dimensions>& input_plane, const Vector<Type, Dimensions>& input_vector) -> Side {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     return PointSide(input_plane, input_vector, zero_positive);
 }
 
 template <typename Type>
 inline auto AxialType(const Plane<Type, 3>& input) -> PlaneType {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero_positive = MathConstants<Type>::ZeroPositive;
 
     const auto input_normal   = GetNormal(input);
     const auto input_normal_x = Read(input_normal, VectorXComponent);

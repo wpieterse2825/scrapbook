@@ -16,7 +16,24 @@
 #include "learning/math/plane/plane.inl"
 
 int main() {
-    auto r = VectorFromZero<float, 1024>();
+    auto v1 = VectorFromZero<float, 4>();
 
-    return r.elements[0];
+    v1.elements[0] = +1.0f;
+    v1.elements[1] = +2.0f;
+    v1.elements[2] = +3.0f;
+    v1.elements[3] = +4.0f;
+
+    auto v2 = VectorFromZero<float, 4>();
+
+    v2.elements[0] = -1.0f;
+    v2.elements[1] = -2.0f;
+    v2.elements[2] = -3.0f;
+    v2.elements[3] = -4.0f;
+
+    std::cout << detail::vector::base::Compare(v1, v2, 0.0f) << std::endl;
+    std::cout << detail::vector::sse_1::Compare(v1, v2, 0.0f) << std::endl;
+    std::cout << detail::vector::sse_2::Compare(v1, v2, 0.0f) << std::endl;
+    std::cout << detail::vector::avx_1::Compare(v1, v2, 0.0f) << std::endl;
+
+    return 0;
 }

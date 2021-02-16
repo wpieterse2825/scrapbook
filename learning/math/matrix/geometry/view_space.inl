@@ -1,6 +1,6 @@
 template <typename Type>
 inline auto ViewMatrixScale(Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
-    constexpr auto two_positive = Constants<Type>::TwoPositive;
+    constexpr auto two_positive = MathConstants<Type>::TwoPositive;
 
     auto result = IdentityMatrix<Type, 4, 4>();
 
@@ -15,7 +15,7 @@ inline auto ViewMatrixScale(Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
 
 template <typename Type>
 inline auto ViewMatrixOffsetExtent(Type x_size, Type y_size) -> Matrix<Type, 4, 4> {
-    constexpr auto two_positive = Constants<Type>::TwoPositive;
+    constexpr auto two_positive = MathConstants<Type>::TwoPositive;
 
     auto result = IdentityMatrix<Type, 4, 4>();
 

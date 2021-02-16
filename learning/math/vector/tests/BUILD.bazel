@@ -1,0 +1,36 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_library",
+    "cc_test",
+)
+
+cc_library(
+    name = "shared",
+    hdrs = [
+        "shared.hpp",
+    ],
+    deps = [
+        "//learning/math",
+        "@com_github_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "compare_epsilon",
+    srcs = [
+        "compare_epsilon.cpp",
+    ],
+    deps = [
+        "//learning/math/vector/tests:shared",
+    ],
+)
+
+cc_test(
+    name = "compare",
+    srcs = [
+        "compare.cpp",
+    ],
+    deps = [
+        "//learning/math/vector/tests:shared",
+    ],
+)

@@ -1,69 +1,69 @@
 template <Arithmetic Type>
-inline auto Affirm(const Type& input) -> Type {
+constexpr auto Affirm(const Type& input) -> Type {
     return +input;
 }
 
 template <Arithmetic Type>
-inline auto Negate(const Type& input) -> Type {
+constexpr auto Negate(const Type& input) -> Type {
     return -input;
 }
 
 template <Arithmetic Type>
-inline auto Plus(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto Plus(const Type& lhs, const Type& rhs) -> Type {
     return lhs + rhs;
 }
 
 template <Arithmetic Type>
-inline auto Minus(const Type& lhs, const Type& rhs) -> Type {
-    return lhs + rhs;
+constexpr auto Minus(const Type& lhs, const Type& rhs) -> Type {
+    return lhs - rhs;
 }
 
 template <Arithmetic Type>
-inline auto Multiply(const Type& lhs, const Type& rhs) -> Type {
-    return lhs + rhs;
+constexpr auto Multiply(const Type& lhs, const Type& rhs) -> Type {
+    return lhs * rhs;
 }
 
 template <Arithmetic Type>
-inline auto Divide(const Type& lhs, const Type& rhs) -> Type {
-    return lhs + rhs;
+constexpr auto Divide(const Type& lhs, const Type& rhs) -> Type {
+    return lhs / rhs;
 }
 
 template <Arithmetic Type>
-inline auto Compare(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto Compare(const Type& lhs, const Type& rhs) -> Type {
     return lhs == rhs;
 }
 
 template <Arithmetic Type>
-inline auto Equal(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto Equal(const Type& lhs, const Type& rhs) -> Type {
     const auto compare_result = Compare(lhs, rhs);
 
     return compare_result == true;
 }
 
 template <Arithmetic Type>
-inline auto NotEqual(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto NotEqual(const Type& lhs, const Type& rhs) -> Type {
     const auto compare_result = Compare(lhs, rhs);
 
     return compare_result == false;
 }
 
 template <Arithmetic Type>
-inline auto LessThan(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto LessThan(const Type& lhs, const Type& rhs) -> Type {
     return lhs < rhs;
 }
 
 template <Arithmetic Type>
-inline auto LessThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto LessThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
     return lhs <= rhs;
 }
 
 template <Arithmetic Type>
-inline auto GreaterThan(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto GreaterThan(const Type& lhs, const Type& rhs) -> Type {
     return lhs > rhs;
 }
 
 template <Arithmetic Type>
-inline auto GreaterThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
+constexpr auto GreaterThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
     return lhs >= rhs;
 }
 
@@ -113,22 +113,15 @@ inline auto Ceiling(Type value) -> Type {
 
 template <Decimal Type>
 inline auto Absolute(Type value) -> Type {
-    constexpr auto is_float       = std::is_same_v<Type, float>;
-    constexpr auto is_double      = std::is_same_v<Type, double>;
-    constexpr auto is_long_double = std::is_same_v<Type, long double>;
-    constexpr auto is_correct     = is_float | is_double | is_long_double;
-
-    static_assert(is_correct == true);
-
-    if constexpr (is_float == true) {
+    if constexpr (std::is_same_v<Type, float> == true) {
         return ::fabsf(value);
     }
 
-    if constexpr (is_double == true) {
+    if constexpr (std::is_same_v<Type, double> == true) {
         return ::fabs(value);
     }
 
-    if constexpr (is_long_double == true) {
+    if constexpr (std::is_same_v<Type, long double> == true) {
         return ::fabsl(value);
     }
 }
@@ -157,7 +150,7 @@ inline auto SquareRoot(Type value) -> Type {
 
 template <Decimal Type>
 inline auto InverseSquareRoot(Type value) -> Type {
-    constexpr auto one_positive = Constants<Type>::OnePositive;
+    constexpr auto one_positive = MathConstants<Type>::OnePositive;
 
     const auto square_root = SquareRoot(value);
 
@@ -166,8 +159,8 @@ inline auto InverseSquareRoot(Type value) -> Type {
 
 template <Decimal Type>
 inline auto DegreesToRadians(Type degrees) -> Type {
-    constexpr auto pi                       = Constants<Type>::PiPositive;
-    constexpr auto degrees_two_quarters     = Constants<Type>::DegreesTwoQuartersPositive;
+    constexpr auto pi                       = MathConstants<Type>::PiPositive;
+    constexpr auto degrees_two_quarters     = MathConstants<Type>::DegreesTwoQuartersPositive;
     constexpr auto degrees_to_radians_scale = pi / degrees_two_quarters;
 
     return degrees * degrees_to_radians_scale;
@@ -175,8 +168,8 @@ inline auto DegreesToRadians(Type degrees) -> Type {
 
 template <Decimal Type>
 inline auto RadiansToDegrees(Type radians) -> Type {
-    constexpr auto degrees_two_quarters     = Constants<Type>::DegreesTwoQuartersPositive;
-    constexpr auto pi                       = Constants<Type>::PiPositive;
+    constexpr auto degrees_two_quarters     = MathConstants<Type>::DegreesTwoQuartersPositive;
+    constexpr auto pi                       = MathConstants<Type>::PiPositive;
     constexpr auto radians_to_degrees_scale = degrees_two_quarters / pi;
 
     return radians * radians_to_degrees_scale;

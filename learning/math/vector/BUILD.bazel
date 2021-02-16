@@ -1,8 +1,6 @@
 load(
     "@rules_cc//cc:defs.bzl",
-    "cc_binary",
     "cc_library",
-    "cc_test",
 )
 
 cc_library(
@@ -12,16 +10,5 @@ cc_library(
     ],
     visibility = [
         "//learning/math:__pkg__",
-    ],
-)
-
-cc_test(
-    name = "test",
-    srcs = [
-        "vector_test.cpp",
-    ],
-    deps = [
-        "//learning/math",
-        "@com_github_google_googletest//:gtest_main",
     ],
 )

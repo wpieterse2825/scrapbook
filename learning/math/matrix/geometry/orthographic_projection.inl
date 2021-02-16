@@ -1,6 +1,6 @@
 template <typename Type>
 inline auto OrthographicMatrixCenter(Type left, Type right, Type top, Type bottom, Type near, Type far) -> Matrix<Type, 4, 4> {
-    constexpr auto two_positive = Constants<Type>::TwoPositive;
+    constexpr auto two_positive = MathConstants<Type>::TwoPositive;
 
     auto result = IdentityMatrix<Type, 4, 4>();
 
@@ -28,7 +28,7 @@ inline auto OrthographicMatrixCenter(Type left, Type right, Type top, Type botto
 
 template <typename Type>
 inline auto OrthographicMatrixScale(Type left, Type right, Type top, Type bottom, Type near, Type far) -> Matrix<Type, 4, 4> {
-    constexpr auto two_positive = Constants<Type>::TwoPositive;
+    constexpr auto two_positive = MathConstants<Type>::TwoPositive;
 
     auto result = IdentityMatrix<Type, 4, 4>();
 

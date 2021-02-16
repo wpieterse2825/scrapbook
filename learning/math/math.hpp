@@ -9,66 +9,28 @@ concept Decimal = requires(Type) {
 };
 
 template <Decimal Type>
-struct Constants {
-    static constexpr auto ZeroNeutral    = Type {0.0};
-    static constexpr auto OneHalfNeutral = Type {0.5};
-    static constexpr auto OneNeutral     = Type {1.0};
-    static constexpr auto TwoHalfNeutral = Type {1.5};
-    static constexpr auto TwoNeutral     = Type {2.0};
-    static constexpr auto ThreeNeutral   = Type {3.0};
-    static constexpr auto FourNeutral    = Type {4.0};
+struct MathConstants {
+    static constexpr auto Zero    = Type {0.0};
+    static constexpr auto OneHalf = Type {0.5};
+    static constexpr auto One     = Type {1.0};
+    static constexpr auto TwoHalf = Type {1.5};
+    static constexpr auto Two     = Type {2.0};
+    static constexpr auto Three   = Type {3.0};
+    static constexpr auto Four    = Type {4.0};
 
-    static constexpr auto PiNeutral = Type {M_PI};
+    static constexpr auto Epsilon      = Type {1e-4};
+    static constexpr auto BelowEpsilon = Epsilon - Type {1e-5};
+    static constexpr auto Pi           = Type {M_PI};
 
-    static constexpr auto DegreesOneQuarterNeutral    = Type {90.0};
-    static constexpr auto DegreesTwoQuartersNeutral   = Type {180.0};
-    static constexpr auto DegreesThreeQuartersNeutral = Type {270.0};
-    static constexpr auto DegreesFourQuartersNeutral  = Type {320.0};
+    static constexpr auto DegreesOneQuarter    = Type {90.0};
+    static constexpr auto DegreesTwoQuarters   = Type {180.0};
+    static constexpr auto DegreesThreeQuarters = Type {270.0};
+    static constexpr auto DegreesFourQuarters  = Type {320.0};
 
-    static constexpr auto RadiansOneQuarterNeutral    = Type {PiNeutral * OneHalfNeutral};
-    static constexpr auto RadiansTwoQuartersNeutral   = Type {PiNeutral * OneNeutral};
-    static constexpr auto RadiansThreeQuartersNeutral = Type {PiNeutral * TwoHalfNeutral};
-    static constexpr auto RadiansFourQuartersNeutral  = Type {PiNeutral * TwoNeutral};
-
-    static constexpr auto ZeroPositive     = +ZeroNeutral;
-    static constexpr auto OneHalfPositive  = +OneHalfNeutral;
-    static constexpr auto OnePositive      = +OneNeutral;
-    static constexpr auto TwoHalvePositive = +TwoHalfNeutral;
-    static constexpr auto TwoPositive      = +TwoNeutral;
-    static constexpr auto ThreePositive    = +ThreeNeutral;
-    static constexpr auto FourPositive     = +FourNeutral;
-
-    static constexpr auto PiPositive = +PiNeutral;
-
-    static constexpr auto DegreesOneQuarterPositive    = +DegreesOneQuarterNeutral;
-    static constexpr auto DegreesTwoQuartersPositive   = +DegreesTwoQuartersNeutral;
-    static constexpr auto DegreesThreeQuartersPositive = +DegreesThreeQuartersNeutral;
-    static constexpr auto DegreesFourQuartersPositive  = +DegreesFourQuartersNeutral;
-
-    static constexpr auto RadiansOneQuarterPositive    = +RadiansOneQuarterNeutral;
-    static constexpr auto RadiansTwoQuartersPositive   = +RadiansTwoQuartersNeutral;
-    static constexpr auto RadiansThreeQuartersPositive = +RadiansThreeQuartersNeutral;
-    static constexpr auto RadiansFourQuartersPositive  = +RadiansFourQuartersNeutral;
-
-    static constexpr auto ZeroNegative     = -ZeroNeutral;
-    static constexpr auto OneHalfNegative  = -OneHalfNeutral;
-    static constexpr auto OneNegative      = -OneNeutral;
-    static constexpr auto TwoHalveNegative = -TwoHalfNeutral;
-    static constexpr auto TwoNegative      = -TwoNeutral;
-    static constexpr auto ThreeNegative    = -ThreeNeutral;
-    static constexpr auto FourNegative     = -FourNeutral;
-
-    static constexpr auto PiNegative = -PiNeutral;
-
-    static constexpr auto DegreesOneQuarterNegative    = -DegreesOneQuarterNeutral;
-    static constexpr auto DegreesTwoQuartersNegative   = -DegreesTwoQuartersNeutral;
-    static constexpr auto DegreesThreeQuartersNegative = -DegreesThreeQuartersNeutral;
-    static constexpr auto DegreesFourQuartersNegative  = -DegreesFourQuartersNeutral;
-
-    static constexpr auto RadiansOneQuarterNegative    = -RadiansOneQuarterNeutral;
-    static constexpr auto RadiansTwoQuartersNegative   = -RadiansTwoQuartersNeutral;
-    static constexpr auto RadiansThreeQuartersNegative = -RadiansThreeQuartersNeutral;
-    static constexpr auto RadiansFourQuartersNegative  = -RadiansFourQuartersNeutral;
+    static constexpr auto RadiansOneQuarter    = Type {Pi * OneHalf};
+    static constexpr auto RadiansTwoQuarters   = Type {Pi * One};
+    static constexpr auto RadiansThreeQuarters = Type {Pi * TwoHalf};
+    static constexpr auto RadiansFourQuarters  = Type {Pi * Two};
 };
 
 namespace detail {
@@ -91,6 +53,22 @@ namespace detail {
         Dimensions > 0;
     };
 } // namespace detail
+
+constexpr auto VectorSIMDEnabled  = true;
+constexpr auto VectorSIMDUseSSE1  = true;
+constexpr auto VectorSIMDUseSSE2  = true;
+constexpr auto VectorSIMDUseSSE3  = true;
+constexpr auto VectorSIMDUseSSSE3 = true;
+constexpr auto VectorSIMDUseSSE41 = true;
+constexpr auto VectorSIMDUseSSE42 = true;
+constexpr auto VectorSIMDUseAVX1  = true;
+constexpr auto VectorSIMDUseAVX2  = true;
+
+constexpr auto DefaultTestDimensions = size_t {127};
+
+constexpr auto DefaultBenchSampleCount    = 10;
+constexpr auto DefaultBenchIterationCount = 10000000;
+constexpr auto DefaultBenchDimensions     = size_t {127};
 
 constexpr auto VectorXComponent = size_t {0};
 constexpr auto VectorYComponent = size_t {1};

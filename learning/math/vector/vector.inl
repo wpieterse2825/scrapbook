@@ -17,200 +17,490 @@ inline auto Write(Vector<Type, Dimensions>& input, const size_t index, const Typ
     input.elements[index] = value;
 }
 
-constexpr auto VectorSIMDEnabled  = true;
-constexpr auto VectorSIMDUseSSE1  = true;
-constexpr auto VectorSIMDUseSSE2  = true;
-constexpr auto VectorSIMDUseSSE3  = true;
-constexpr auto VectorSIMDUseSSSE3 = true;
-constexpr auto VectorSIMDUseSSE41 = true;
-constexpr auto VectorSIMDUseSSE42 = true;
-constexpr auto VectorSIMDUseAVX1  = true;
-constexpr auto VectorSIMDUseAVX2  = true;
+namespace detail::vector::internal {
+    template <typename Type, size_t Dimensions>
+    inline auto
+    CompareTrailer(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon, const size_t& offset)
+      -> bool {
+        for (auto index = offset; index < Dimensions; index++) {
+            const auto lhs_value           = Read(lhs, index);
+            const auto rhs_value           = Read(rhs, index);
+            const auto difference          = Minus(lhs_value, rhs_value);
+            const auto absolute_difference = Absolute(difference);
+            const auto over_epsilon        = GreaterThan(absolute_difference, epsilon);
 
-namespace detail {
-    namespace vector {
-        namespace base {
-            template <typename Type, size_t Dimensions>
-            inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
-                auto output = Vector<Type, Dimensions> {};
+            if (over_epsilon == true) {
+                return false;
+            }
+        }
 
-                for (auto index = size_t {0}; index < Dimensions; index++) {
+        return true;
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto CompareTrailer(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, size_t offset) -> bool {
+        for (auto index = offset; index < Dimensions; index++) {
+            const auto lhs_value = Read(lhs, index);
+            const auto rhs_value = Read(rhs, index);
+            const auto is_equal  = Compare(lhs_value, rhs_value);
+
+            if (is_equal == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+} // namespace detail::vector::internal
+
+namespace detail::vector::base {
+    template <typename Type, size_t Dimensions>
+    inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
+        auto output = Vector<Type, Dimensions> {};
+
+        for (auto index = size_t {0}; index < Dimensions; index++) {
+            Write(output, index, input_value);
+        }
+
+        return output;
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
+        return internal::CompareTrailer(lhs, rhs, epsilon, 0);
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
+        return internal::CompareTrailer(lhs, rhs, 0);
+    }
+} // namespace detail::vector::base
+
+namespace detail::vector::sse_1 {
+    template <typename Type, size_t Dimensions>
+    inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            if constexpr (Dimensions >= 4) {
+                constexpr auto block_size    = 4;
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto output        = Vector<Type, Dimensions> {};
+                auto output_buffer = &output.elements[0];
+
+                const auto broadcast = _mm_set1_ps(input_value);
+
+                for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
+                    _mm_storeu_ps(output_buffer, broadcast);
+
+                    output_buffer += block_size;
+                }
+
+                for (auto index = trailer_start; index < Dimensions; index++) {
                     Write(output, index, input_value);
                 }
 
                 return output;
             }
-        } // namespace base
+        }
 
-        namespace sse_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-                        constexpr auto trailer_start  = (simd_blocks * block_size) - 1;
+        return base::VectorFromBroadcast<Type, Dimensions>(input_value);
+    }
 
-                        auto output        = Vector<Type, Dimensions> {};
-                        auto output_buffer = &output.elements[0];
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            constexpr auto block_size = 4;
 
-                        const auto broadcast = _mm_set1_ps(input_value);
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
 
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            _mm_storeu_ps(output_buffer, broadcast);
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
 
-                            output_buffer += block_size;
-                        }
+                const auto epsilon_simd = _mm_set1_ps(epsilon);
+                const auto sign_simd    = _mm_set1_ps(-0.0f);
 
-                        if constexpr (trailer_blocks != 0) {
-                            for (auto index = trailer_start; index < Dimensions; index++) {
-                                Write(output, index, input_value);
-                            }
-                        }
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value           = _mm_loadu_ps(lhs_buffer);
+                    const auto rhs_value           = _mm_loadu_ps(rhs_buffer);
+                    const auto difference          = _mm_sub_ps(lhs_value, rhs_value);
+                    const auto absolute_difference = _mm_and_ps(sign_simd, difference);
+                    const auto over_epsilon        = _mm_cmpgt_ps(absolute_difference, epsilon_simd);
+                    const auto over_epsilon_mask   = _mm_movemask_ps(over_epsilon);
 
-                        return output;
+                    if (over_epsilon_mask != 0) {
+                        return false;
                     }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
                 }
 
-                return base::VectorFromBroadcast<Type, Dimensions>(input_value);
+                return internal::CompareTrailer(lhs, rhs, epsilon, trailer_start);
             }
-        } // namespace sse_1
+        }
 
-        namespace sse_2 {
-            template <typename Type, size_t Dimensions>
-            inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    // We have the same version here for SSE 2 because we can use the storeu_si128 intrinsic, which is faster than
-                    // storeu_ps.
+        return base::Compare(lhs, rhs, epsilon);
+    }
 
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-                        constexpr auto trailer_start  = (simd_blocks * block_size) - 1;
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            constexpr auto block_size = 4;
 
-                        auto output        = Vector<Type, Dimensions> {};
-                        auto output_buffer = &output.elements[0];
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
 
-                        const auto broadcast     = _mm_set1_ps(input_value);
-                        const auto broadcast_raw = _mm_castps_si128(broadcast);
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
 
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            _mm_storeu_si128((__m128i_u*)output_buffer, broadcast_raw);
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value     = _mm_loadu_ps(lhs_buffer);
+                    const auto rhs_value     = _mm_loadu_ps(rhs_buffer);
+                    const auto is_equal      = _mm_cmpeq_ps(lhs_value, rhs_value);
+                    const auto is_equal_mask = _mm_movemask_ps(is_equal);
 
-                            output_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            for (auto index = trailer_start; index < Dimensions; index++) {
-                                Write(output, index, input_value);
-                            }
-                        }
-
-                        return output;
+                    if (is_equal_mask != 0) {
+                        return false;
                     }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
                 }
 
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 2) {
-                        constexpr auto block_size     = 2;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-                        constexpr auto trailer_start  = (simd_blocks * block_size) - 1;
-
-                        auto output        = Vector<Type, Dimensions> {};
-                        auto output_buffer = &output.elements[0];
-
-                        const auto broadcast     = _mm_set1_pd(input_value);
-                        const auto broadcast_raw = _mm_castpd_si128(broadcast);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            _mm_storeu_si128((__m128i_u*)output_buffer, broadcast_raw);
-
-                            output_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            for (auto index = trailer_start; index < Dimensions; index++) {
-                                Write(output, index, input_value);
-                            }
-                        }
-
-                        return output;
-                    }
-                }
-
-                return sse_1::VectorFromBroadcast<Type, Dimensions>(input_value);
+                return internal::CompareTrailer(lhs, rhs, trailer_start);
             }
-        } // namespace sse_2
+        }
 
-        namespace avx_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 8) {
-                        constexpr auto block_size     = 8;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-                        constexpr auto trailer_start  = (simd_blocks * block_size) - 1;
+        return base::Compare(lhs, rhs);
+    }
+} // namespace detail::vector::sse_1
 
-                        auto output        = Vector<Type, Dimensions> {};
-                        auto output_buffer = &output.elements[0];
+namespace detail::vector::sse_2 {
+    template <typename Type, size_t Dimensions>
+    inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            // We have the same version here for SSE 2 because we can use the storeu_si128 intrinsic, which is faster than
+            // storeu_ps.
 
-                        const auto broadcast     = _mm256_set1_ps(input_value);
-                        const auto broadcast_raw = _mm256_castps_si256(broadcast);
+            if constexpr (Dimensions >= 4) {
+                constexpr auto block_size    = 4;
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
 
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            _mm256_storeu_si256((__m256i_u*)output_buffer, broadcast_raw);
+                auto output        = Vector<Type, Dimensions> {};
+                auto output_buffer = &output.elements[0];
 
-                            output_buffer += block_size;
-                        }
+                const auto broadcast     = _mm_set1_ps(input_value);
+                const auto broadcast_raw = _mm_castps_si128(broadcast);
 
-                        if constexpr (trailer_blocks != 0) {
-                            for (auto index = trailer_start; index < Dimensions; index++) {
-                                Write(output, index, input_value);
-                            }
-                        }
+                for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
+                    _mm_storeu_si128((__m128i_u*)output_buffer, broadcast_raw);
 
-                        return output;
-                    }
+                    output_buffer += block_size;
                 }
 
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-                        constexpr auto trailer_start  = (simd_blocks * block_size) - 1;
-
-                        auto output        = Vector<Type, Dimensions> {};
-                        auto output_buffer = &output.elements[0];
-
-                        const auto broadcast     = _mm256_set1_pd(input_value);
-                        const auto broadcast_raw = _mm256_castpd_si256(broadcast);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            _mm256_storeu_si256((__m256i_u*)output_buffer, broadcast_raw);
-
-                            output_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            for (auto index = trailer_start; index < Dimensions; index++) {
-                                Write(output, index, input_value);
-                            }
-                        }
-
-                        return output;
-                    }
+                for (auto index = trailer_start; index < Dimensions; index++) {
+                    Write(output, index, input_value);
                 }
 
-                return sse_2::VectorFromBroadcast<Type, Dimensions>(input_value);
+                return output;
             }
-        } // namespace avx_1
-    }     // namespace vector
-} // namespace detail
+        }
+
+        if constexpr (std::is_same_v<Type, double> == true) {
+            if constexpr (Dimensions >= 2) {
+                constexpr auto block_size    = 2;
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto output        = Vector<Type, Dimensions> {};
+                auto output_buffer = &output.elements[0];
+
+                const auto broadcast     = _mm_set1_pd(input_value);
+                const auto broadcast_raw = _mm_castpd_si128(broadcast);
+
+                for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
+                    _mm_storeu_si128((__m128i_u*)output_buffer, broadcast_raw);
+
+                    output_buffer += block_size;
+                }
+
+                for (auto index = trailer_start; index < Dimensions; index++) {
+                    Write(output, index, input_value);
+                }
+
+                return output;
+            }
+        }
+
+        return sse_1::VectorFromBroadcast<Type, Dimensions>(input_value);
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
+        if constexpr (std::is_same_v<Type, double> == true) {
+            constexpr auto block_size = 2;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                const auto epsilon_simd = _mm_set1_pd(epsilon);
+                const auto sign_simd    = _mm_set1_pd(-0);
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value           = _mm_loadu_pd(lhs_buffer);
+                    const auto rhs_value           = _mm_loadu_pd(rhs_buffer);
+                    const auto difference          = _mm_sub_pd(lhs_value, rhs_value);
+                    const auto absolute_difference = _mm_and_pd(sign_simd, difference);
+                    const auto over_epsilon        = _mm_cmpgt_pd(absolute_difference, epsilon_simd);
+                    const auto over_epsilon_mask   = _mm_movemask_pd(over_epsilon);
+
+                    if (over_epsilon_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, epsilon, trailer_start);
+            }
+        }
+
+        return sse_1::Compare(lhs, rhs, epsilon);
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
+        if constexpr (std::is_same_v<Type, double> == true) {
+            constexpr auto block_size = 2;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value     = _mm_loadu_pd(lhs_buffer);
+                    const auto rhs_value     = _mm_loadu_pd(rhs_buffer);
+                    const auto is_equal      = _mm_cmpeq_pd(lhs_value, rhs_value);
+                    const auto is_equal_mask = _mm_movemask_pd(is_equal);
+
+                    if (is_equal_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, trailer_start);
+            }
+        }
+
+        return sse_1::Compare(lhs, rhs);
+    }
+} // namespace detail::vector::sse_2
+
+namespace detail::vector::avx_1 {
+    template <typename Type, size_t Dimensions>
+    inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            if constexpr (Dimensions >= 8) {
+                constexpr auto block_size    = 8;
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto output        = Vector<Type, Dimensions> {};
+                auto output_buffer = &output.elements[0];
+
+                const auto broadcast     = _mm256_set1_ps(input_value);
+                const auto broadcast_raw = _mm256_castps_si256(broadcast);
+
+                for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
+                    _mm256_storeu_si256((__m256i_u*)output_buffer, broadcast_raw);
+
+                    output_buffer += block_size;
+                }
+
+                for (auto index = trailer_start; index < Dimensions; index++) {
+                    Write(output, index, input_value);
+                }
+
+                return output;
+            }
+        }
+
+        if constexpr (std::is_same_v<Type, double> == true) {
+            if constexpr (Dimensions >= 4) {
+                constexpr auto block_size    = 4;
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto output        = Vector<Type, Dimensions> {};
+                auto output_buffer = &output.elements[0];
+
+                const auto broadcast     = _mm256_set1_pd(input_value);
+                const auto broadcast_raw = _mm256_castpd_si256(broadcast);
+
+                for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
+                    _mm256_storeu_si256((__m256i_u*)output_buffer, broadcast_raw);
+
+                    output_buffer += block_size;
+                }
+
+                for (auto index = trailer_start; index < Dimensions; index++) {
+                    Write(output, index, input_value);
+                }
+
+                return output;
+            }
+        }
+
+        return sse_2::VectorFromBroadcast<Type, Dimensions>(input_value);
+    }
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            constexpr auto block_size = 8;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                const auto epsilon_simd = _mm256_set1_ps(epsilon);
+                const auto sign_simd    = _mm256_set1_ps(-0);
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value           = _mm256_loadu_ps(lhs_buffer);
+                    const auto rhs_value           = _mm256_loadu_ps(rhs_buffer);
+                    const auto difference          = _mm256_sub_ps(lhs_value, rhs_value);
+                    const auto absolute_difference = _mm256_and_ps(sign_simd, difference);
+                    const auto over_epsilon        = _mm256_cmp_ps(absolute_difference, epsilon_simd, _CMP_GT_OQ);
+                    const auto over_epsilon_mask   = _mm256_movemask_ps(over_epsilon);
+
+                    if (over_epsilon_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, epsilon, trailer_start);
+            }
+        }
+
+        if constexpr (std::is_same_v<Type, double> == true) {
+            constexpr auto block_size = 4;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                const auto epsilon_simd = _mm256_set1_pd(epsilon);
+                const auto sign_simd    = _mm256_set1_pd(-0);
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value           = _mm256_loadu_pd(lhs_buffer);
+                    const auto rhs_value           = _mm256_loadu_pd(rhs_buffer);
+                    const auto difference          = _mm256_sub_pd(lhs_value, rhs_value);
+                    const auto absolute_difference = _mm256_and_pd(sign_simd, difference);
+                    const auto over_epsilon        = _mm256_cmp_pd(absolute_difference, epsilon_simd, _CMP_GT_OQ);
+                    const auto over_epsilon_mask   = _mm256_movemask_pd(over_epsilon);
+
+                    if (over_epsilon_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, epsilon, trailer_start);
+            }
+        }
+
+        return sse_2::Compare(lhs, rhs, epsilon);
+    }
+
+    template <typename Type, size_t Dimensions>
+    inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
+        if constexpr (std::is_same_v<Type, float> == true) {
+            constexpr auto block_size = 8;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value     = _mm256_loadu_ps(lhs_buffer);
+                    const auto rhs_value     = _mm256_loadu_ps(rhs_buffer);
+                    const auto is_equal      = _mm256_cmp_ps(lhs_value, rhs_value, _CMP_EQ_OQ);
+                    const auto is_equal_mask = _mm256_movemask_ps(is_equal);
+
+                    if (is_equal_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, trailer_start);
+            }
+        }
+
+        if constexpr (std::is_same_v<Type, double> == true) {
+            constexpr auto block_size = 4;
+
+            if constexpr (Dimensions >= block_size) {
+                constexpr auto simd_blocks   = Dimensions / block_size;
+                constexpr auto trailer_start = (simd_blocks * block_size) - 1;
+
+                auto lhs_buffer = &lhs.elements[0];
+                auto rhs_buffer = &rhs.elements[0];
+
+                for (auto index = size_t {0}; index < simd_blocks; index++) {
+                    const auto lhs_value     = _mm256_loadu_pd(lhs_buffer);
+                    const auto rhs_value     = _mm256_loadu_pd(rhs_buffer);
+                    const auto is_equal      = _mm256_cmp_pd(lhs_value, rhs_value, _CMP_EQ_OQ);
+                    const auto is_equal_mask = _mm256_movemask_pd(is_equal);
+
+                    if (is_equal_mask != 0) {
+                        return false;
+                    }
+
+                    lhs_buffer += block_size;
+                    rhs_buffer += block_size;
+                }
+
+                return internal::CompareTrailer(lhs, rhs, trailer_start);
+            }
+        }
+
+        return sse_2::Compare(lhs, rhs);
+    }
+} // namespace detail::vector::avx_1
 
 template <typename Type, size_t Dimensions>
 inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensions> {
@@ -233,221 +523,10 @@ inline auto VectorFromBroadcast(const Type& input_value) -> Vector<Type, Dimensi
 
 template <typename Type, size_t Dimensions>
 inline auto VectorFromZero() -> Vector<Type, Dimensions> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero = MathConstants<Type>::Zero;
 
-    return VectorFromBroadcast<Type, Dimensions>(zero_positive);
+    return VectorFromBroadcast<Type, Dimensions>(zero);
 }
-
-namespace detail {
-    namespace vector {
-        namespace internal {
-            template <typename Type, size_t Dimensions>
-            inline auto CompareWorker(const Vector<Type, Dimensions>& lhs,
-                                      const Vector<Type, Dimensions>& rhs,
-                                      const Type&                     epsilon,
-                                      size_t                          start_index,
-                                      size_t                          end_index) -> bool {
-                for (auto index = start_index; index < end_index; index++) {
-                    const auto lhs_value           = Read(lhs, index);
-                    const auto rhs_value           = Read(rhs, index);
-                    const auto difference          = Minus(lhs_value, rhs_value);
-                    const auto absolute_difference = Absolute(difference);
-                    const auto over_epsilon        = GreaterThan(absolute_difference, epsilon);
-
-                    if (over_epsilon == true) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        } // namespace internal
-
-        namespace base {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
-                return internal::CompareWorker(lhs, rhs, epsilon, 0, Dimensions);
-            }
-        } // namespace base
-
-        namespace sse_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        const auto epsilon_simd = _mm_set1_ps(epsilon);
-                        const auto sign_simd    = _mm_set1_ps(-0);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value           = _mm_loadu_ps(lhs_buffer);
-                            const auto rhs_value           = _mm_loadu_ps(rhs_buffer);
-                            const auto difference          = _mm_sub_ps(lhs_value, rhs_value);
-                            const auto absolute_difference = _mm_and_ps(sign_simd, difference);
-                            const auto over_epsilon        = _mm_cmpgt_ps(absolute_difference, epsilon_simd);
-                            const auto over_epsilon_mask   = _mm_movemask_ps(over_epsilon);
-
-                            if (over_epsilon_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, epsilon, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return base::Compare(lhs, rhs, epsilon);
-            }
-        } // namespace sse_1
-
-        namespace sse_2 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 2) {
-                        constexpr auto block_size     = 2;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        const auto epsilon_simd = _mm_set1_pd(epsilon);
-                        const auto sign_simd    = _mm_set1_pd(-0);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value           = _mm_loadu_pd(lhs_buffer);
-                            const auto rhs_value           = _mm_loadu_pd(rhs_buffer);
-                            const auto difference          = _mm_sub_pd(lhs_value, rhs_value);
-                            const auto absolute_difference = _mm_and_pd(sign_simd, difference);
-                            const auto over_epsilon        = _mm_cmpgt_pd(absolute_difference, epsilon_simd);
-                            const auto over_epsilon_mask   = _mm_movemask_pd(over_epsilon);
-
-                            if (over_epsilon_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, epsilon, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return sse_1::Compare(lhs, rhs, epsilon);
-            }
-        } // namespace sse_2
-
-        namespace avx_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 8) {
-                        constexpr auto block_size     = 8;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        const auto epsilon_simd = _mm256_set1_ps(epsilon);
-                        const auto sign_simd    = _mm256_set1_ps(-0);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value           = _mm256_loadu_ps(lhs_buffer);
-                            const auto rhs_value           = _mm256_loadu_ps(rhs_buffer);
-                            const auto difference          = _mm256_sub_ps(lhs_value, rhs_value);
-                            const auto absolute_difference = _mm256_and_ps(sign_simd, difference);
-                            const auto over_epsilon        = _mm256_cmp_ps(absolute_difference, epsilon_simd, _CMP_GT_OS);
-                            const auto over_epsilon_mask   = _mm256_movemask_ps(over_epsilon);
-
-                            if (over_epsilon_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, epsilon, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        const auto epsilon_simd = _mm256_set1_pd(epsilon);
-                        const auto sign_simd    = _mm256_set1_pd(-0);
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value           = _mm256_loadu_pd(lhs_buffer);
-                            const auto rhs_value           = _mm256_loadu_pd(rhs_buffer);
-                            const auto difference          = _mm256_sub_pd(lhs_value, rhs_value);
-                            const auto absolute_difference = _mm256_and_pd(sign_simd, difference);
-                            const auto over_epsilon        = _mm256_cmp_pd(absolute_difference, epsilon_simd, _CMP_GT_OS);
-                            const auto over_epsilon_mask   = _mm256_movemask_pd(over_epsilon);
-
-                            if (over_epsilon_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, epsilon, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return sse_1::Compare(lhs, rhs, epsilon);
-            }
-        } // namespace avx_1
-    }     // namespace vector
-} // namespace detail
 
 template <typename Type, size_t Dimensions>
 inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon) -> bool {
@@ -467,193 +546,6 @@ inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dime
 
     return detail::vector::base::Compare(lhs, rhs, epsilon);
 }
-
-namespace detail {
-    namespace vector {
-        namespace internal {
-            template <typename Type, size_t Dimensions>
-            inline auto
-            CompareWorker(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, size_t start_index, size_t end_index)
-              -> bool {
-                for (auto index = start_index; index < end_index; index++) {
-                    const auto lhs_value = Read(lhs, index);
-                    const auto rhs_value = Read(rhs, index);
-                    const auto is_equal  = Equal(lhs_value, rhs_value);
-
-                    if (is_equal == false) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        } // namespace internal
-
-        namespace base {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
-                return internal::CompareWorker(lhs, rhs, 0, Dimensions);
-            }
-        } // namespace base
-
-        namespace sse_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value     = _mm_loadu_ps(lhs_buffer);
-                            const auto rhs_value     = _mm_loadu_ps(rhs_buffer);
-                            const auto is_equal      = _mm_cmpeq_ps(lhs_value, rhs_value);
-                            const auto is_equal_mask = _mm_movemask_ps(is_equal);
-
-                            if (is_equal_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return base::Compare(lhs, rhs);
-            }
-        } // namespace sse_1
-
-        namespace sse_2 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 2) {
-                        constexpr auto block_size     = 2;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value     = _mm_loadu_pd(lhs_buffer);
-                            const auto rhs_value     = _mm_loadu_pd(rhs_buffer);
-                            const auto is_equal      = _mm_cmpeq_pd(lhs_value, rhs_value);
-                            const auto is_equal_mask = _mm_movemask_pd(is_equal);
-
-                            if (is_equal_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return sse_1::Compare(lhs, rhs);
-            }
-        } // namespace sse_2
-
-        namespace avx_1 {
-            template <typename Type, size_t Dimensions>
-            inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
-                if constexpr (std::is_same_v<Type, float> == true) {
-                    if constexpr (Dimensions >= 8) {
-                        constexpr auto block_size     = 8;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value     = _mm256_loadu_ps(lhs_buffer);
-                            const auto rhs_value     = _mm256_loadu_ps(rhs_buffer);
-                            const auto is_equal      = _mm256_cmp_ps(lhs_value, rhs_value, _CMP_EQ_OQ);
-                            const auto is_equal_mask = _mm256_movemask_ps(is_equal);
-
-                            if (is_equal_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                if constexpr (std::is_same_v<Type, double> == true) {
-                    if constexpr (Dimensions >= 4) {
-                        constexpr auto block_size     = 4;
-                        constexpr auto simd_blocks    = Dimensions / block_size;
-                        constexpr auto trailer_blocks = Dimensions % block_size;
-
-                        auto lhs_buffer = &lhs.elements[0];
-                        auto rhs_buffer = &rhs.elements[0];
-
-                        for (auto index = size_t {0}; index < simd_blocks; index += block_size) {
-                            const auto lhs_value     = _mm256_loadu_pd(lhs_buffer);
-                            const auto rhs_value     = _mm256_loadu_pd(rhs_buffer);
-                            const auto is_equal      = _mm256_cmp_pd(lhs_value, rhs_value, _CMP_EQ_OQ);
-                            const auto is_equal_mask = _mm256_movemask_pd(is_equal);
-
-                            if (is_equal_mask != 0) {
-                                return false;
-                            }
-
-                            lhs_buffer += block_size;
-                            rhs_buffer += block_size;
-                        }
-
-                        if constexpr (trailer_blocks != 0) {
-                            constexpr auto trailer_start = (simd_blocks * block_size) - 1;
-                            constexpr auto trailer_end   = trailer_start + trailer_blocks;
-
-                            return internal::CompareWorker(lhs, rhs, trailer_start, trailer_end);
-                        }
-
-                        return true;
-                    }
-                }
-
-                return sse_1::Compare(lhs, rhs);
-            }
-        } // namespace avx_1
-    }     // namespace vector
-} // namespace detail
 
 template <typename Type, size_t Dimensions>
 inline auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> bool {
@@ -793,16 +685,16 @@ inline auto Divide(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimen
 
 template <typename Type, size_t Dimensions>
 inline auto Truncate(const Vector<Type, Dimensions>& input, const Type& output_length) -> Vector<Type, Dimensions> {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero = MathConstants<Type>::Zero;
 
     auto output = VectorFromZero<Type, Dimensions>();
 
-    if (output_length == zero_positive) {
+    if (output_length == zero) {
         return output;
     }
 
     const auto output_length_squared = Multiply(output_length, output_length);
-    auto       input_length_squared  = zero_positive;
+    auto       input_length_squared  = zero;
 
     for (auto index = size_t {0}; index < Dimensions; index++) {
         const auto input_value   = Read(input, index);
@@ -836,16 +728,16 @@ inline auto Truncate(const Vector<Type, Dimensions>& input, const Type& output_l
 
 template <typename Type, size_t Dimensions>
 inline auto Normalize(const Vector<Type, Dimensions>& input) -> Vector<Type, Dimensions> {
-    constexpr auto one_positive = Constants<Type>::OnePositive;
+    constexpr auto one_positive = MathConstants<Type>::OnePositive;
 
     return Truncate(input, one_positive);
 }
 
 template <typename Type, size_t Dimensions>
 inline auto DotProduct(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs) -> Type {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero = MathConstants<Type>::Zero;
 
-    auto output_value = zero_positive;
+    auto output_value = zero;
 
     for (auto index = size_t {0}; index < Dimensions; index++) {
         const auto lhs_value = Read(lhs, index);
@@ -890,9 +782,9 @@ inline auto CrossProduct(const Vector<Type, 3>& lhs, const Vector<Type, 3>& rhs)
 
 template <typename Type, size_t Dimensions>
 inline auto Length(const Vector<Type, Dimensions>& input) -> Type {
-    constexpr auto zero_positive = Constants<Type>::ZeroPositive;
+    constexpr auto zero = MathConstants<Type>::Zero;
 
-    auto output_value = zero_positive;
+    auto output_value = zero;
 
     for (auto index = size_t {0}; index < Dimensions; index++) {
         const auto input_value   = Read(input, index);
@@ -927,7 +819,7 @@ inline auto Clamp(const Vector<Type, Dimensions>& input, const Type& minimum, co
 
 template <typename Type, size_t Dimensions>
 inline auto Snap(const Vector<Type, Dimensions>& input) -> Vector<Type, Dimensions> {
-    constexpr auto one_half_plus = Constants<Type>::OneHalfPlus;
+    constexpr auto one_half_plus = MathConstants<Type>::OneHalfPlus;
 
     auto output = VectorFromZero<Type, Dimensions>();
 
