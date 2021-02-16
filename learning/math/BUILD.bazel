@@ -13,6 +13,7 @@ cc_binary(
         "math/matrix/geometry/orthographic_projection.inl",
         "math/matrix/geometry/view_space.inl",
         "math/matrix/matrix.inl",
+        "math/plane/plane.inl",
         "math/vector/vector.inl",
     ],
     copts = [

@@ -1,4 +1,9 @@
 template <typename Type>
+concept Integral = requires(Type) {
+    std::is_integral_v<Type>;
+};
+
+template <typename Type>
 concept Decimal = requires(Type) {
     std::is_floating_point_v<Type>;
 };
@@ -67,10 +72,10 @@ struct Constants {
 };
 
 namespace detail {
-    template <typename Type, size_t Elements>
+    template <typename Type, size_t Dimensions>
     concept SizedVector = requires(Type) {
         std::is_floating_point_v<Type>;
-        Elements > 0;
+        Dimensions > 0;
     };
 
     template <typename Type, size_t Rows, size_t Columns>
@@ -79,14 +84,51 @@ namespace detail {
         Rows > 0;
         Columns > 0;
     };
+
+    template <typename Type, size_t Dimensions>
+    concept SizedPlane = requires(Type) {
+        std::is_floating_point_v<Type>;
+        Dimensions > 0;
+    };
 } // namespace detail
 
-template <typename Type, size_t Elements>
-requires detail::SizedVector<Type, Elements> struct Vector {
-    Type elements[Elements];
+constexpr auto VectorXComponent = size_t {0};
+constexpr auto VectorYComponent = size_t {1};
+constexpr auto VectorZComponent = size_t {2};
+constexpr auto VectorWComponent = size_t {3};
+
+template <typename Type, size_t Dimensions>
+requires detail::SizedVector<Type, Dimensions> struct Vector {
+    Type elements[Dimensions];
 };
 
 template <typename Type, size_t Rows, size_t Columns>
 requires detail::SizedMatrix<Type, Rows, Columns> struct Matrix {
     Type elements[Rows][Columns];
+};
+
+enum class PlaneType {
+    PositiveX = 0,
+    PositiveY = 1,
+    PositiveZ = 2,
+    NegativeX = 3,
+    NegativeY = 4,
+    NegativeZ = 5,
+    TrueAxial = 6,
+    ZeroX     = 6,
+    ZeroY     = 7,
+    ZeroZ     = 8,
+    NonAxial  = 9,
+};
+
+enum class Side {
+    On,
+    Front,
+    Back,
+};
+
+template <typename Type, size_t Dimensions>
+requires detail::SizedPlane<Type, Dimensions> struct Plane {
+    Vector<Type, Dimensions> normal;
+    Type                     distance;
 };

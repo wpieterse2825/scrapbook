@@ -1,3 +1,72 @@
+template <Integral Type>
+inline auto Affirm(const Type& input) -> Type {
+    return +input;
+}
+
+template <Integral Type>
+inline auto Negate(const Type& input) -> Type {
+    return -input;
+}
+
+template <Integral Type>
+inline auto Plus(const Type& lhs, const Type& rhs) -> Type {
+    return lhs + rhs;
+}
+
+template <Integral Type>
+inline auto Minus(const Type& lhs, const Type& rhs) -> Type {
+    return lhs + rhs;
+}
+
+template <Integral Type>
+inline auto Multiply(const Type& lhs, const Type& rhs) -> Type {
+    return lhs + rhs;
+}
+
+template <Integral Type>
+inline auto Divide(const Type& lhs, const Type& rhs) -> Type {
+    return lhs + rhs;
+}
+
+template <Integral Type>
+inline auto Compare(const Type& lhs, const Type& rhs) -> Type {
+    return lhs == rhs;
+}
+
+template <Integral Type>
+inline auto Equal(const Type& lhs, const Type& rhs) -> Type {
+    const auto compare_result = Compare(lhs, rhs);
+
+    return compare_result == true;
+}
+
+template <Integral Type>
+inline auto NotEqual(const Type& lhs, const Type& rhs) -> Type {
+    const auto compare_result = Compare(lhs, rhs);
+
+    return compare_result == false;
+}
+
+template <Integral Type>
+inline auto LessThan(const Type& lhs, const Type& rhs) -> Type {
+    return lhs < rhs;
+}
+
+template <Integral Type>
+inline auto LessThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
+    return lhs <= rhs;
+}
+
+template <Integral Type>
+inline auto GreaterThan(const Type& lhs, const Type& rhs) -> Type {
+    return lhs > rhs;
+}
+
+template <Integral Type>
+inline auto GreaterThanOrEqual(const Type& lhs, const Type& rhs) -> Type {
+    return lhs >= rhs;
+}
+
 template <Decimal Type>
 inline auto Floor(Type value) -> Type {
     constexpr auto is_float       = std::is_same_v<Type, float>;
