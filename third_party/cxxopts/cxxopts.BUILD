@@ -5,9 +5,12 @@ load(
 
 cc_library(
     name = "cxxopts",
-    hdrs = [
-        "cxxopts.hpp",
-    ],
+    hdrs = glob(
+        [
+            "include/*.hpp",
+        ],
+    ),
+    strip_include_prefix = "include",
     visibility = [
         "//visibility:public",
     ],

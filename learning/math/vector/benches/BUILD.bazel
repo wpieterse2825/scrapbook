@@ -11,7 +11,7 @@ cc_library(
     ],
     deps = [
         "//learning/math",
-        "//third_party/celero",
+        "@com_github_digitalinblue_celero//:celero",
     ],
 )
 

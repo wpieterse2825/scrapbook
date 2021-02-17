@@ -4,11 +4,8 @@ load(
 )
 
 cc_binary(
-    name = "parser_bench",
+    name = "parser",
     srcs = [
         "main.cpp",
-    ],
-    deps = [
-        "//third_party/celero",
     ],
 )

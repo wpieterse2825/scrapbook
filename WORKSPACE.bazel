@@ -18,28 +18,28 @@ http_archive(
 
 http_archive(
     name = "rules_cc",
-    sha256 = "ad81ad11d63e97873dda3289383dd733f99f12fadeeadb14227a45e894437dd8",
-    strip_prefix = "rules_cc-ab2abd3ddc241b4e0067c80b3bdd4e384172cd6d",
+    sha256 = "56ac9633c13d74cb71e0546f103ce1c58810e4a76aa8325da593ca4277908d72",
+    strip_prefix = "rules_cc-40548a2974f1aea06215272d9c2b47a14a24e556",
     urls = [
-        "https://github.com/bazelbuild/rules_cc/archive/ab2abd3ddc241b4e0067c80b3bdd4e384172cd6d.zip",
+        "https://github.com/bazelbuild/rules_cc/archive/40548a2974f1aea06215272d9c2b47a14a24e556.zip",
     ],
 )
 
 http_archive(
     name = "rules_python",
-    sha256 = "09d08c6168b5a732cec1366392fb84f6d9f05a1019dcd126eef1150cdf63e92a",
-    strip_prefix = "rules_python-8537cea11d867333c07c465d536778c1b7560cde",
+    sha256 = "a83c49226394d80442bf1e872ed02b1a5633969b5ec7f7f5644b2852019e76d7",
+    strip_prefix = "rules_python-6135186f93d46ab8551d9fe52bac97bf0c2de1ab",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/8537cea11d867333c07c465d536778c1b7560cde.zip",
+        "https://github.com/bazelbuild/rules_python/archive/6135186f93d46ab8551d9fe52bac97bf0c2de1ab.zip",
     ],
 )
 
 http_archive(
     name = "rules_proto",
-    sha256 = "2a20fd8af3cad3fbab9fd3aec4a137621e0c31f858af213a7ae0f997723fc4a9",
-    strip_prefix = "rules_proto-a0761ed101b939e19d83b2da5f59034bffc19c12",
+    sha256 = "9fc210a34f0f9e7cc31598d109b5d069ef44911a82f507d5a88716db171615a8",
+    strip_prefix = "rules_proto-f7a30f6f80006b591fa7c437fe5a951eb10bcbcf",
     urls = [
-        "https://github.com/bazelbuild/rules_proto/archive/a0761ed101b939e19d83b2da5f59034bffc19c12.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/f7a30f6f80006b591fa7c437fe5a951eb10bcbcf.tar.gz",
     ],
 )
 
@@ -62,9 +62,29 @@ rules_proto_toolchains()
 
 http_archive(
     name = "com_github_google_googletest",
-    sha256 = "2b9ce7cfb1ed140cff3e9828e3948e105a5635b8579febef094ce302915a6b04",
-    strip_prefix = "googletest-273f8cb059a4e7b089731036392422b5ef489791",
+    sha256 = "5cf189eb6847b4f8fc603a3ffff3b0771c08eec7dd4bd961bfd45477dd13eb73",
+    strip_prefix = "googletest-609281088cfefc76f9d0ce82e1ff6c30cc3591e5",
     urls = [
-        "https://github.com/google/googletest/archive/273f8cb059a4e7b089731036392422b5ef489791.zip",
+        "https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip",
+    ],
+)
+
+http_archive(
+    name = "com_github_digitalinblue_celero",
+    build_file = "@//:third_party/celero/celero.BUILD",
+    sha256 = "8002bc267cd5b9802eb224d18fc29bebb28bad53048ba4b2c57d87b7fbdf8e7a",
+    strip_prefix = "Celero-0d7b24d77216e3b99382a2be139b44a57d1771f6",
+    urls = [
+        "https://github.com/digitalinblue/celero/archive/0d7b24d77216e3b99382a2be139b44a57d1771f6.zip",
+    ],
+)
+
+http_archive(
+    name = "com_github_jarro2783_cxxopts",
+    build_file = "@//:third_party/cxxopts/cxxopts.BUILD",
+    sha256 = "1da3a984751e3ea38094deb8843d024265f5ea05ed901bab3743e81ab9aabe8a",
+    strip_prefix = "cxxopts-aaa5e790b6b5b4c9de0b1ca3346ed0c2e55e4e03",
+    urls = [
+        "https://github.com/jarro2783/cxxopts/archive/aaa5e790b6b5b4c9de0b1ca3346ed0c2e55e4e03.zip",
     ],
 )

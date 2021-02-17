@@ -51,6 +51,8 @@ int main(int argument_count, char** arguments) {
 
                 brushes++;
                 for (const auto& side : brush.sides()) {
+                    (void)side; // Stop compiler warning.
+
                     sides++;
                 }
             } else if (primitive_type == Primitive::kPatch) {

@@ -12,7 +12,7 @@ cc_binary(
         "//visibility:public",
     ],
     deps = [
-        "//third_party/cxxopts",
         "@bazel_tools//src/main/protobuf:worker_protocol_cc_proto",
+        "@com_github_jarro2783_cxxopts//:cxxopts",
     ],
 )
