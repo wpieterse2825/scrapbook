@@ -12,6 +12,61 @@ namespace detail {
     constexpr auto DefaultBenchDimensions     = size_t {127};
 } // namespace detail
 
+constexpr auto MathSIMDEnabled     = true;
+constexpr auto MathSIMDEnableSSE1  = true;
+constexpr auto MathSIMDEnableSSE2  = true;
+constexpr auto MathSIMDEanbleSSE3  = true;
+constexpr auto MathSIMDEnableSSSE3 = true;
+constexpr auto MathSIMDEnableSSE41 = true;
+constexpr auto MathSIMDEnableSSE42 = true;
+constexpr auto MathSIMDEnableAVX1  = true;
+constexpr auto MathSIMDEnableAVX2  = true;
+
+template <typename Type>
+concept Arithmetic = requires(Type) {
+    std::is_arithmetic_v<Type>;
+};
+
+template <typename Type>
+concept Decimal = requires(Type) {
+    std::is_floating_point_v<Type>;
+};
+
+template <Decimal Type>
+struct MathConstants {
+    static constexpr auto Zero    = Type {0.0};
+    static constexpr auto OneHalf = Type {0.5};
+    static constexpr auto One     = Type {1.0};
+    static constexpr auto TwoHalf = Type {1.5};
+    static constexpr auto Two     = Type {2.0};
+    static constexpr auto Three   = Type {3.0};
+    static constexpr auto Four    = Type {4.0};
+
+    static constexpr auto Epsilon      = Type {1e-4};
+    static constexpr auto BelowEpsilon = Epsilon - Type {1e-5};
+    static constexpr auto Pi           = Type {M_PI};
+
+    static constexpr auto DegreesOneQuarter    = Type {90.0};
+    static constexpr auto DegreesTwoQuarters   = Type {180.0};
+    static constexpr auto DegreesThreeQuarters = Type {270.0};
+    static constexpr auto DegreesFourQuarters  = Type {320.0};
+
+    static constexpr auto RadiansOneQuarter    = Type {Pi * OneHalf};
+    static constexpr auto RadiansTwoQuarters   = Type {Pi * One};
+    static constexpr auto RadiansThreeQuarters = Type {Pi * TwoHalf};
+    static constexpr auto RadiansFourQuarters  = Type {Pi * Two};
+};
+
+template <typename Type>
+constexpr auto IsSinglePrecision() -> bool {
+    return std::is_same_v<Type, float>;
+}
+
+template <typename Type>
+constexpr auto IsDoublePrecision() -> bool {
+    return std::is_same_v<Type, double>;
+}
+
 template <Arithmetic Type>
 constexpr auto Affirm(const Type& input) -> Type {
     return +input;
