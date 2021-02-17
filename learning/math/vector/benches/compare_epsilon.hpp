@@ -1,31 +1,27 @@
-#pragma once
-
 #include "learning/math/vector/benches/shared.hpp"
 
-constexpr auto Epsilon = DataType {0.1};
+using CompareEpsilonFixture = DoubleItemFixture<DataType, detail::DefaultBenchDimensions>;
 
-using CompareEpsilonFixture = DoubleItemFixture<DataType, DefaultBenchDimensions>;
-
-BASELINE_F(CompareEpsilon, Plain, CompareEpsilonFixture, DefaultBenchSampleCount, DefaultBenchIterationCount) {
-    auto output = detail::vector::base::Compare(this->lhs, this->rhs, Epsilon);
+BASELINE_F(CompareEpsilon, Geeneral, CompareEpsilonFixture, detail::DefaultBenchSampleCount, detail::DefaultBenchIterationCount) {
+    auto output = detail::vector::general::Compare(this->lhs, this->rhs, MathConstants<DataType>::Epsilon);
 
     celero::DoNotOptimizeAway(output == false);
 }
 
-BENCHMARK_F(CompareEpsilon, SSE_1, CompareEpsilonFixture, DefaultBenchSampleCount, DefaultBenchIterationCount) {
-    auto output = detail::vector::sse_1::Compare(this->lhs, this->rhs, Epsilon);
+BENCHMARK_F(CompareEpsilon, SSE_1, CompareEpsilonFixture, detail::DefaultBenchSampleCount, detail::DefaultBenchIterationCount) {
+    auto output = detail::vector::sse_1::Compare(this->lhs, this->rhs, MathConstants<DataType>::Epsilon);
 
     celero::DoNotOptimizeAway(output == false);
 }
 
-BENCHMARK_F(CompareEpsilon, SSE_2, CompareEpsilonFixture, DefaultBenchSampleCount, DefaultBenchIterationCount) {
-    auto output = detail::vector::sse_2::Compare(this->lhs, this->rhs, Epsilon);
+BENCHMARK_F(CompareEpsilon, SSE_2, CompareEpsilonFixture, detail::DefaultBenchSampleCount, detail::DefaultBenchIterationCount) {
+    auto output = detail::vector::sse_2::Compare(this->lhs, this->rhs, MathConstants<DataType>::Epsilon);
 
     celero::DoNotOptimizeAway(output == false);
 }
 
-BENCHMARK_F(CompareEpsilon, AVX_1, CompareEpsilonFixture, DefaultBenchSampleCount, DefaultBenchIterationCount) {
-    auto output = detail::vector::avx_1::Compare(this->lhs, this->rhs, Epsilon);
+BENCHMARK_F(CompareEpsilon, AVX_1, CompareEpsilonFixture, detail::DefaultBenchSampleCount, detail::DefaultBenchIterationCount) {
+    auto output = detail::vector::avx_1::Compare(this->lhs, this->rhs, MathConstants<DataType>::Epsilon);
 
     celero::DoNotOptimizeAway(output == false);
 }

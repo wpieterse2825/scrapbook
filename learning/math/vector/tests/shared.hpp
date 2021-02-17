@@ -1,11 +1,8 @@
-#pragma once
-
 #include <assert.h>
 #include <math.h>
 
 #include <immintrin.h>
 
-#include <limits>
 #include <iostream>
 
 #include <gtest/gtest.h>
@@ -37,7 +34,7 @@ using TestTypeCollection = testing::Types<TestParameter<float, 1>,
                                           TestParameter<float, 14>,
                                           TestParameter<float, 15>,
                                           TestParameter<float, 16>,
-                                          TestParameter<float, DefaultTestDimensions>,
+                                          TestParameter<float, detail::DefaultTestDimensions>,
                                           TestParameter<double, 1>,
                                           TestParameter<double, 2>,
                                           TestParameter<double, 3>,
@@ -54,4 +51,4 @@ using TestTypeCollection = testing::Types<TestParameter<float, 1>,
                                           TestParameter<double, 14>,
                                           TestParameter<double, 15>,
                                           TestParameter<double, 16>,
-                                          TestParameter<double, DefaultTestDimensions>>;
+                                          TestParameter<double, detail::DefaultTestDimensions>>;

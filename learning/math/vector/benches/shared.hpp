@@ -1,5 +1,3 @@
-#pragma once
-
 #include <assert.h>
 #include <math.h>
 
@@ -7,9 +5,13 @@
 
 #include <iostream>
 
+#include <celero/Celero.h>
+
 #include "learning/math/math.hpp"
 #include "learning/math/math.inl"
 #include "learning/math/vector/vector.inl"
+
+CELERO_MAIN
 
 template <typename Type, size_t Dimensions>
 class SingleItemFixture : public celero::TestFixture {

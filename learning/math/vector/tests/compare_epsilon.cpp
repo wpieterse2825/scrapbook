@@ -5,34 +5,37 @@ class CompareEpsilonTest : public testing::Test {};
 
 TYPED_TEST_SUITE(CompareEpsilonTest, TestTypeCollection);
 
-template <typename DataType, size_t Dimensions>
-static auto AssertCompareImplementations(const Vector<DataType, Dimensions>& lhs,
-                                         const Vector<DataType, Dimensions>& rhs,
-                                         const DataType&                     epsilon,
-                                         bool                                expected_result) -> void {
-    if constexpr (VectorSIMDEnabled == true) {
-        if constexpr (VectorSIMDUseAVX1 == true) {
-            const auto computed_result_avx_1 = detail::vector::avx_1::Compare(lhs, rhs, epsilon);
+template <typename Type, size_t Dimensions>
+static auto Compare(const Vector<Type, Dimensions>& lhs, const Vector<Type, Dimensions>& rhs, const Type& epsilon, bool outcome) -> void {
+    constexpr auto simd_enabled       = MathSIMDEnabled;
+    constexpr auto simd_enabled_avx_1 = MathSIMDEnableAVX1;
+    constexpr auto simd_enabled_sse_2 = MathSIMDEnableSSE2;
+    constexpr auto simd_enabled_sse_1 = MathSIMDEnableSSE1;
+    constexpr auto simd_use_avx_1     = simd_enabled == true && simd_enabled_avx_1 == true;
+    constexpr auto simd_use_sse_2     = simd_enabled == true && simd_enabled_sse_2 == true;
+    constexpr auto simd_use_sse_1     = simd_enabled == true && simd_enabled_sse_1 == true;
 
-            EXPECT_EQ(computed_result_avx_1, expected_result) << "Implementation - AVX 1";
-        }
+    if constexpr (simd_use_avx_1 == true) {
+        const auto computed_avx_1 = detail::vector::avx_1::Compare(lhs, rhs, epsilon);
 
-        if constexpr (VectorSIMDUseSSE2 == true) {
-            const auto computed_result_sse_2 = detail::vector::sse_2::Compare(lhs, rhs, epsilon);
-
-            EXPECT_EQ(computed_result_sse_2, expected_result) << "Implementation - SSE 2";
-        }
-
-        if constexpr (VectorSIMDUseSSE1 == true) {
-            const auto computed_result_sse_1 = detail::vector::sse_1::Compare(lhs, rhs, epsilon);
-
-            EXPECT_EQ(computed_result_sse_1, expected_result) << "Implementation - SSE 1";
-        }
+        EXPECT_EQ(computed_avx_1, outcome) << "Implementation - AVX 1";
     }
 
-    const auto computed_result = detail::vector::base::Compare(lhs, rhs, epsilon);
+    if constexpr (simd_use_sse_2 == true) {
+        const auto computed_sse_2 = detail::vector::sse_2::Compare(lhs, rhs, epsilon);
 
-    EXPECT_EQ(computed_result, expected_result) << "Implementation - General";
+        EXPECT_EQ(computed_sse_2, outcome) << "Implementation - SSE 2";
+    }
+
+    if constexpr (simd_use_sse_1 == true) {
+        const auto computed_sse_1 = detail::vector::sse_1::Compare(lhs, rhs, epsilon);
+
+        EXPECT_EQ(computed_sse_1, outcome) << "Implementation - SSE 1";
+    }
+
+    const auto computed_general = detail::vector::general::Compare(lhs, rhs, epsilon);
+
+    EXPECT_EQ(computed_general, outcome) << "Implementation - General";
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselinePassAllElementsPositive) {
@@ -52,7 +55,7 @@ TYPED_TEST(CompareEpsilonTest, BaselinePassAllElementsPositive) {
         Write(rhs, index, positive_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselinePassLastElementPositive) {
@@ -71,7 +74,7 @@ TYPED_TEST(CompareEpsilonTest, BaselinePassLastElementPositive) {
     Write(lhs, last_element, positive_value);
     Write(rhs, last_element, positive_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselinePassAllElementsNegative) {
@@ -91,7 +94,7 @@ TYPED_TEST(CompareEpsilonTest, BaselinePassAllElementsNegative) {
         Write(rhs, index, negative_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselinePassLastElementNegative) {
@@ -110,7 +113,7 @@ TYPED_TEST(CompareEpsilonTest, BaselinePassLastElementNegative) {
     Write(lhs, last_element, negative_value);
     Write(rhs, last_element, negative_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselineFailAllElementsOpposite) {
@@ -131,7 +134,7 @@ TYPED_TEST(CompareEpsilonTest, BaselineFailAllElementsOpposite) {
         Write(rhs, index, negative_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, BaselineFailLastElementOpposite) {
@@ -151,7 +154,7 @@ TYPED_TEST(CompareEpsilonTest, BaselineFailLastElementOpposite) {
     Write(lhs, last_element, positive_value);
     Write(rhs, last_element, negative_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsClosePossitve) {
@@ -174,7 +177,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsClosePossitve) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementClosePossitve) {
@@ -196,7 +199,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementClosePossitve) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsCloseNegative) {
@@ -219,7 +222,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsCloseNegative) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementCloseNegative) {
@@ -241,7 +244,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementCloseNegative) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsCloseOpposite) {
@@ -264,7 +267,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonAllElementsCloseOpposite) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementCloseOpposite) {
@@ -286,7 +289,7 @@ TYPED_TEST(CompareEpsilonTest, PassEpsilonLastElementCloseOpposite) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, true);
+    Compare(lhs, rhs, compare_epsilon, true);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsLittleOverPossitve) {
@@ -310,7 +313,7 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsLittleOverPossitve) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementLittleOverPossitve) {
@@ -333,7 +336,7 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementLittleOverPossitve) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsLittleBelowNegative) {
@@ -357,7 +360,7 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsLittleBelowNegative) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementLittleBelowNegative) {
@@ -380,7 +383,7 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementLittleBelowNegative) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsWithLittleOpposite) {
@@ -401,7 +404,7 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonAllElementsWithLittleOpposite) {
         Write(rhs, index, rhs_value);
     }
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }
 
 TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementWithLittleOpposite) {
@@ -421,5 +424,5 @@ TYPED_TEST(CompareEpsilonTest, FailEpsilonLastElementWithLittleOpposite) {
     Write(lhs, last_element, lhs_value);
     Write(rhs, last_element, rhs_value);
 
-    AssertCompareImplementations(lhs, rhs, compare_epsilon, false);
+    Compare(lhs, rhs, compare_epsilon, false);
 }

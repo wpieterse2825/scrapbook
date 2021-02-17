@@ -1,3 +1,13 @@
+constexpr auto MathSIMDEnabled     = true;
+constexpr auto MathSIMDEnableSSE1  = true;
+constexpr auto MathSIMDEnableSSE2  = true;
+constexpr auto MathSIMDEanbleSSE3  = true;
+constexpr auto MathSIMDEnableSSSE3 = true;
+constexpr auto MathSIMDEnableSSE41 = true;
+constexpr auto MathSIMDEnableSSE42 = true;
+constexpr auto MathSIMDEnableAVX1  = true;
+constexpr auto MathSIMDEnableAVX2  = true;
+
 template <typename Type>
 concept Arithmetic = requires(Type) {
     std::is_arithmetic_v<Type>;
@@ -6,6 +16,12 @@ concept Arithmetic = requires(Type) {
 template <typename Type>
 concept Decimal = requires(Type) {
     std::is_floating_point_v<Type>;
+};
+
+enum class Side {
+    On,
+    Front,
+    Back,
 };
 
 template <Decimal Type>
@@ -54,27 +70,6 @@ namespace detail {
     };
 } // namespace detail
 
-constexpr auto VectorSIMDEnabled  = true;
-constexpr auto VectorSIMDUseSSE1  = true;
-constexpr auto VectorSIMDUseSSE2  = true;
-constexpr auto VectorSIMDUseSSE3  = true;
-constexpr auto VectorSIMDUseSSSE3 = true;
-constexpr auto VectorSIMDUseSSE41 = true;
-constexpr auto VectorSIMDUseSSE42 = true;
-constexpr auto VectorSIMDUseAVX1  = true;
-constexpr auto VectorSIMDUseAVX2  = true;
-
-constexpr auto DefaultTestDimensions = size_t {127};
-
-constexpr auto DefaultBenchSampleCount    = 10;
-constexpr auto DefaultBenchIterationCount = 10000000;
-constexpr auto DefaultBenchDimensions     = size_t {127};
-
-constexpr auto VectorXComponent = size_t {0};
-constexpr auto VectorYComponent = size_t {1};
-constexpr auto VectorZComponent = size_t {2};
-constexpr auto VectorWComponent = size_t {3};
-
 template <typename Type, size_t Dimensions>
 requires detail::SizedVector<Type, Dimensions> struct Vector {
     Type elements[Dimensions];
@@ -85,28 +80,18 @@ requires detail::SizedMatrix<Type, Rows, Columns> struct Matrix {
     Type elements[Rows][Columns];
 };
 
-enum class PlaneType {
-    PositiveX = 0,
-    PositiveY = 1,
-    PositiveZ = 2,
-    NegativeX = 3,
-    NegativeY = 4,
-    NegativeZ = 5,
-    TrueAxial = 6,
-    ZeroX     = 6,
-    ZeroY     = 7,
-    ZeroZ     = 8,
-    NonAxial  = 9,
-};
-
-enum class Side {
-    On,
-    Front,
-    Back,
-};
-
 template <typename Type, size_t Dimensions>
 requires detail::SizedPlane<Type, Dimensions> struct Plane {
     Vector<Type, Dimensions> normal;
     Type                     distance;
 };
+
+template <typename Type>
+constexpr auto IsSinglePrecision() -> bool {
+    return std::is_same_v<Type, float>;
+}
+
+template <typename Type>
+constexpr auto IsDoublePrecision() -> bool {
+    return std::is_same_v<Type, double>;
+}

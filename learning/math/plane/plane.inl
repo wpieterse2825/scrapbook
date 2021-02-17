@@ -1,3 +1,17 @@
+enum class PlaneType {
+    PositiveX = 0,
+    PositiveY = 1,
+    PositiveZ = 2,
+    NegativeX = 3,
+    NegativeY = 4,
+    NegativeZ = 5,
+    TrueAxial = 6,
+    ZeroX     = 6,
+    ZeroY     = 7,
+    ZeroZ     = 8,
+    NonAxial  = 9,
+};
+
 template <typename Type, size_t Dimensions>
 inline auto GetDimensions(const Plane<Type, Dimensions>&) -> size_t {
     return Dimensions;

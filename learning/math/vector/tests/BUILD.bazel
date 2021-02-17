@@ -34,3 +34,13 @@ cc_test(
         "//learning/math/vector/tests:shared",
     ],
 )
+
+cc_test(
+    name = "from_broadcast",
+    srcs = [
+        "from_broadcast.cpp",
+    ],
+    deps = [
+        "//learning/math/vector/tests:shared",
+    ],
+)

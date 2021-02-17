@@ -16,24 +16,20 @@
 #include "learning/math/plane/plane.inl"
 
 int main() {
-    auto v1 = VectorFromZero<float, 4>();
+    auto v1 = VectorFromZero<double, 15>();
 
-    v1.elements[0] = +1.0f;
-    v1.elements[1] = +2.0f;
-    v1.elements[2] = +3.0f;
-    v1.elements[3] = +4.0f;
+    v1.elements[14] = -4.0;
 
-    auto v2 = VectorFromZero<float, 4>();
+    auto v2 = VectorFromZero<double, 15>();
 
-    v2.elements[0] = -1.0f;
-    v2.elements[1] = -2.0f;
-    v2.elements[2] = -3.0f;
-    v2.elements[3] = -4.0f;
+    v2.elements[14] = -4.0;
 
-    std::cout << detail::vector::base::Compare(v1, v2, 0.0f) << std::endl;
-    std::cout << detail::vector::sse_1::Compare(v1, v2, 0.0f) << std::endl;
-    std::cout << detail::vector::sse_2::Compare(v1, v2, 0.0f) << std::endl;
-    std::cout << detail::vector::avx_1::Compare(v1, v2, 0.0f) << std::endl;
+    std::cout << std::boolalpha;
+    std::cout << "Compare (No Epsilon):" << std::endl;
+    std::cout << " * General : " << detail::vector::general::Compare(v1, v2) << std::endl;
+    std::cout << " * SSE 1   : " << detail::vector::sse_1::Compare(v1, v2) << std::endl;
+    std::cout << " * SSE 2   : " << detail::vector::sse_2::Compare(v1, v2) << std::endl;
+    std::cout << " * AVX 1   : " << detail::vector::avx_1::Compare(v1, v2) << std::endl;
 
     return 0;
 }

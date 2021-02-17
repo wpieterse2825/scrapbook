@@ -1,3 +1,17 @@
+namespace detail {
+    constexpr auto MathSIMDBlockSizeSingleSSE1 = size_t {4};
+    constexpr auto MathSIMDBlockSizeSingleSSE2 = size_t {4};
+    constexpr auto MathSIMDBlockSizeDoubleSSE2 = size_t {2};
+    constexpr auto MathSIMDBlockSizeSingleAVX1 = size_t {8};
+    constexpr auto MathSIMDBlockSizeDoubleAVX1 = size_t {4};
+
+    constexpr auto DefaultTestDimensions = size_t {127};
+
+    constexpr auto DefaultBenchSampleCount    = 10;
+    constexpr auto DefaultBenchIterationCount = 10000000;
+    constexpr auto DefaultBenchDimensions     = size_t {127};
+} // namespace detail
+
 template <Arithmetic Type>
 constexpr auto Affirm(const Type& input) -> Type {
     return +input;
