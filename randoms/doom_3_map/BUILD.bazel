@@ -26,6 +26,8 @@ cc_binary(
     name = "doom_3_map",
     srcs = [
         "main.cpp",
+        "map.c",
+        "map.h",
     ],
     data = [
         "//randoms/doom_3_map/maps:delta4",
