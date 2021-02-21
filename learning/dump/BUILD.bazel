@@ -1,0 +1,25 @@
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "dump",
+    srcs = [
+        "main.cpp",
+    ],
+    copts = [
+        "-I/usr/include/SDL2",
+        "-D_REENTRANT",
+    ],
+    data = [
+        "//learning/dump/doom_1",
+        "//learning/dump/doom_2",
+    ],
+    linkopts = [
+        "-lSDL2",
+    ],
+    deps = [
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)
