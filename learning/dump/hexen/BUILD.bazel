@@ -1,0 +1,12 @@
+filegroup(
+    name = "hexen",
+    srcs = [
+        "map_01_lines.lmp",
+        "map_01_sectors.lmp",
+        "map_01_sides.lmp",
+        "map_01_vertices.lmp",
+    ],
+    visibility = [
+        "//learning/dump:__pkg__",
+    ],
+)

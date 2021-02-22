@@ -2,6 +2,10 @@ filegroup(
     name = "doom_1",
     srcs = [
         "e1m1.dwd",
+        "e1m1_lines.lmp",
+        "e1m1_sectors.lmp",
+        "e1m1_sides.lmp",
+        "e1m1_vertices.lmp",
         "e1m2.dwd",
         "e1m3.dwd",
         "e1m4.dwd",

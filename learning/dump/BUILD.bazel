@@ -15,11 +15,9 @@ cc_binary(
     data = [
         "//learning/dump/doom_1",
         "//learning/dump/doom_2",
+        "//learning/dump/hexen",
     ],
     linkopts = [
         "-lSDL2",
-    ],
-    deps = [
-        "@bazel_tools//tools/cpp/runfiles",
     ],
 )
