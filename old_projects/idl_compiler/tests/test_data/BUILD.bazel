@@ -1,8 +1,0 @@
-exports_files(
-    [
-        "handle.yaml",
-        "enumeration.yaml",
-        "structure.yaml",
-        "function.yaml",
-    ],
-)

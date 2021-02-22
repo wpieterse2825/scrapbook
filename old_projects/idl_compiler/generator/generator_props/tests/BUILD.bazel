@@ -1,5 +1,0 @@
-load(":skylark.bzl", "skylark_test_suite")
-
-skylark_test_suite(
-    name = "skylark",
-)

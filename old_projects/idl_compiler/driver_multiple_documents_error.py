@@ -1,2 +1,0 @@
-class IDLDriverTextInputMultipleDocumentsError(Exception):
-    pass
