@@ -1,9 +1,0 @@
-filegroup(
-    name = "delta4",
-    srcs = [
-        "delta4.pb",
-    ],
-    visibility = [
-        "//randoms/doom_3_map:__pkg__",
-    ],
-)
