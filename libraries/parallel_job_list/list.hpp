@@ -1,6 +1,6 @@
 #pragma once
 
-#include "randoms/parallel_job_list/shared.hpp"
+#include "shared.hpp"
 
 /*
 ===============================================================================

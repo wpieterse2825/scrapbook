@@ -1,0 +1,7 @@
+add_subdirectory(abstract_factory)
+add_subdirectory(builder)
+add_subdirectory(command_buffer)
+add_subdirectory(decorator)
+add_subdirectory(simd)
+add_subdirectory(virtual_memory)
+add_subdirectory(visitor)

@@ -1,4 +1,4 @@
-#include "randoms/parallel_job_list/thread.hpp"
+#include "thread.hpp"
 
 #include <sched.h>
 #include <errno.h>

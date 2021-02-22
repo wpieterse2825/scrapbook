@@ -1,8 +1,8 @@
-#include "randoms/parallel_job_list/shared.hpp"
+#include "shared.hpp"
 
-#include "randoms/parallel_job_list/parallel_job_list.hpp"
+#include "parallel_job_list.hpp"
 
-#include "randoms/parallel_job_list/thread.hpp"
+#include "thread.hpp"
 
 static uint64_t sys_microTimeBase = 0;
 

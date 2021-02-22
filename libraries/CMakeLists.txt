@@ -1,0 +1,3 @@
+add_subdirectory(memory_streaming)
+add_subdirectory(parallel_job_list)
+add_subdirectory(parser)
