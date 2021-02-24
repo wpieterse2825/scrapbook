@@ -8,5 +8,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Threads REQUIRED)
 find_package(SDL2 REQUIRED)
 
-add_subdirectory(libraries)
-add_subdirectory(randoms)
+add_subdirectory(code)
