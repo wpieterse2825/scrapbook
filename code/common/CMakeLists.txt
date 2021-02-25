@@ -1,6 +1,7 @@
 set(FOLKLORE_COMMON_SOURCES
     com_command.c
-    com_console.c
+    com_console_buffer.c
+    com_console_system.c
     com_local.h
     com_main.c
     com_public.h

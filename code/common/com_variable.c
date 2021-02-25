@@ -14,8 +14,8 @@ typedef struct variable_s {
     int64_t  modification_count;
 } variable_t;
 
-variable_t variables[VARIABLE_MAXIMUM] = {};
-int64_t    variable_command_list       = -1;
+static variable_t variables[VARIABLE_MAXIMUM] = {};
+static int64_t    variable_command_list       = -1;
 
 static variable_t* Variable_Find(const char* key);
 static void        Variable_Command_List(command_arguments_t command_arguments);
@@ -68,12 +68,19 @@ int64_t Variable_Register(const char* key, const char* value, uint64_t flags) {
 }
 
 void Variable_Unregister(int64_t variable_handle) {
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return;
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return;
+    }
 
     current_variable->used   = false;
     current_variable->handle = -1;
@@ -93,12 +100,19 @@ void Variable_Unregister(int64_t variable_handle) {
 }
 
 void Variable_Reset(int64_t variable_handle) {
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return;
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return;
+    }
 
     String_Free(current_variable->value);
 
@@ -108,23 +122,37 @@ void Variable_Reset(int64_t variable_handle) {
 }
 
 const char* Variable_GetString(int64_t variable_handle) {
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return "";
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return "";
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return "";
+    }
 
     return current_variable->value;
 }
 
 void Variable_SetString(int64_t variable_handle, const char* value) {
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return;
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return;
+    }
 
     String_Free(current_variable->value);
 
@@ -134,12 +162,19 @@ void Variable_SetString(int64_t variable_handle, const char* value) {
 }
 
 int64_t Variable_GetInteger(int64_t variable_handle) {
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return 0;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return 0;
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return 0;
+    }
 
     return atol(current_variable->value);
 }
@@ -147,21 +182,82 @@ int64_t Variable_GetInteger(int64_t variable_handle) {
 void Variable_SetInteger(int64_t variable_handle, int64_t value) {
     char value_buffer[1024] = {0};
 
-    assert(variable_handle >= 0);
-    assert(variable_handle < VARIABLE_MAXIMUM);
+    if(variable_handle < 0) {
+        return;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return;
+    }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    assert(current_variable->used == true);
+    if(current_variable->used == false) {
+        return;
+    }
 
     String_Free(current_variable->value);
 
     snprintf(value_buffer, 1024, "%ld", value);
 
-    current_variable->value    = String_Copy(value_buffer);
+    current_variable->value = String_Copy(value_buffer);
 
     current_variable->modified = true;
     current_variable->modification_count++;
+}
+
+bool Variable_IsModified(int64_t variable_handle) {
+    if(variable_handle < 0) {
+        return false;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return false;
+    }
+
+    variable_t* current_variable = &variables[variable_handle];
+
+    if(current_variable->used == false) {
+        return false;
+    }
+
+    return current_variable->modified;
+}
+
+int64_t Variable_ModificationCount(int64_t variable_handle) {
+    if(variable_handle < 0) {
+        return 0;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return 0;
+    }
+
+    variable_t* current_variable = &variables[variable_handle];
+
+    if(current_variable->used == false) {
+        return 0;
+    }
+
+    return current_variable->modification_count;
+}
+
+void Variable_ClearModified(int64_t variable_handle) {
+    if(variable_handle < 0) {
+        return;
+    }
+
+    if(variable_handle >= VARIABLE_MAXIMUM) {
+        return;
+    }
+
+    variable_t* current_variable = &variables[variable_handle];
+
+    if(current_variable->used == false) {
+        return;
+    }
+
+    current_variable->modified = false;
 }
 
 static variable_t* Variable_Find(const char* key) {

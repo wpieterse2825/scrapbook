@@ -5,7 +5,7 @@
 
 #include "tools/cpp/runfiles/runfiles.h"
 
-#include "foundation/console_sink.hpp"
+#include "foundation/ConsoleBuffer_sink.hpp"
 #include "foundation/utilities.hpp"
 #include "foundation/allocator.hpp"
 

@@ -10,8 +10,8 @@ typedef struct command_s {
     command_callback callback;
 } command_t;
 
-command_t commands[COMMAND_MAXIMUM] = {};
-int64_t   command_command_list      = -1;
+static command_t commands[COMMAND_MAXIMUM] = {};
+static int64_t   command_command_list      = -1;
 
 static command_arguments_t Command_TokenizeLine(const char* line);
 static command_t*          Command_Find(const char* name);
@@ -65,12 +65,19 @@ int64_t Command_Register(const char* name, command_callback callback) {
 }
 
 void Command_Unregister(int64_t command_handle) {
-    assert(command_handle >= 0);
-    assert(command_handle < COMMAND_MAXIMUM);
+    if(command_handle < 0) {
+        return;
+    }
+
+    if(command_handle >= COMMAND_MAXIMUM) {
+        return;
+    }
 
     command_t* current_command = &commands[command_handle];
 
-    assert(current_command->used == true);
+    if(current_command->used == false) {
+        return;
+    }
 
     current_command->used   = false;
     current_command->handle = -1;
