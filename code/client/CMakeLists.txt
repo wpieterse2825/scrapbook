@@ -7,8 +7,4 @@ set(FOLKLORE_CLIENT_SOURCES
 add_library(folklore_client STATIC ${FOLKLORE_CLIENT_SOURCES})
 add_library(Folklore::Client ALIAS folklore_client)
 
-target_link_libraries(folklore_client
-    Folklore::Common
-    Folklore::Video::Vulkan
-    Folklore::Client::Game
-)
+# target_link_libraries(folklore_client)

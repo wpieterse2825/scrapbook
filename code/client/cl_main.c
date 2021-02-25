@@ -1,3 +1,6 @@
+#include <SDL2/SDL.h>
+
+#include "common/com_shared.h"
 #include "common/com_public.h"
 
 #include "client/cl_public.h"
@@ -14,5 +17,6 @@ void Client_Stop() {
 }
 
 void Client_Frame() {
-    Video_Frame();
+    Video_BeginFrame();
+    Video_EndFrame();
 }

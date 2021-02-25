@@ -1,3 +1,4 @@
+#include "common/com_shared.h"
 #include "common/com_public.h"
 #include "common/com_local.h"
 
@@ -23,6 +24,7 @@ void Command_Start() {
 
 void Command_Stop() {
     Command_Unregister(list_commands_command);
+
     list_commands_command = -1;
 }
 

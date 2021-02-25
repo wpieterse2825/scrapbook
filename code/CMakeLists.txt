@@ -18,8 +18,21 @@ add_executable(folklore
     ${FOLKLORE_SOURCES}
 )
 
+target_include_directories(folklore
+    PRIVATE ${SDL2_INCLUDE_DIR}
+    PRIVATE ${Vulkan_INCLUDE_DIR}
+)
+
 target_link_libraries(folklore
+    ${SDL2_LIBRARIES}
+    ${Vulkan_LIBRARIES}
+    volk_headers
+
     Folklore::Common
     Folklore::Server
+    Folklore::Server::Game
     Folklore::Client
+    Folklore::Client::Game
+    Folklore::Video::Common
+    Folklore::Video::Vulkan
 )

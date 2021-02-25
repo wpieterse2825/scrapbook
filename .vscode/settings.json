@@ -1,6 +1,11 @@
 {
     "files.associations": {
         "cl_public.h": "c",
-        "memory.h": "c"
+        "memory.h": "c",
+        "vid_public.h": "c",
+        "volk.h": "c",
+        "vulkan.h": "c",
+        "vk_platform.h": "c",
+        "vulkan_core.h": "c"
     }
 }

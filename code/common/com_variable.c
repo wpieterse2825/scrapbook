@@ -1,3 +1,4 @@
+#include "common/com_shared.h"
 #include "common/com_public.h"
 #include "common/com_local.h"
 
@@ -26,6 +27,7 @@ void Variable_Start() {
 
 void Variable_Stop() {
     Command_Unregister(list_variables_command);
+
     list_variables_command = -1;
 }
 

@@ -1,0 +1,26 @@
+extern common_export_t* common_exports;
+extern SDL_Window*      main_window;
+extern int64_t          vulkan_enable_debugging_variable;
+extern int64_t          vulkan_debug_trace_variable;
+extern int64_t          vulkan_debug_information_variable;
+extern int64_t          vulkan_debug_warning_variable;
+extern int64_t          vulkan_debug_performance_warning_variable;
+
+void VideoVulkan_CreateExtensions();
+void VideoVulkan_CreateLayers();
+void VideoVulkan_CreateUseExtensions();
+void VideoVulkan_CreateUseLayers();
+void VideoVulkan_CreateInstance();
+void VideoVulkan_CreateDebugCallback();
+void VideoVulkan_CreatePhysicalDeviceBuffers();
+void VideoVulkan_CreatePhysicalDevice();
+void VideoVulkan_CreateLogicalDevice();
+void VideoVulkan_DestroyLogicalDevice();
+void VideoVulkan_DestroyPhysicalDevice();
+void VideoVulkan_DestroyPhysicalDeviceBuffers();
+void VideoVulkan_DestroyDebugCallback();
+void VideoVulkan_DestroyInstance();
+void VideoVulkan_DestroyUseLayers();
+void VideoVulkan_DestroyUseExtensions();
+void VideoVulkan_DestroyLayers();
+void VideoVulkan_DestroyExtensions();

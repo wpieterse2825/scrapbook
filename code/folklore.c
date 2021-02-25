@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 
+#include "common/com_shared.h"
 #include "common/com_public.h"
-#include "common/com_local.h"
 
 int main(int argument_count, char** arguments) {
     // TODO(wpieterse): Get a place for this.
@@ -9,18 +9,17 @@ int main(int argument_count, char** arguments) {
         Common_Error("Failed to initialize the SDL video subsystem : %s.", SDL_GetError());
     }
 
-    ConsoleSystem_Start();
     Common_Start();
 
     while (true) {
-        bool quit_requested = Common_Frame();
-        if (quit_requested == true) {
+        if (Common_IsQuitting() == true) {
             break;
         }
+
+        Common_Frame();
     }
 
     Common_Stop();
-    ConsoleSystem_Stop();
 
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
     SDL_Quit();

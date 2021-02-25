@@ -6,6 +6,4 @@ set(FOLKLORE_SERVER_GAME_SOURCES
 add_library(folklore_server_game STATIC ${FOLKLORE_SERVER_GAME_SOURCES})
 add_library(Folklore::Server::Game ALIAS folklore_server_game)
 
-target_link_libraries(folklore_server_game
-    Folklore::Common
-)
+# target_link_libraries(folklore_server_game)

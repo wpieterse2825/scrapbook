@@ -7,6 +7,7 @@ set(FOLKLORE_COMMON_SOURCES
     com_main.c
     com_memory_system.c
     com_public.h
+    com_shared.h
     com_string.c
     com_variable.c
 )

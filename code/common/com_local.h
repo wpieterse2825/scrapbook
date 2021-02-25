@@ -1,8 +1,3 @@
-void Common_Start();
-void Common_Stop();
-bool Common_Frame();
-void Common_Quit();
-
 void ConsoleBuffer_Start();
 void ConsoleBuffer_Stop();
 void ConsoleBuffer_Frame();
@@ -10,7 +5,7 @@ void ConsoleBuffer_Frame();
 void ConsoleSystem_Start();
 void ConsoleSystem_Stop();
 void ConsoleSystem_Frame();
-void ConsoleSystem_SetError(const char* error_message);
+void ConsoleSystem_Error(const char* error_message);
 void ConsoleSystem_Print(const char* message);
 void ConsoleSystem_Show();
 void ConsoleSystem_Hide();
