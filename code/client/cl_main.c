@@ -1,3 +1,6 @@
+#include "common/com_public.h"
+
+#include "client/cl_public.h"
 #include "client/cl_local.h"
 
 #include "video_common/vid_public.h"

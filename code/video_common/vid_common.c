@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 
+#include "common/com_public.h"
+
 #include "video_common/vid_public.h"
 
 SDL_Window*   main_window   = NULL;
@@ -7,17 +9,17 @@ SDL_Renderer* main_renderer = NULL;
 
 void Video_Start() {
     if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
-        System_Error("Failed to initialize the SDL video subsystem : %s.", SDL_GetError());
+        Common_Error("Failed to initialize the SDL video subsystem : %s.", SDL_GetError());
     }
 
     main_window = SDL_CreateWindow("Bob", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
     if (main_window == NULL) {
-        System_Error("Failed to create SDL window : %s.", SDL_GetError());
+        Common_Error("Failed to create SDL window : %s.", SDL_GetError());
     }
 
     main_renderer = SDL_CreateRenderer(main_window, -1, SDL_RENDERER_SOFTWARE);
     if (main_renderer == NULL) {
-        System_Error("Failed to create SDL software renderer : %s.", SDL_GetError());
+        Common_Error("Failed to create SDL software renderer : %s.", SDL_GetError());
     }
 }
 

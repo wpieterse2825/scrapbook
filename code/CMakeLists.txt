@@ -19,5 +19,7 @@ add_executable(folklore
 )
 
 target_link_libraries(folklore
-    Folklore::Common::System
+    Folklore::Common
+    Folklore::Server
+    Folklore::Client
 )

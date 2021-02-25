@@ -1,12 +1,12 @@
 #include "common/com_public.h"
 
 int main(int argument_count, char** arguments) {
-    System_Start();
+    Common_Start();
 
     while (true) {
-        System_Frame();
+        Common_Frame();
     }
 
-    System_Stop();
+    Common_Stop();
     return 0;
 }

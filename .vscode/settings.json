@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "cl_public.h": "c"
+        "cl_public.h": "c",
+        "memory.h": "c"
     }
 }
