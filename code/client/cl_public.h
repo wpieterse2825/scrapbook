@@ -1,3 +1,3 @@
-void Client_Start();
-void Client_Stop();
-void Client_Frame();
+void Client_Start(void);
+void Client_Stop(void);
+void Client_Frame(void);

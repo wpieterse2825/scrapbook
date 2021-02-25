@@ -8,15 +8,15 @@
 
 #include "video_common/vid_public.h"
 
-void Client_Start() {
+void Client_Start(void) {
     Video_Start();
 }
 
-void Client_Stop() {
+void Client_Stop(void) {
     Video_Stop();
 }
 
-void Client_Frame() {
+void Client_Frame(void) {
     Video_BeginFrame();
     Video_EndFrame();
 }

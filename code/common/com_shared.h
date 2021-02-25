@@ -13,10 +13,10 @@
 #define GAME_NAME    "Folklore"
 #define GAME_VERSION 1
 
-#define LOG_LEVEL_DEVELOPER   0x00
-#define LOG_LEVEL_INFORMATION 0x01
-#define LOG_LEVEL_WARNING     0x02
-#define LOG_LEVEL_ERROR       0x03
+#define PRINT_LEVEL_DEVELOPER   0x00
+#define PRINT_LEVEL_INFORMATION 0x01
+#define PRINT_LEVEL_WARNING     0x02
+#define PRINT_LEVEL_ERROR       0x03
 
 #define LARGE_STRING_MAXIMUM 16 * 1024
 
@@ -41,7 +41,7 @@ typedef void (*command_callback)(command_arguments_t command_arguments);
 
 typedef struct common_export_log_s {
     void (*Error)(const char* message, ...);
-    void (*Log)(uint8_t log_levevel, const char* message, ...);
+    void (*Print)(uint8_t log_levevel, const char* message, ...);
 } common_export_log_t;
 
 typedef struct common_export_memory_system_s {

@@ -110,16 +110,16 @@ void Common_Error(const char* message, ...) {
     vsprintf(error_buffer, message, argument_list);
     va_end(argument_list);
 
-    Common_Log(LOG_LEVEL_ERROR, "ERROR: %s\n", error_buffer);
+    Common_Print(PRINT_LEVEL_ERROR, "ERROR: %s\n", error_buffer);
 
     longjmp(error_capture, -1);
 }
 
-void Common_Log(uint8_t log_level, const char* message, ...) {
+void Common_Print(uint8_t log_level, const char* message, ...) {
     char    formatted_message[16 * 1024] = {0};
     va_list argument_list                = {};
 
-    if (log_level == LOG_LEVEL_DEVELOPER) {
+    if (log_level == PRINT_LEVEL_DEVELOPER) {
         int64_t is_developer = Variable_GetInteger(developer_variable);
 
         if (is_developer != 1) {
@@ -137,7 +137,7 @@ void Common_Log(uint8_t log_level, const char* message, ...) {
 
 common_export_t* Common_Exports() {
     exports_log.Error = Common_Error;
-    exports_log.Log   = Common_Log;
+    exports_log.Print   = Common_Print;
 
     exports_memory_system.Allocate = Memory_SystemAllocate;
     exports_memory_system.Free     = Memory_SystemFree;
@@ -198,7 +198,7 @@ static void Common_PumpEvents() {
             } else if (sdl_event.key.keysym.sym == SDLK_e) {
                 Common_Error("Testing errors.");
             } else if (sdl_event.key.keysym.sym == SDLK_a) {
-                Common_Log(LOG_LEVEL_DEVELOPER, "Developer message\n");
+                Common_Print(PRINT_LEVEL_DEVELOPER, "Developer message\n");
             } else if (sdl_event.key.keysym.sym == SDLK_s) {
                 Variable_SetInteger(developer_variable, 1);
             } else if (sdl_event.key.keysym.sym == SDLK_d) {

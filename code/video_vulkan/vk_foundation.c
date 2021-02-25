@@ -44,62 +44,76 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL VideoVulkan_DebugCallback(VkDebugReportFla
                                                                 const char*                message,
                                                                 void*                      user_data);
 
-void VideoVulkan_CreateExtensions() {
+bool VideoVulkan_CreateExtensions(void) {
     if (SDL_Vulkan_GetInstanceExtensions(main_window, &vulkan_extension_count, NULL) == 0) {
-        common_exports->log->Error("Failed to query Vulkan for extension count: %s\n", SDL_GetError());
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to query Vulkan for extension count: %s\n", SDL_GetError());
+
+        return false;
     }
 
     size_t allocation_count = sizeof(const char*) * vulkan_extension_count;
     vulkan_extensions       = (const char**)common_exports->memory_system->Allocate(allocation_count, MEMORY_TAG_RENDERER);
     if (vulkan_extensions == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store Vulkan extension information.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store Vulkan extension information.");
+
+        return false;
     }
 
     if (SDL_Vulkan_GetInstanceExtensions(main_window, &vulkan_extension_count, vulkan_extensions) == 0) {
-        common_exports->log->Error("Failed to query Vulkan for extension information: %s\n", SDL_GetError());
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to query Vulkan for extension information: %s\n", SDL_GetError());
+
+        return false;
     }
 
     if (vulkan_extension_count == 0) {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "No registered Vulkan extensions.\n");
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "No registered Vulkan extensions.\n");
     } else {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "Vulkan extensions (%ld):\n", vulkan_extension_count);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Vulkan extensions (%ld):\n", vulkan_extension_count);
 
         for (int32_t extension_index = 0; extension_index < vulkan_extension_count; extension_index++) {
             const char* current_extension = vulkan_extensions[extension_index];
 
-            common_exports->log->Log(LOG_LEVEL_INFORMATION, " - %s\n", current_extension);
+            common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - %s\n", current_extension);
         }
     }
+
+    return true;
 }
 
-void VideoVulkan_CreateLayers() {
+bool VideoVulkan_CreateLayers(void) {
     VkResult vulkan_result = VK_SUCCESS;
 
     vulkan_result = vkEnumerateInstanceLayerProperties(&vulkan_layer_count, NULL);
     if (vulkan_result != VK_SUCCESS) {
-        common_exports->log->Error("Failed to query Vulkan for layer count.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to query Vulkan for layer count.");
+
+        return false;
     }
 
     size_t allocation_count = sizeof(VkLayerProperties) * vulkan_layer_count;
     vulkan_layers           = (VkLayerProperties*)common_exports->memory_system->Allocate(allocation_count, MEMORY_TAG_RENDERER);
     if (vulkan_layers == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store Vulkan layer information.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store Vulkan layer information.");
+
+        return false;
     }
 
     vulkan_result = vkEnumerateInstanceLayerProperties(&vulkan_layer_count, vulkan_layers);
     if (vulkan_result != VK_SUCCESS) {
-        common_exports->log->Error("Failed to query Vulkan for layer information.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to query Vulkan for layer information.");
+
+        return false;
     }
 
     if (vulkan_layer_count == 0) {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "No registered Vulkan layers.\n");
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "No registered Vulkan layers.\n");
     } else {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "Vulkan layers (%ld):\n", vulkan_layer_count);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Vulkan layers (%ld):\n", vulkan_layer_count);
 
         for (int32_t layer_index = 0; layer_index < vulkan_layer_count; layer_index++) {
             VkLayerProperties* current_layer = &vulkan_layers[layer_index];
 
-            common_exports->log->Log(LOG_LEVEL_INFORMATION,
+            common_exports->log->Print(PRINT_LEVEL_INFORMATION,
                                      " - %s (%ld - %ld) - %s\n",
                                      current_layer->layerName,
                                      current_layer->specVersion,
@@ -107,23 +121,27 @@ void VideoVulkan_CreateLayers() {
                                      current_layer->description);
         }
     }
+
+    return true;
 }
 
-void VideoVulkan_CreateUseExtensions() {
+bool VideoVulkan_CreateUseExtensions(void) {
     size_t allocation_count = sizeof(const char*) * ((vulkan_extension_count + 1) * 2);
 
     vulkan_use_extensions = (const char**)common_exports->memory_system->Allocate(allocation_count, MEMORY_TAG_RENDERER);
     if (vulkan_use_extensions == NULL) {
-        common_exports->log->Error("Failed to allocate memory for the enable Vulkan extensions array.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory for the enable Vulkan extensions array.");
+
+        return false;
     }
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION, "Using the following Vulkan extension:\n");
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Using the following Vulkan extension:\n");
 
     // For now, use all available extensions.
     for (uint32_t current_extension = 0; current_extension < vulkan_extension_count; current_extension++) {
         const char* extension_name = vulkan_extensions[current_extension];
 
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, " - %s\n", extension_name);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - %s\n", extension_name);
 
         vulkan_use_extensions[current_extension] = vulkan_extensions[current_extension];
     }
@@ -131,15 +149,19 @@ void VideoVulkan_CreateUseExtensions() {
     // Same as above, use all available extensions.
     vulkan_use_extension_count = vulkan_extension_count;
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION, "Enabled %ld Vulkan extensions.\n", vulkan_use_extension_count);
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Enabled %ld Vulkan extensions.\n", vulkan_use_extension_count);
+
+    return true;
 }
 
-void VideoVulkan_CreateUseLayers() {
+bool VideoVulkan_CreateUseLayers(void) {
     size_t allocation_count = sizeof(const char*) * ((vulkan_layer_count + 1) * 2);
 
     vulkan_use_layers = (const char**)common_exports->memory_system->Allocate(allocation_count, MEMORY_TAG_RENDERER);
     if (vulkan_use_layers == NULL) {
-        common_exports->log->Error("Failed to allocate memory for the enable Vulkan layers array.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory for the enable Vulkan layers array.");
+
+        return false;
     }
 
     int64_t debug_enable = common_exports->variable->GetInteger(vulkan_enable_debugging_variable);
@@ -185,22 +207,24 @@ void VideoVulkan_CreateUseLayers() {
 
     if (debug_enable == 1) {
         if (can_use_debugging == false) {
-            common_exports->log->Log(LOG_LEVEL_WARNING, "Requested to use Vulkan debug layer, but the layer could not be found.\n");
+            common_exports->log->Print(PRINT_LEVEL_WARNING, "Requested to use Vulkan debug layer, but the layer could not be found.\n");
         }
     }
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION, "Using the following Vulkan layers:\n");
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Using the following Vulkan layers:\n");
 
     for (int32_t layer_index = 0; layer_index < vulkan_use_layer_count; layer_index++) {
         const char* current_layer_name = vulkan_use_layers[layer_index];
 
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, " - %s\n", current_layer_name);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - %s\n", current_layer_name);
     }
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION, "Enabled %ld Vulkan layers.\n", vulkan_use_layer_count);
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Enabled %ld Vulkan layers.\n", vulkan_use_layer_count);
+
+    return true;
 }
 
-void VideoVulkan_CreateInstance() {
+bool VideoVulkan_CreateInstance(void) {
     uint32_t vulkan_api_version = 0;
 
     vkEnumerateInstanceVersion(&vulkan_api_version);
@@ -209,7 +233,7 @@ void VideoVulkan_CreateInstance() {
     uint32_t vulkan_version_minor = VK_VERSION_MINOR(vulkan_api_version);
     uint32_t vulkan_version_patch = VK_VERSION_PATCH(vulkan_api_version);
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION,
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION,
                              "Creating Vulkan instance, using API version %ld.%ld.%ld.\n",
                              vulkan_version_major,
                              vulkan_version_minor,
@@ -238,16 +262,22 @@ void VideoVulkan_CreateInstance() {
     VkResult vulkan_result = vkCreateInstance(&instance_information, NULL, &vulkan_instance);
     if (vulkan_result != VK_SUCCESS) {
         if (vulkan_result == VK_ERROR_INCOMPATIBLE_DRIVER) {
-            common_exports->log->Error("Failed to find a suitable Vulkan driver.");
+            common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to find a suitable Vulkan driver.");
+
+            return false;
         } else {
-            common_exports->log->Error("Failed to create the Vulkan instance object.");
+            common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to create the Vulkan instance object.");
+
+            return false;
         }
     }
 
     volkLoadInstanceOnly(vulkan_instance);
+
+    return true;
 }
 
-void VideoVulkan_CreateDebugCallback() {
+bool VideoVulkan_CreateDebugCallback(void) {
     if (can_use_debugging == true) {
         int64_t debug_enable          = common_exports->variable->GetInteger(vulkan_enable_debugging_variable);
         int64_t debug_use_trace       = common_exports->variable->GetInteger(vulkan_debug_trace_variable);
@@ -258,35 +288,35 @@ void VideoVulkan_CreateDebugCallback() {
         if (debug_enable == 1) {
             VkDebugReportFlagsEXT debug_enable_flags = 0;
 
-            common_exports->log->Log(LOG_LEVEL_INFORMATION, "Enabling Vulkan debug layer with the following bits:\n");
+            common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Enabling Vulkan debug layer with the following bits:\n");
             if (debug_use_trace == 1) {
                 debug_enable_flags |= VK_DEBUG_REPORT_DEBUG_BIT_EXT;
 
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, " - Trace\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - Trace\n");
             }
 
             if (debug_use_information == 1) {
                 debug_enable_flags |= VK_DEBUG_REPORT_INFORMATION_BIT_EXT;
 
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, " - Information\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - Information\n");
             }
 
             if (debug_use_warning == 1) {
                 debug_enable_flags |= VK_DEBUG_REPORT_WARNING_BIT_EXT;
 
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, " - Warning\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - Warning\n");
             }
 
             if (debug_use_performance == 1) {
                 debug_enable_flags |= VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
 
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, " - Performace\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - Performace\n");
             }
 
             // Always enable error logging when using the debug interface.
             debug_enable_flags |= VK_DEBUG_REPORT_ERROR_BIT_EXT;
 
-            common_exports->log->Log(LOG_LEVEL_INFORMATION, " - Error\n");
+            common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - Error\n");
 
             VkDebugReportCallbackCreateInfoEXT debug_information = {};
             debug_information.sType                              = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -296,40 +326,53 @@ void VideoVulkan_CreateDebugCallback() {
             // TODO(wpieterse): Get Vulkan to use our allocators.
             VkResult vulkan_result = vkCreateDebugReportCallbackEXT(vulkan_instance, &debug_information, NULL, &vulkan_debug_callback);
             if (vulkan_result != VK_SUCCESS) {
-                common_exports->log->Log(LOG_LEVEL_WARNING, "Failed to enable debug logging for Vulkan.\n");
+                common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to enable debug logging for Vulkan.\n");
             }
         }
     }
+
+    return true;
 }
 
-void VideoVulkan_CreatePhysicalDeviceBuffers() {
+bool VideoVulkan_CreatePhysicalDeviceBuffers(void) {
     vkEnumeratePhysicalDevices(vulkan_instance, &vulkan_physical_device_count, NULL);
     if (vulkan_physical_device_count == 0) {
-        common_exports->log->Error("Failed to find any Vulkan devices.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to find any Vulkan devices.");
+
+        return false;
     }
 
     vulkan_physical_devices = (VkPhysicalDevice*)common_exports->memory_system->Allocate(
       sizeof(VkPhysicalDevice) * vulkan_physical_device_count, MEMORY_TAG_RENDERER);
     if (vulkan_physical_devices == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store the physical Vulkan devices.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store the physical Vulkan devices.");
+
+        return false;
     }
 
     vulkan_physical_device_properties = (VkPhysicalDeviceProperties*)common_exports->memory_system->Allocate(
       sizeof(VkPhysicalDeviceProperties) * vulkan_physical_device_count, MEMORY_TAG_RENDERER);
     if (vulkan_physical_device_properties == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store the physical Vulkan devices properties.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store the physical Vulkan devices properties.");
+
+        return false;
     }
 
     vulkan_physical_device_queue_properties_counts =
       (uint32_t*)common_exports->memory_system->Allocate(sizeof(uint32_t) * vulkan_physical_device_count, MEMORY_TAG_RENDERER);
     if (vulkan_physical_device_queue_properties_counts == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store the physical Vulkan devices queue property counts.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING,
+                                 "Failed to allocate memory to store the physical Vulkan devices queue property counts.");
+
+        return false;
     }
 
     vulkan_physical_device_queue_properties = (VkQueueFamilyProperties**)common_exports->memory_system->Allocate(
       sizeof(VkQueueFamilyProperties*) * vulkan_physical_device_count, MEMORY_TAG_RENDERER);
     if (vulkan_physical_device_queue_properties == NULL) {
-        common_exports->log->Error("Failed to allocate memory to store the physical Vulkan devices queue properties.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store the physical Vulkan devices queue properties.");
+
+        return false;
     }
 
     vkEnumeratePhysicalDevices(vulkan_instance, &vulkan_physical_device_count, vulkan_physical_devices);
@@ -346,7 +389,9 @@ void VideoVulkan_CreatePhysicalDeviceBuffers() {
         vulkan_physical_device_queue_properties[device_index] = (VkQueueFamilyProperties*)common_exports->memory_system->Allocate(
           sizeof(VkQueueFamilyProperties) * vulkan_physical_device_queue_properties_counts[device_index], MEMORY_TAG_RENDERER);
         if (vulkan_physical_device_queue_properties[device_index] == NULL) {
-            common_exports->log->Error("Failed to allocate memory to store the physical Vulkan devices queue properties.");
+            common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to allocate memory to store the physical Vulkan devices queue properties.");
+
+            return false;
         }
 
         vkGetPhysicalDeviceQueueFamilyProperties(current_physical_device,
@@ -354,63 +399,65 @@ void VideoVulkan_CreatePhysicalDeviceBuffers() {
                                                  vulkan_physical_device_queue_properties[device_index]);
     }
 
-    common_exports->log->Log(LOG_LEVEL_INFORMATION, "Vulkan devices (%ld):\n", vulkan_physical_device_count);
+    common_exports->log->Print(PRINT_LEVEL_INFORMATION, "Vulkan devices (%ld):\n", vulkan_physical_device_count);
     for (size_t device_index = 0; device_index < vulkan_physical_device_count; device_index++) {
         VkPhysicalDeviceProperties* current_physical_device_properties = &vulkan_physical_device_properties[device_index];
 
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, " - %s\n", current_physical_device_properties->deviceName);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, " - %s\n", current_physical_device_properties->deviceName);
 
         switch (current_physical_device_properties->vendorID) {
             case 0x8086:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vendor         : Intel\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vendor         : Intel\n");
                 break;
             case 0x10DE:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vendor         : nVidia\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vendor         : nVidia\n");
                 break;
             case 0x1002:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vendor         : AMD\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vendor         : AMD\n");
                 break;
             default:
-                common_exports->log->Log(
-                  LOG_LEVEL_INFORMATION, "   - Vendor         : Unknown (%ld)\n", current_physical_device_properties->vendorID);
+                common_exports->log->Print(
+                  PRINT_LEVEL_INFORMATION, "   - Vendor         : Unknown (%ld)\n", current_physical_device_properties->vendorID);
                 break;
         }
 
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Device  ID     : %ld\n", current_physical_device_properties->deviceID);
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Driver Version : %ld\n", current_physical_device_properties->driverVersion);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Device  ID     : %ld\n", current_physical_device_properties->deviceID);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Driver Version : %ld\n", current_physical_device_properties->driverVersion);
 
         uint32_t vulkan_version       = current_physical_device_properties->apiVersion;
         uint32_t vulkan_version_major = VK_VERSION_MAJOR(vulkan_version);
         uint32_t vulkan_version_minor = VK_VERSION_MINOR(vulkan_version);
         uint32_t vulkan_version_patch = VK_VERSION_PATCH(vulkan_version);
 
-        common_exports->log->Log(
-          LOG_LEVEL_INFORMATION, "   - Vulkan Version : %ld.%ld.%ld\n", vulkan_version_major, vulkan_version_minor, vulkan_version_patch);
+        common_exports->log->Print(
+          PRINT_LEVEL_INFORMATION, "   - Vulkan Version : %ld.%ld.%ld\n", vulkan_version_major, vulkan_version_minor, vulkan_version_patch);
 
         switch (current_physical_device_properties->deviceType) {
             case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : Other\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : Other\n");
                 break;
             case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : Integrated GPU\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : Integrated GPU\n");
                 break;
             case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : Discrete GPU\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : Discrete GPU\n");
                 break;
             case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : Virtual GPU\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : Virtual GPU\n");
                 break;
             case VK_PHYSICAL_DEVICE_TYPE_CPU:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : CPU\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : CPU\n");
                 break;
             default:
-                common_exports->log->Log(LOG_LEVEL_INFORMATION, "   - Vulkan Type    : Unknown\n");
+                common_exports->log->Print(PRINT_LEVEL_INFORMATION, "   - Vulkan Type    : Unknown\n");
                 break;
         }
     }
+
+    return true;
 }
 
-void VideoVulkan_CreatePhysicalDevice() {
+bool VideoVulkan_CreatePhysicalDevice(void) {
     for (uint32_t device_index = 0; device_index < vulkan_physical_device_count; device_index++) {
         uint32_t device_queue_count = vulkan_physical_device_queue_properties_counts[device_index];
 
@@ -418,7 +465,7 @@ void VideoVulkan_CreatePhysicalDevice() {
             VkQueueFamilyProperties* current_queue_properties = &vulkan_physical_device_queue_properties[device_index][queue_index];
 
             if (current_queue_properties->queueCount == 0) {
-                Common_Log(LOG_LEVEL_WARNING, "Vulkan device %ld queue %ld has zero queues!\n", device_index, queue_index);
+                Common_Print(PRINT_LEVEL_WARNING, "Vulkan device %ld queue %ld has zero queues!\n", device_index, queue_index);
 
                 continue;
             }
@@ -448,41 +495,49 @@ void VideoVulkan_CreatePhysicalDevice() {
     }
 
     if (vulkan_physical_device_transfer_queue == -1) {
-        common_exports->log->Error("Failed to find a Vulkan transfer queue.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to find a Vulkan transfer queue.");
+
+        return false;
     } else {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION,
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION,
                                  "Using queue %ld on device %ld for transfer.\n",
                                  vulkan_physical_device_transfer_queue,
                                  vulkan_physical_device_index);
     }
 
     if (vulkan_physical_device_compute_queue == -1) {
-        common_exports->log->Error("Failed to find a Vulkan compute queue.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to find a Vulkan compute queue.");
+
+        return false;
     } else {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION,
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION,
                                  "Using queue %ld on device %ld for compute.\n",
                                  vulkan_physical_device_compute_queue,
                                  vulkan_physical_device_index);
     }
 
     if (vulkan_physical_device_graphics_queue == -1) {
-        common_exports->log->Error("Failed to find a Vulkan graphics queue.");
+        common_exports->log->Print(PRINT_LEVEL_WARNING, "Failed to find a Vulkan graphics queue.");
+
+        return false;
     } else {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION,
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION,
                                  "Using queue %ld on device %ld for graphics.\n",
                                  vulkan_physical_device_graphics_queue,
                                  vulkan_physical_device_index);
     }
+
+    return true;
 }
 
-void VideoVulkan_CreateLogicalDevice() {
-    
+bool VideoVulkan_CreateLogicalDevice(void) {
+    return true;
 }
 
-void VideoVulkan_DestroyLogicalDevice() {
+bool VideoVulkan_DestroyLogicalDevice(void) {
 }
 
-void VideoVulkan_DestroyPhysicalDevice() {
+bool VideoVulkan_DestroyPhysicalDevice(void) {
     vulkan_physical_device_index = -1;
 
     if (vulkan_physical_device != NULL) {
@@ -494,7 +549,7 @@ void VideoVulkan_DestroyPhysicalDevice() {
     vulkan_physical_device_transfer_queue = -1;
 }
 
-void VideoVulkan_DestroyPhysicalDeviceBuffers() {
+bool VideoVulkan_DestroyPhysicalDeviceBuffers(void) {
     if (vulkan_physical_device_queue_properties != NULL) {
         for (uint32_t device_index = 0; device_index < vulkan_physical_device_count; device_index++) {
             common_exports->memory_system->Free(vulkan_physical_device_queue_properties[device_index]);
@@ -528,7 +583,7 @@ void VideoVulkan_DestroyPhysicalDeviceBuffers() {
     vulkan_physical_device_count = 0;
 }
 
-void VideoVulkan_DestroyDebugCallback() {
+bool VideoVulkan_DestroyDebugCallback(void) {
     if (vulkan_debug_callback != NULL) {
         // TODO(wpieterse): Get Vulkan to use our allocators.
         vkDestroyDebugReportCallbackEXT(vulkan_instance, vulkan_debug_callback, NULL);
@@ -539,7 +594,7 @@ void VideoVulkan_DestroyDebugCallback() {
     can_use_debugging = false;
 }
 
-void VideoVulkan_DestroyInstance() {
+bool VideoVulkan_DestroyInstance(void) {
     if (vulkan_instance != NULL) {
         // TODO(wpieterse): Get Vulkan to use our allocators.
         vkDestroyInstance(vulkan_instance, NULL);
@@ -548,7 +603,7 @@ void VideoVulkan_DestroyInstance() {
     }
 }
 
-void VideoVulkan_DestroyUseLayers() {
+bool VideoVulkan_DestroyUseLayers(void) {
     if (vulkan_use_layers != NULL) {
         common_exports->memory_system->Free(vulkan_use_layers);
         vulkan_use_layers = NULL;
@@ -557,7 +612,7 @@ void VideoVulkan_DestroyUseLayers() {
     vulkan_use_layer_count = 0;
 }
 
-void VideoVulkan_DestroyUseExtensions() {
+bool VideoVulkan_DestroyUseExtensions(void) {
     if (vulkan_use_extensions != NULL) {
         common_exports->memory_system->Free(vulkan_use_extensions);
         vulkan_use_extensions = NULL;
@@ -566,7 +621,7 @@ void VideoVulkan_DestroyUseExtensions() {
     vulkan_use_extension_count = 0;
 }
 
-void VideoVulkan_DestroyLayers() {
+bool VideoVulkan_DestroyLayers(void) {
     if (vulkan_layers != NULL) {
         common_exports->memory_system->Free(vulkan_layers);
         vulkan_layers = NULL;
@@ -575,7 +630,7 @@ void VideoVulkan_DestroyLayers() {
     vulkan_layer_count = 0;
 }
 
-void VideoVulkan_DestroyExtensions() {
+bool VideoVulkan_DestroyExtensions(void) {
     if (vulkan_extensions != NULL) {
         common_exports->memory_system->Free(vulkan_extensions);
         vulkan_extensions = NULL;
@@ -605,15 +660,15 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL VideoVulkan_DebugCallback(VkDebugReportFla
                                   code);
 
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT) {
-        common_exports->log->Log(LOG_LEVEL_DEVELOPER, message_buffer);
+        common_exports->log->Print(PRINT_LEVEL_DEVELOPER, message_buffer);
     } else if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT) {
-        common_exports->log->Log(LOG_LEVEL_INFORMATION, message_buffer);
+        common_exports->log->Print(PRINT_LEVEL_INFORMATION, message_buffer);
     } else if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT) {
-        common_exports->log->Log(LOG_LEVEL_WARNING, message_buffer);
+        common_exports->log->Print(PRINT_LEVEL_WARNING, message_buffer);
     } else if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT) {
-        common_exports->log->Log(LOG_LEVEL_WARNING, message_buffer);
+        common_exports->log->Print(PRINT_LEVEL_WARNING, message_buffer);
     } else if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT) {
-        common_exports->log->Log(LOG_LEVEL_ERROR, message_buffer);
+        common_exports->log->Print(PRINT_LEVEL_ERROR, message_buffer);
     }
 
     return VK_FALSE;

@@ -6,7 +6,7 @@ void Common_Quit();
 bool Common_IsQuitting();
 
 void Common_Error(const char* message, ...);
-void Common_Log(uint8_t log_levevel, const char* message, ...);
+void Common_Print(uint8_t log_levevel, const char* message, ...);
 
 common_export_t* Common_Exports();
 

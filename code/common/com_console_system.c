@@ -12,14 +12,14 @@ static const char*   error_message    = NULL;
 static void ConsoleSystem_Destroy();
 
 void ConsoleSystem_Start() {
-    Common_Log(LOG_LEVEL_INFORMATION, "Creating system console window.\n");
+    Common_Print(PRINT_LEVEL_INFORMATION, "Creating system console window.\n");
 
     console_window = SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_HIDDEN);
     if (console_window == NULL) {
         Common_Error("Failed to create SDL window : %s.", SDL_GetError());
     }
 
-    Common_Log(LOG_LEVEL_INFORMATION, "Creating system console renderer.\n");
+    Common_Print(PRINT_LEVEL_INFORMATION, "Creating system console renderer.\n");
 
     console_renderer = SDL_CreateRenderer(console_window, -1, SDL_RENDERER_SOFTWARE);
     if (console_renderer == NULL) {
@@ -44,14 +44,14 @@ void ConsoleSystem_Frame() {
 }
 
 void ConsoleSystem_Error(const char* error_message) {
-    if(console_window == NULL) {
-        Common_Log(LOG_LEVEL_ERROR, "Error before system console could be created, quitting.\n");
+    if (console_window == NULL) {
+        Common_Print(PRINT_LEVEL_ERROR, "Error before system console could be created, quitting.\n");
 
         exit(1);
     }
 
-    if(console_renderer == NULL) {
-        Common_Log(LOG_LEVEL_ERROR, "Error before system console could be created, quitting.\n");
+    if (console_renderer == NULL) {
+        Common_Print(PRINT_LEVEL_ERROR, "Error before system console could be created, quitting.\n");
 
         exit(1);
     }
@@ -83,16 +83,19 @@ void ConsoleSystem_Hide() {
 
 static void ConsoleSystem_Destroy() {
     if (console_renderer != NULL) {
-        Common_Log(LOG_LEVEL_INFORMATION, "Destroying system console renderer.\n");
+        Common_Print(PRINT_LEVEL_INFORMATION, "Destroying system console renderer.\n");
 
         SDL_DestroyRenderer(console_renderer);
         console_renderer = NULL;
     }
 
     if (console_window != NULL) {
-        Common_Log(LOG_LEVEL_INFORMATION, "Destroying system console window.\n");
+        Common_Print(PRINT_LEVEL_INFORMATION, "Destroying system console window.\n");
 
         SDL_DestroyWindow(console_window);
         console_window = NULL;
     }
+
+    SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+    SDL_Quit();
 }

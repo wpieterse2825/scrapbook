@@ -5,8 +5,8 @@
 
 int main(int argument_count, char** arguments) {
     // TODO(wpieterse): Get a place for this.
-    if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
-        Common_Error("Failed to initialize the SDL video subsystem : %s.", SDL_GetError());
+    if (SDL_InitSubSystem(SDL_INIT_EVERYTHING) != 0) {
+        Common_Error("Failed to initialize the SDL : %s.", SDL_GetError());
     }
 
     Common_Start();
@@ -20,8 +20,5 @@ int main(int argument_count, char** arguments) {
     }
 
     Common_Stop();
-
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
-    SDL_Quit();
     return 0;
 }

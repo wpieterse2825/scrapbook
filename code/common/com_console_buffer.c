@@ -17,7 +17,7 @@ void ConsoleBuffer_AddText(const char* command) {
     size_t final_length   = current_size + command_length;
 
     if (final_length > maximum_size) {
-        Common_Log(LOG_LEVEL_WARNING, "Console buffer overflowed.\n");
+        Common_Print(PRINT_LEVEL_WARNING, "Console buffer overflowed.\n");
 
         return;
     }

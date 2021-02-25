@@ -22,17 +22,13 @@ static int64_t         video_screen_size_x_variable     = -1;
 static int64_t         video_screen_size_y_variable     = -1;
 static int64_t         video_renderer_variable          = -1;
 
-static void Video_ProcessRestart();
-static void Video_Create();
-static void Video_CreateWindow();
-static void Video_CreateRenderer();
-static void Video_Destroy();
-static void Video_DestroyWindow();
-static void Video_DestroyRenderer();
-static void Video_CheckModifiedVariables();
+static void Video_Create(void);
+static void Video_Destroy(void);
+static void Video_CheckModifiedVariables(void);
+static void Video_ProcessRestart(void);
 static void Video_Command_Restart(command_arguments_t argument);
 
-void Video_Start() {
+void Video_Start(void) {
     video_restart_command = Command_Register("vid_restart", Video_Command_Restart);
 
     video_screen_position_x_variable = Variable_Register("vid_pos_x", "120", 0);
@@ -49,7 +45,7 @@ void Video_Start() {
     Video_Create();
 }
 
-void Video_Stop() {
+void Video_Stop(void) {
     Video_Destroy();
 
     Variable_Unregister(video_renderer_variable);
@@ -68,7 +64,7 @@ void Video_Stop() {
     video_restart_command            = -1;
 }
 
-void Video_BeginFrame() {
+void Video_BeginFrame(void) {
     Video_CheckModifiedVariables();
     Video_ProcessRestart();
 
@@ -77,69 +73,85 @@ void Video_BeginFrame() {
     }
 }
 
-void Video_EndFrame() {
+void Video_EndFrame(void) {
     if (video_exports != NULL) {
         video_exports->EndFrame();
     }
 }
 
-static void Video_ProcessRestart() {
-    if (video_restart == true) {
-        Video_Destroy();
-        Video_Create();
+static void Video_Create(void) {
+    bool             still_trying     = true;
+    Uint32           window_flags     = SDL_WINDOW_SHOWN;
+    common_export_t* common_exports   = Common_Exports();
+    bool             created_renderer = false;
 
-        video_restart = false;
+    while (still_trying == true) {
+        position_x       = Variable_GetInteger(video_screen_position_x_variable);
+        position_y       = Variable_GetInteger(video_screen_position_y_variable);
+        size_x           = Variable_GetInteger(video_screen_size_x_variable);
+        size_y           = Variable_GetInteger(video_screen_size_y_variable);
+        current_renderer = Variable_GetString(video_renderer_variable);
+
+        Common_Print(PRINT_LEVEL_INFORMATION,
+                   "Creating main window located at (%ld, %ld) with a size of (%ld, %ld).\n",
+                   position_x,
+                   position_y,
+                   size_x,
+                   size_y);
+
+        if (String_Compare(current_renderer, "vulkan")) {
+            window_flags |= SDL_WINDOW_VULKAN;
+
+            video_exports = VideoVulkan_Exports(common_exports);
+        } else if (String_Compare(current_renderer, "opengl")) {
+            window_flags |= SDL_WINDOW_OPENGL;
+
+            // TODO(wpieterse): Implement this.
+            Common_Error("Implement me.");
+        } else {
+            Common_Error("Unknown renderer '%s'.", current_renderer);
+        }
+
+        main_window = SDL_CreateWindow(GAME_NAME, position_x, position_y, size_x, size_y, window_flags);
+        if (main_window == NULL) {
+            Common_Error("Failed to create SDL window : %s.", SDL_GetError());
+        }
+
+        created_renderer = video_exports->Create(main_window, position_x, position_y, size_x, size_y);
+        if (created_renderer == false) {
+            video_exports->Destroy(main_window);
+
+            Common_Print(PRINT_LEVEL_INFORMATION, "Destroying the main window.\n");
+
+            SDL_DestroyWindow(main_window);
+            main_window = NULL;
+
+            if (String_Compare(current_renderer, "vulkan")) {
+                Common_Print(PRINT_LEVEL_INFORMATION, "Trying the OpenGL renderer next.\n");
+
+                Variable_SetString(video_renderer_variable, "opengl");
+            } else if (String_Compare(current_renderer, "opengl")) {
+                Common_Error("Failed to create a suitable rendering engine.");
+            }
+        } else {
+            still_trying = false;
+        }
     }
 }
 
-static void Video_Create() {
-    position_x       = Variable_GetInteger(video_screen_position_x_variable);
-    position_y       = Variable_GetInteger(video_screen_position_y_variable);
-    size_x           = Variable_GetInteger(video_screen_size_x_variable);
-    size_y           = Variable_GetInteger(video_screen_size_y_variable);
-    current_renderer = Variable_GetString(video_renderer_variable);
+static void Video_Destroy(void) {
+    if (video_exports != NULL) {
+        video_exports->Destroy(main_window);
 
-    Video_CreateWindow();
-    Video_CreateRenderer();
-}
-
-static void Video_CreateWindow() {
-    Uint32 window_flags = SDL_WINDOW_SHOWN;
-
-    Common_Log(LOG_LEVEL_INFORMATION,
-               "Creating main window located at (%ld, %ld) with a size of (%ld, %ld).\n",
-               position_x,
-               position_y,
-               size_x,
-               size_y);
-
-    if (String_Compare(current_renderer, "vulkan")) {
-        window_flags |= SDL_WINDOW_VULKAN;
-    } else {
-        Common_Error("Unknown renderer '%s'.", current_renderer);
+        video_exports = NULL;
     }
 
-    main_window = SDL_CreateWindow(GAME_NAME, position_x, position_y, size_x, size_y, window_flags);
-    if (main_window == NULL) {
-        Common_Error("Failed to create SDL window : %s.", SDL_GetError());
+    if (main_window != NULL) {
+        Common_Print(PRINT_LEVEL_INFORMATION, "Destroying the main window.\n");
+
+        SDL_DestroyWindow(main_window);
+        main_window = NULL;
     }
-}
-
-static void Video_CreateRenderer() {
-    common_export_t* common_exports = Common_Exports();
-
-    if (String_Compare(current_renderer, "vulkan")) {
-        video_exports = VideoVulkan_Exports(common_exports);
-    } else {
-        Common_Error("Unknown renderer '%s'.", current_renderer);
-    }
-
-    video_exports->Create(main_window, position_x, position_y, size_x, size_y);
-}
-
-static void Video_Destroy() {
-    Video_DestroyRenderer();
-    Video_DestroyWindow();
 
     position_x       = -1;
     position_y       = -1;
@@ -148,24 +160,7 @@ static void Video_Destroy() {
     current_renderer = NULL;
 }
 
-static void Video_DestroyWindow() {
-    if (main_window != NULL) {
-        Common_Log(LOG_LEVEL_INFORMATION, "Destroying the main window.\n");
-
-        SDL_DestroyWindow(main_window);
-        main_window = NULL;
-    }
-}
-
-static void Video_DestroyRenderer() {
-    if (video_exports != NULL) {
-        video_exports->Destroy(main_window);
-
-        video_exports = NULL;
-    }
-}
-
-static void Video_CheckModifiedVariables() {
+static void Video_CheckModifiedVariables(void) {
     bool is_variables_modified = false;
 
     is_variables_modified |= Variable_IsModified(video_screen_position_x_variable);
@@ -174,7 +169,7 @@ static void Video_CheckModifiedVariables() {
     is_variables_modified |= Variable_IsModified(video_screen_size_y_variable);
 
     if (is_variables_modified == true) {
-        Common_Log(LOG_LEVEL_INFORMATION, "Video setting changes will be applied after vid_restart.\n");
+        Common_Print(PRINT_LEVEL_INFORMATION, "Video setting changes will be applied after vid_restart.\n");
 
         Variable_ClearModified(video_screen_position_x_variable);
         Variable_ClearModified(video_screen_position_y_variable);
@@ -183,8 +178,17 @@ static void Video_CheckModifiedVariables() {
     }
 }
 
+static void Video_ProcessRestart(void) {
+    if (video_restart == true) {
+        Video_Destroy();
+        Video_Create();
+
+        video_restart = false;
+    }
+}
+
 static void Video_Command_Restart(command_arguments_t argument) {
-    Common_Log(LOG_LEVEL_INFORMATION, "Restarting the video subsystem.\n");
+    Common_Print(PRINT_LEVEL_INFORMATION, "Restarting the video subsystem.\n");
 
     video_restart = true;
 }

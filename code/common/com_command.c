@@ -42,7 +42,7 @@ int64_t Command_Register(const char* name, command_callback callback) {
 
     if (current_command != NULL) {
         if (current_command->callback != NULL) {
-            Common_Log(LOG_LEVEL_WARNING, "Tried to register the command '%s', but it already exists.", name);
+            Common_Print(PRINT_LEVEL_WARNING, "Tried to register the command '%s', but it already exists.", name);
         }
 
         return -1;
@@ -168,11 +168,11 @@ void Command_Command_List(command_arguments_t command_arguments) {
         if (current_command->used == true) {
             command_found = true;
 
-            Common_Log(LOG_LEVEL_INFORMATION, " * %s\n", current_command->name);
+            Common_Print(PRINT_LEVEL_INFORMATION, " * %s\n", current_command->name);
         }
     }
 
     if (command_found == false) {
-        Common_Log(LOG_LEVEL_INFORMATION, "No commands registered.\n");
+        Common_Print(PRINT_LEVEL_INFORMATION, "No commands registered.\n");
     }
 }

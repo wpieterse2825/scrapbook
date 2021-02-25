@@ -286,12 +286,12 @@ static void Variable_Command_List(command_arguments_t command_arguments) {
         if (current_variable->used == true) {
             variable_found = true;
 
-            Common_Log(
-              LOG_LEVEL_INFORMATION, "%s - %s - %s\n", current_variable->key, current_variable->value, current_variable->default_value);
+            Common_Print(
+              PRINT_LEVEL_INFORMATION, "%s - %s - %s\n", current_variable->key, current_variable->value, current_variable->default_value);
         }
     }
 
     if (variable_found == false) {
-        Common_Log(LOG_LEVEL_INFORMATION, "No variables registered.\n");
+        Common_Print(PRINT_LEVEL_INFORMATION, "No variables registered.\n");
     }
 }
