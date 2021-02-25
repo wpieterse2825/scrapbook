@@ -11,19 +11,19 @@ typedef struct command_s {
 } command_t;
 
 static command_t commands[COMMAND_MAXIMUM] = {};
-static int64_t   command_command_list      = -1;
+static int64_t   list_commands_command      = -1;
 
 static command_arguments_t Command_TokenizeLine(const char* line);
 static command_t*          Command_Find(const char* name);
 static void                Command_Command_List(command_arguments_t command_arguments);
 
 void Command_Start() {
-    command_command_list = Command_Register("list_commands", Command_Command_List);
+    list_commands_command = Command_Register("list_commands", Command_Command_List);
 }
 
 void Command_Stop() {
-    Command_Unregister(command_command_list);
-    command_command_list = -1;
+    Command_Unregister(list_commands_command);
+    list_commands_command = -1;
 }
 
 void Command_Frame() {
@@ -58,7 +58,7 @@ int64_t Command_Register(const char* name, command_callback callback) {
 
     current_command->used     = true;
     current_command->handle   = command_index;
-    current_command->name     = String_Copy(name);
+    current_command->name     = String_Clone(name);
     current_command->callback = callback;
 
     return command_index;
@@ -121,7 +121,7 @@ command_arguments_t Command_TokenizeLine(const char* line) {
             result.arguments[result.argument_count][argument_index] = '\0';
 
             result.argument_count++;
-            if (result.argument_count == COMMAND_ARGUMENTS_COUNT_MAXIMUM) {
+            if (result.argument_count == COMMAND_ARGUMENT_MAXIMUM) {
                 Common_Error("Tokenization of arguments exceeded maximum argument count.");
             }
 
@@ -130,7 +130,7 @@ command_arguments_t Command_TokenizeLine(const char* line) {
             result.arguments[result.argument_count][argument_index] = current_character;
             argument_index++;
 
-            if (argument_index == COMMAND_ARGUMENTS_LINE_MAXIMUM) {
+            if (argument_index == COMMAND_LINE_MAXIMUM) {
                 Common_Error("Tokenization of argument string exceeded maximum limit.");
             }
         }

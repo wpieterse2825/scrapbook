@@ -15,18 +15,18 @@ typedef struct variable_s {
 } variable_t;
 
 static variable_t variables[VARIABLE_MAXIMUM] = {};
-static int64_t    variable_command_list       = -1;
+static int64_t    list_variables_command      = -1;
 
 static variable_t* Variable_Find(const char* key);
 static void        Variable_Command_List(command_arguments_t command_arguments);
 
 void Variable_Start() {
-    variable_command_list = Command_Register("list_variables", Variable_Command_List);
+    list_variables_command = Command_Register("list_variables", Variable_Command_List);
 }
 
 void Variable_Stop() {
-    Command_Unregister(variable_command_list);
-    variable_command_list = -1;
+    Command_Unregister(list_variables_command);
+    list_variables_command = -1;
 }
 
 void Variable_Frame() {
@@ -57,9 +57,9 @@ int64_t Variable_Register(const char* key, const char* value, uint64_t flags) {
 
     current_variable->used               = true;
     current_variable->handle             = variable_index;
-    current_variable->key                = String_Copy(key);
-    current_variable->value              = String_Copy(value);
-    current_variable->default_value      = String_Copy(value);
+    current_variable->key                = String_Clone(key);
+    current_variable->value              = String_Clone(value);
+    current_variable->default_value      = String_Clone(value);
     current_variable->flags              = flags;
     current_variable->modified           = true;
     current_variable->modification_count = 1;
@@ -68,17 +68,17 @@ int64_t Variable_Register(const char* key, const char* value, uint64_t flags) {
 }
 
 void Variable_Unregister(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return;
     }
 
@@ -100,39 +100,39 @@ void Variable_Unregister(int64_t variable_handle) {
 }
 
 void Variable_Reset(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return;
     }
 
     String_Free(current_variable->value);
 
-    current_variable->value    = String_Copy(current_variable->default_value);
+    current_variable->value    = String_Clone(current_variable->default_value);
     current_variable->modified = true;
     current_variable->modification_count++;
 }
 
 const char* Variable_GetString(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return "";
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return "";
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return "";
     }
 
@@ -140,84 +140,81 @@ const char* Variable_GetString(int64_t variable_handle) {
 }
 
 void Variable_SetString(int64_t variable_handle, const char* value) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return;
     }
 
     String_Free(current_variable->value);
 
-    current_variable->value    = String_Copy(value);
+    current_variable->value    = String_Clone(value);
     current_variable->modified = true;
     current_variable->modification_count++;
 }
 
 int64_t Variable_GetInteger(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return 0;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return 0;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return 0;
     }
 
-    return atol(current_variable->value);
+    return String_ToInteger(current_variable->value);
 }
 
 void Variable_SetInteger(int64_t variable_handle, int64_t value) {
     char value_buffer[1024] = {0};
 
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return;
     }
 
     String_Free(current_variable->value);
 
-    snprintf(value_buffer, 1024, "%ld", value);
-
-    current_variable->value = String_Copy(value_buffer);
-
+    current_variable->value    = String_FromInteger(value);
     current_variable->modified = true;
     current_variable->modification_count++;
 }
 
 bool Variable_IsModified(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return false;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return false;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return false;
     }
 
@@ -225,17 +222,17 @@ bool Variable_IsModified(int64_t variable_handle) {
 }
 
 int64_t Variable_ModificationCount(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return 0;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return 0;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return 0;
     }
 
@@ -243,17 +240,17 @@ int64_t Variable_ModificationCount(int64_t variable_handle) {
 }
 
 void Variable_ClearModified(int64_t variable_handle) {
-    if(variable_handle < 0) {
+    if (variable_handle < 0) {
         return;
     }
 
-    if(variable_handle >= VARIABLE_MAXIMUM) {
+    if (variable_handle >= VARIABLE_MAXIMUM) {
         return;
     }
 
     variable_t* current_variable = &variables[variable_handle];
 
-    if(current_variable->used == false) {
+    if (current_variable->used == false) {
         return;
     }
 

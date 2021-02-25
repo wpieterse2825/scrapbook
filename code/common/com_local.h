@@ -10,8 +10,15 @@ void ConsoleBuffer_Frame();
 void ConsoleSystem_Start();
 void ConsoleSystem_Stop();
 void ConsoleSystem_Frame();
+void ConsoleSystem_SetError(const char* error_message);
+void ConsoleSystem_Print(const char* message);
 void ConsoleSystem_Show();
 void ConsoleSystem_Hide();
+
+void ConsoleGame_Start();
+void ConsoleGame_Stop();
+void ConsoleGame_Frame();
+void ConsoleGame_Print(const char* message);
 
 void Variable_Start();
 void Variable_Stop();
