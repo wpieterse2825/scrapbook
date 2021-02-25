@@ -4,7 +4,6 @@
 #include "common/com_public.h"
 
 int main(int argument_count, char** arguments) {
-    // TODO(wpieterse): Get a place for this.
     if (SDL_InitSubSystem(SDL_INIT_EVERYTHING) != 0) {
         Common_Error("Failed to initialize the SDL : %s.", SDL_GetError());
     }

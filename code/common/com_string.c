@@ -20,14 +20,7 @@ size_t String_Length(const char* input_string) {
     return strlen(input_string);
 }
 
-bool String_Compare(const char* lhs, const char* rhs) {
-    assert(lhs != NULL);
-    assert(rhs != NULL);
-
-    return strcmp(lhs, rhs) == 0;
-}
-
-bool String_CompareSize(const char* lhs, const char* rhs, size_t compare_size) {
+bool String_Compare(const char* lhs, const char* rhs, size_t compare_size) {
     assert(lhs != NULL);
     assert(rhs != NULL);
     assert(compare_size > 0);
@@ -35,14 +28,7 @@ bool String_CompareSize(const char* lhs, const char* rhs, size_t compare_size) {
     return strncmp(lhs, rhs, compare_size) == 0;
 }
 
-void String_Copy(const char* source, char* destination) {
-    assert(source != NULL);
-    assert(destination != NULL);
-
-    strcpy(destination, source);
-}
-
-void String_CopySize(const char* source, char* destination, size_t destination_length) {
+void String_Copy(const char* source, char* destination, size_t destination_length) {
     assert(source != NULL);
     assert(destination != NULL);
     assert(destination_length > 0);
@@ -56,7 +42,7 @@ char* String_Clone(const char* input_string) {
     size_t input_string_length = String_Length(input_string) + 1;
     char*  output_string       = String_Allocate(input_string_length);
 
-    String_CopySize(input_string, output_string, input_string_length);
+    String_Copy(input_string, output_string, input_string_length);
 
     return output_string;
 }

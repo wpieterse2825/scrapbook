@@ -1,3 +1,5 @@
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -77,10 +79,8 @@ typedef struct common_export_string_s {
     char* (*Allocate)(size_t string_length);
     void (*Free)(char* input_string);
     size_t (*Length)(const char* input_string);
-    bool (*Compare)(const char* lhs, const char* rhs);
-    bool (*CompareSize)(const char* lhs, const char* rhs, size_t compare_length);
-    void (*Copy)(const char* source, char* destination);
-    void (*CopySize)(const char* source, char* destination, size_t destination_length);
+    bool (*Compare)(const char* lhs, const char* rhs, size_t compare_length);
+    void (*Copy)(const char* source, char* destination, size_t destination_length);
     char* (*Clone)(const char* input_string);
     void (*Print)(char* buffer, size_t buffer_length, const char* format, ...);
     int64_t (*ToInteger)(const char* source);

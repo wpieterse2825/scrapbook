@@ -2,17 +2,18 @@
 #include "common/com_public.h"
 #include "common/com_local.h"
 
-#define VARIABLE_MAXIMUM 1024
+#define VARIABLE_MAXIMUM      1024
+#define VARIABLE_NAME_MAXIMUM 64
 
 typedef struct variable_s {
-    bool     used;
     int64_t  handle;
     char*    key;
     char*    value;
     char*    default_value;
     uint64_t flags;
-    bool     modified;
     int64_t  modification_count;
+    bool     used;
+    bool     modified;
 } variable_t;
 
 static variable_t variables[VARIABLE_MAXIMUM] = {};
@@ -181,7 +182,7 @@ int64_t Variable_GetInteger(int64_t variable_handle) {
 }
 
 void Variable_SetInteger(int64_t variable_handle, int64_t value) {
-    char value_buffer[1024] = {0};
+    char value_buffer[1024];
 
     if (variable_handle < 0) {
         return;
@@ -287,7 +288,7 @@ static variable_t* Variable_Find(const char* key) {
             continue;
         }
 
-        if (String_Compare(current_variable->key, key)) {
+        if (String_Compare(current_variable->key, key, VARIABLE_NAME_MAXIMUM)) {
             return current_variable;
         }
     }
@@ -317,19 +318,19 @@ static void Variable_Command_List(command_arguments_t command_arguments) {
         for (size_t argument_index = 1; argument_index < command_arguments.argument_count; argument_index++) {
             const char* current_argument = command_arguments.arguments[argument_index];
 
-            if (String_Compare(current_argument, "system")) {
+            if (String_Compare(current_argument, "system", COMMAND_LINE_MAXIMUM)) {
                 print_system = true;
-            } else if (String_Compare(current_argument, "renderer")) {
+            } else if (String_Compare(current_argument, "renderer", COMMAND_LINE_MAXIMUM)) {
                 print_renderer = true;
-            } else if (String_Compare(current_argument, "sound")) {
+            } else if (String_Compare(current_argument, "sound", COMMAND_LINE_MAXIMUM)) {
                 print_sound = true;
-            } else if (String_Compare(current_argument, "input")) {
+            } else if (String_Compare(current_argument, "input", COMMAND_LINE_MAXIMUM)) {
                 print_input = true;
-            } else if (String_Compare(current_argument, "network")) {
+            } else if (String_Compare(current_argument, "network", COMMAND_LINE_MAXIMUM)) {
                 print_network = true;
-            } else if (String_Compare(current_argument, "tool")) {
+            } else if (String_Compare(current_argument, "tool", COMMAND_LINE_MAXIMUM)) {
                 print_tool = true;
-            } else if (String_Compare(current_argument, "game")) {
+            } else if (String_Compare(current_argument, "game", COMMAND_LINE_MAXIMUM)) {
                 print_game = true;
             } else {
                 Common_Print(PRINT_LEVEL_WARNING, "Unknown variable type '%s'!\n", current_argument);

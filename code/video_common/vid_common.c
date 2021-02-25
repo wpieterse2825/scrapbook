@@ -85,6 +85,7 @@ void Video_EndFrame(void) {
     }
 }
 
+// TODO(wpieterse): Find a better way of dealing with this.
 static void Video_Create(void) {
     bool             still_trying     = true;
     Uint32           window_flags     = SDL_WINDOW_SHOWN;
@@ -105,11 +106,11 @@ static void Video_Create(void) {
                      size_x,
                      size_y);
 
-        if (String_Compare(current_renderer, "vulkan")) {
+        if (String_Compare(current_renderer, "vulkan", COMMAND_LINE_MAXIMUM)) {
             window_flags |= SDL_WINDOW_VULKAN;
 
             video_exports = VideoVulkan_GetExports(common_exports);
-        } else if (String_Compare(current_renderer, "opengl")) {
+        } else if (String_Compare(current_renderer, "opengl", COMMAND_LINE_MAXIMUM)) {
             window_flags |= SDL_WINDOW_OPENGL;
 
             video_exports = VideoOpenGL_GetExports(common_exports);
@@ -131,11 +132,11 @@ static void Video_Create(void) {
             SDL_DestroyWindow(main_window);
             main_window = NULL;
 
-            if (String_Compare(current_renderer, "vulkan")) {
+            if (String_Compare(current_renderer, "vulkan", COMMAND_LINE_MAXIMUM)) {
                 Common_Print(PRINT_LEVEL_INFORMATION, "Trying the OpenGL renderer next.\n");
 
                 Variable_SetString(video_renderer_variable, "opengl");
-            } else if (String_Compare(current_renderer, "opengl")) {
+            } else if (String_Compare(current_renderer, "opengl", COMMAND_LINE_MAXIMUM)) {
                 Common_Error("Failed to create a suitable rendering engine.");
             }
         } else {

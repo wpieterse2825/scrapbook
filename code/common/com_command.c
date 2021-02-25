@@ -2,7 +2,8 @@
 #include "common/com_public.h"
 #include "common/com_local.h"
 
-#define COMMAND_MAXIMUM 1024
+#define COMMAND_MAXIMUM      1024
+#define COMMAND_MAXIMUM_NAME 64
 
 typedef struct command_s {
     bool             used;
@@ -162,7 +163,7 @@ command_t* Command_Find(const char* name) {
             continue;
         }
 
-        if (String_Compare(current_command->name, name)) {
+        if (String_Compare(current_command->name, name, COMMAND_MAXIMUM_NAME)) {
             return current_command;
         }
     }
@@ -192,19 +193,19 @@ void Command_Command_List(command_arguments_t command_arguments) {
         for (size_t argument_index = 1; argument_index < command_arguments.argument_count; argument_index++) {
             const char* current_argument = command_arguments.arguments[argument_index];
 
-            if (String_Compare(current_argument, "system")) {
+            if (String_Compare(current_argument, "system", COMMAND_LINE_MAXIMUM)) {
                 print_system = true;
-            } else if (String_Compare(current_argument, "renderer")) {
+            } else if (String_Compare(current_argument, "renderer", COMMAND_LINE_MAXIMUM)) {
                 print_renderer = true;
-            } else if (String_Compare(current_argument, "sound")) {
+            } else if (String_Compare(current_argument, "sound", COMMAND_LINE_MAXIMUM)) {
                 print_sound = true;
-            } else if (String_Compare(current_argument, "input")) {
+            } else if (String_Compare(current_argument, "input", COMMAND_LINE_MAXIMUM)) {
                 print_input = true;
-            } else if (String_Compare(current_argument, "network")) {
+            } else if (String_Compare(current_argument, "network", COMMAND_LINE_MAXIMUM)) {
                 print_network = true;
-            } else if (String_Compare(current_argument, "tool")) {
+            } else if (String_Compare(current_argument, "tool", COMMAND_LINE_MAXIMUM)) {
                 print_tool = true;
-            } else if (String_Compare(current_argument, "game")) {
+            } else if (String_Compare(current_argument, "game", COMMAND_LINE_MAXIMUM)) {
                 print_game = true;
             } else {
                 Common_Print(PRINT_LEVEL_WARNING, "Unknown command type '%s'!\n", current_argument);

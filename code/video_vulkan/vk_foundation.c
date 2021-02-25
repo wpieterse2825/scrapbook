@@ -171,7 +171,7 @@ bool VideoVulkan_CreateUseLayers(void) {
         const char*        current_layer_name = current_layer->layerName;
 
         if (debug_enable == 1) {
-            if (vulkan_common_export->string->Compare("VK_LAYER_KHRONOS_validation", current_layer_name)) {
+            if (vulkan_common_export->string->Compare("VK_LAYER_KHRONOS_validation", current_layer_name, COMMAND_LINE_MAXIMUM)) {
                 vulkan_use_layers[vulkan_use_layer_count] = current_layer_name;
                 vulkan_use_layer_count++;
 
@@ -184,22 +184,22 @@ bool VideoVulkan_CreateUseLayers(void) {
             }
         }
 
-        if (vulkan_common_export->string->Compare("VK_LAYER_MESA_device_select", current_layer_name)) {
+        if (vulkan_common_export->string->Compare("VK_LAYER_MESA_device_select", current_layer_name, COMMAND_LINE_MAXIMUM)) {
             vulkan_use_layers[vulkan_use_layer_count] = current_layer_name;
             vulkan_use_layer_count++;
         }
 
-        if (vulkan_common_export->string->Compare("VK_LAYER_MESA_overlay", current_layer_name)) {
+        if (vulkan_common_export->string->Compare("VK_LAYER_MESA_overlay", current_layer_name, COMMAND_LINE_MAXIMUM)) {
             vulkan_use_layers[vulkan_use_layer_count] = current_layer_name;
             vulkan_use_layer_count++;
         }
 
-        if (vulkan_common_export->string->Compare("VK_LAYER_NV_optimus", current_layer_name)) {
+        if (vulkan_common_export->string->Compare("VK_LAYER_NV_optimus", current_layer_name, COMMAND_LINE_MAXIMUM)) {
             vulkan_use_layers[vulkan_use_layer_count] = current_layer_name;
             vulkan_use_layer_count++;
         }
 
-        if (vulkan_common_export->string->Compare("VK_LAYER_RENDERDOC_Capture", current_layer_name)) {
+        if (vulkan_common_export->string->Compare("VK_LAYER_RENDERDOC_Capture", current_layer_name, COMMAND_LINE_MAXIMUM)) {
             vulkan_use_layers[vulkan_use_layer_count] = current_layer_name;
             vulkan_use_layer_count++;
         }
