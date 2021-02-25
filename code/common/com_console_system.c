@@ -14,6 +14,9 @@ static void ConsoleSystem_Destroy();
 void ConsoleSystem_Start() {
     Common_Print(PRINT_LEVEL_INFORMATION, "Creating system console window.\n");
 
+    // Ensure we shutdown SDL correctly.
+    atexit(ConsoleSystem_Destroy);
+
     console_window = SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_HIDDEN);
     if (console_window == NULL) {
         Common_Error("Failed to create SDL window : %s.", SDL_GetError());
@@ -25,8 +28,6 @@ void ConsoleSystem_Start() {
     if (console_renderer == NULL) {
         Common_Error("Failed to create SDL software renderer : %s.", SDL_GetError());
     }
-
-    atexit(ConsoleSystem_Destroy);
 }
 
 void ConsoleSystem_Stop() {

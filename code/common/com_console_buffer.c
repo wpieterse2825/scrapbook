@@ -56,6 +56,7 @@ void ConsoleBuffer_Frame() {
     ConsoleBuffer_ExecuteBuffer();
 }
 
+// TODO(wpieterse): Improve this.
 static void ConsoleBuffer_ExecuteBuffer() {
     int64_t index                              = 0;
     char*   working_buffer                     = NULL;
@@ -102,5 +103,5 @@ static void ConsoleBuffer_ExecuteBuffer() {
 static void ConsoleBuffer_ExecuteLine(const char* line) {
     assert(line != NULL);
 
-    Command_Call(line);
+    Command_CallConsole(line);
 }

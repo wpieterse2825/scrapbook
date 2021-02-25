@@ -6,6 +6,7 @@
         "volk.h": "c",
         "vulkan.h": "c",
         "vk_platform.h": "c",
-        "vulkan_core.h": "c"
+        "vulkan_core.h": "c",
+        "gl_public.h": "c"
     }
 }

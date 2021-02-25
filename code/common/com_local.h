@@ -22,3 +22,4 @@ void Variable_Frame();
 void Command_Start();
 void Command_Stop();
 void Command_Frame();
+bool Command_CallConsole(const char* line);

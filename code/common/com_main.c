@@ -10,19 +10,68 @@
 
 #include "client/cl_public.h"
 
-static jmp_buf                        error_capture                      = {};
-static bool                           error_occured                      = false;
-static char                           error_buffer[LARGE_STRING_MAXIMUM] = {0};
-static bool                           quit_requested                     = false;
-static common_export_log_t            exports_log                        = {};
-static common_export_memory_system_t  exports_memory_system              = {};
-static common_export_string_t         exports_string                     = {};
-static common_export_console_buffer_t exports_console_buffer             = {};
-static common_export_variable_t       exports_variable                   = {};
-static common_export_command_t        exports_command                    = {};
-static common_export_t                common_exports                     = {};
-static int64_t                        developer_variable                 = -1;
-static int64_t                        dedicated_variable                 = -1;
+static jmp_buf error_capture                      = {};
+static bool    error_occured                      = false;
+static char    error_buffer[LARGE_STRING_MAXIMUM] = {0};
+static bool    quit_requested                     = false;
+static int64_t developer_variable                 = -1;
+static int64_t dedicated_variable                 = -1;
+
+static common_export_log_t exports_log = {
+  .Error = Common_Error,
+  .Print = Common_Print,
+};
+
+static common_export_memory_system_t exports_memory_system = {
+  .Allocate = Memory_SystemAllocate,
+  .Free     = Memory_SystemFree,
+};
+
+static common_export_string_t exports_string = {
+  .Allocate    = String_Allocate,
+  .Free        = String_Free,
+  .Length      = String_Length,
+  .Compare     = String_Compare,
+  .CompareSize = String_CompareSize,
+  .Copy        = String_Copy,
+  .CopySize    = String_CopySize,
+  .Clone       = String_Clone,
+  .Print       = String_Print,
+  .ToInteger   = String_ToInteger,
+  .FromInteger = String_FromInteger,
+};
+
+static common_export_console_buffer_t exports_console_buffer = {
+  .AddText = ConsoleBuffer_AddText,
+  .AddLine = ConsoleBuffer_AddLine,
+};
+
+static common_export_variable_t exports_variable = {
+  .Register          = Variable_Register,
+  .Unregister        = Variable_Unregister,
+  .Reset             = Variable_Reset,
+  .GetString         = Variable_GetString,
+  .SetString         = Variable_SetString,
+  .GetInteger        = Variable_GetInteger,
+  .SetInteger        = Variable_SetInteger,
+  .IsModified        = Variable_IsModified,
+  .ModificationCount = Variable_ModificationCount,
+  .ClearModified     = Variable_ClearModified,
+};
+
+static common_export_command_t exports_command = {
+  .Register   = Command_Register,
+  .Unregister = Command_Unregister,
+};
+
+static common_export_t common_exports = {
+  .log            = &exports_log,
+  .memory_system  = &exports_memory_system,
+  .string         = &exports_string,
+  .console_buffer = &exports_console_buffer,
+  .variable       = &exports_variable,
+  .command        = &exports_command,
+};
 
 static void Common_PumpEvents();
 
@@ -42,8 +91,8 @@ void Common_Start() {
     Variable_Start();
     Command_Start();
 
-    developer_variable = Variable_Register("com_developer", "0", 0);
-    dedicated_variable = Variable_Register("com_dedicated", "0", 0);
+    developer_variable = Variable_Register("com_developer", "0", VARIABLE_FLAG_SYSTEM | VARIABLE_FLAG_CHEAT);
+    dedicated_variable = Variable_Register("com_dedicated", "0", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_NETWORK);
 
     Server_Start();
     Client_Start();
@@ -136,49 +185,6 @@ void Common_Print(uint8_t log_level, const char* message, ...) {
 }
 
 common_export_t* Common_Exports() {
-    exports_log.Error = Common_Error;
-    exports_log.Print   = Common_Print;
-
-    exports_memory_system.Allocate = Memory_SystemAllocate;
-    exports_memory_system.Free     = Memory_SystemFree;
-
-    exports_string.Allocate    = String_Allocate;
-    exports_string.Free        = String_Free;
-    exports_string.Length      = String_Length;
-    exports_string.Compare     = String_Compare;
-    exports_string.CompareSize = String_CompareSize;
-    exports_string.Copy        = String_Copy;
-    exports_string.CopySize    = String_CopySize;
-    exports_string.Clone       = String_Clone;
-    exports_string.Print       = String_Print;
-    exports_string.ToInteger   = String_ToInteger;
-    exports_string.FromInteger = String_FromInteger;
-
-    exports_console_buffer.AddText = ConsoleBuffer_AddText;
-    exports_console_buffer.AddLine = ConsoleBuffer_AddLine;
-
-    exports_variable.Register          = Variable_Register;
-    exports_variable.Unregister        = Variable_Unregister;
-    exports_variable.Reset             = Variable_Reset;
-    exports_variable.GetString         = Variable_GetString;
-    exports_variable.SetString         = Variable_SetString;
-    exports_variable.GetInteger        = Variable_GetInteger;
-    exports_variable.SetInteger        = Variable_SetInteger;
-    exports_variable.IsModified        = Variable_IsModified;
-    exports_variable.ModificationCount = Variable_ModificationCount;
-    exports_variable.ClearModified     = Variable_ClearModified;
-
-    exports_command.Register   = Command_Register;
-    exports_command.Unregister = Command_Unregister;
-    exports_command.Call       = Command_Call;
-
-    common_exports.log            = &exports_log;
-    common_exports.memory_system  = &exports_memory_system;
-    common_exports.string         = &exports_string;
-    common_exports.console_buffer = &exports_console_buffer;
-    common_exports.variable       = &exports_variable;
-    common_exports.command        = &exports_command;
-
     return &common_exports;
 }
 

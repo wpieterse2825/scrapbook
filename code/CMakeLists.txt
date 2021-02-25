@@ -6,6 +6,7 @@ add_subdirectory(common)
 add_subdirectory(server_game)
 add_subdirectory(server)
 add_subdirectory(video_common)
+add_subdirectory(video_opengl)
 add_subdirectory(video_vulkan)
 add_subdirectory(client_game)
 add_subdirectory(client)
@@ -34,5 +35,6 @@ target_link_libraries(folklore
     Folklore::Client
     Folklore::Client::Game
     Folklore::Video::Common
+    Folklore::Video::OpenGL
     Folklore::Video::Vulkan
 )

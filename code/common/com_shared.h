@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define BIT(index) (1 << index)
+
 #define ENGINE_NAME    "Folklore"
 #define ENGINE_VERSION 1
 
@@ -19,8 +21,30 @@
 #define PRINT_LEVEL_ERROR       0x03
 
 #define LARGE_STRING_MAXIMUM 16 * 1024
-
 #define PARSE_BUFFER_MAXIMUM 16 * 1024
+
+#define VARIABLE_FLAG_PRODUCTION BIT(0)
+#define VARIABLE_FLAG_STATIC     BIT(1)
+#define VARIABLE_FLAG_READ_ONLY  BIT(2)
+#define VARIABLE_FLAG_ARCHIVE    BIT(3)
+#define VARIABLE_FLAG_SYSTEM     BIT(4)
+#define VARIABLE_FLAG_RENDERER   BIT(5)
+#define VARIABLE_FLAG_SOUND      BIT(6)
+#define VARIABLE_FLAG_INPUT      BIT(7)
+#define VARIABLE_FLAG_NETWORK    BIT(8)
+#define VARIABLE_FLAG_TOOL       BIT(9)
+#define VARIABLE_FLAG_GAME       BIT(10)
+#define VARIABLE_FLAG_CHEAT      BIT(31)
+
+#define COMMAND_FLAG_PRODUCTION BIT(0)
+#define COMMAND_FLAG_SYSTEM     BIT(1)
+#define COMMAND_FLAG_RENDERER   BIT(2)
+#define COMMAND_FLAG_SOUND      BIT(3)
+#define COMMAND_FLAG_INPUT      BIT(4)
+#define COMMAND_FLAG_NETWORK    BIT(5)
+#define COMMAND_FLAG_TOOL       BIT(6)
+#define COMMAND_FLAG_GAME       BIT(7)
+#define COMMAND_FLAG_CHEAT      BIT(31)
 
 #define COMMAND_ARGUMENT_MAXIMUM 64
 #define COMMAND_LINE_MAXIMUM     1024
@@ -82,9 +106,8 @@ typedef struct common_export_variable_s {
 } common_export_variable_t;
 
 typedef struct common_export_command_s {
-    int64_t (*Register)(const char* name, command_callback callback);
+    int64_t (*Register)(const char* name, command_callback callback, uint64_t flags);
     void (*Unregister)(int64_t command_handle);
-    void (*Call)(const char* line);
 } common_export_command_t;
 
 typedef struct common_export_s {

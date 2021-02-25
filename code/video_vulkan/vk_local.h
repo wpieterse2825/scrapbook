@@ -1,5 +1,5 @@
-extern common_export_t* common_exports;
-extern SDL_Window*      main_window;
+extern common_export_t* vulkan_common_export;
+extern SDL_Window*      vulkan_main_window;
 extern int64_t          vulkan_enable_debugging_variable;
 extern int64_t          vulkan_debug_trace_variable;
 extern int64_t          vulkan_debug_information_variable;

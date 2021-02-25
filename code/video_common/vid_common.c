@@ -5,6 +5,7 @@
 
 #include "video_common/vid_public.h"
 
+#include "video_opengl/gl_public.h"
 #include "video_vulkan/vk_public.h"
 
 static bool            video_restart                    = false;
@@ -29,13 +30,18 @@ static void Video_ProcessRestart(void);
 static void Video_Command_Restart(command_arguments_t argument);
 
 void Video_Start(void) {
-    video_restart_command = Command_Register("vid_restart", Video_Command_Restart);
+    video_restart_command = Command_Register("vid_restart", Video_Command_Restart, COMMAND_FLAG_PRODUCTION | COMMAND_FLAG_RENDERER);
 
-    video_screen_position_x_variable = Variable_Register("vid_pos_x", "120", 0);
-    video_screen_position_y_variable = Variable_Register("vid_pos_y", "120", 0);
-    video_screen_size_x_variable     = Variable_Register("vid_size_x", "1280", 0);
-    video_screen_size_y_variable     = Variable_Register("vid_size_y", "720", 0);
-    video_renderer_variable          = Variable_Register("vid_renderer", "vulkan", 0);
+    video_screen_position_x_variable =
+      Variable_Register("vid_pos_x", "120", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_RENDERER | VARIABLE_FLAG_ARCHIVE);
+    video_screen_position_y_variable =
+      Variable_Register("vid_pos_y", "120", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_RENDERER | VARIABLE_FLAG_ARCHIVE);
+    video_screen_size_x_variable =
+      Variable_Register("vid_size_x", "1280", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_RENDERER | VARIABLE_FLAG_ARCHIVE);
+    video_screen_size_y_variable =
+      Variable_Register("vid_size_y", "720", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_RENDERER | VARIABLE_FLAG_ARCHIVE);
+    video_renderer_variable =
+      Variable_Register("vid_renderer", "vulkan", VARIABLE_FLAG_PRODUCTION | VARIABLE_FLAG_RENDERER | VARIABLE_FLAG_ARCHIVE);
 
     Variable_ClearModified(video_screen_position_x_variable);
     Variable_ClearModified(video_screen_position_y_variable);
@@ -93,21 +99,20 @@ static void Video_Create(void) {
         current_renderer = Variable_GetString(video_renderer_variable);
 
         Common_Print(PRINT_LEVEL_INFORMATION,
-                   "Creating main window located at (%ld, %ld) with a size of (%ld, %ld).\n",
-                   position_x,
-                   position_y,
-                   size_x,
-                   size_y);
+                     "Creating main window located at (%ld, %ld) with a size of (%ld, %ld).\n",
+                     position_x,
+                     position_y,
+                     size_x,
+                     size_y);
 
         if (String_Compare(current_renderer, "vulkan")) {
             window_flags |= SDL_WINDOW_VULKAN;
 
-            video_exports = VideoVulkan_Exports(common_exports);
+            video_exports = VideoVulkan_GetExports(common_exports);
         } else if (String_Compare(current_renderer, "opengl")) {
             window_flags |= SDL_WINDOW_OPENGL;
 
-            // TODO(wpieterse): Implement this.
-            Common_Error("Implement me.");
+            video_exports = VideoOpenGL_GetExports(common_exports);
         } else {
             Common_Error("Unknown renderer '%s'.", current_renderer);
         }

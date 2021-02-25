@@ -39,6 +39,5 @@ bool        Variable_IsModified(int64_t variable_handle);
 int64_t     Variable_ModificationCount(int64_t variable_handle);
 void        Variable_ClearModified(int64_t variable_handle);
 
-int64_t Command_Register(const char* name, command_callback callback);
+int64_t Command_Register(const char* name, command_callback callback, uint64_t flags);
 void    Command_Unregister(int64_t command_handle);
-void    Command_Call(const char* line);
