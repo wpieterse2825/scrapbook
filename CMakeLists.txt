@@ -19,4 +19,4 @@ find_package(Vulkan REQUIRED)
 set(VOLK_STATIC_DEFINES VK_USE_PLATFORM_WIN32_KHR)
 
 add_subdirectory(external)
-add_subdirectory(code)
+add_subdirectory(code2)
