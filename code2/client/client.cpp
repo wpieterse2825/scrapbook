@@ -1,30 +1,49 @@
-#include "client/client.hpp"
+#include "foundation/stack_record.hpp"
 
 #include "video/video.hpp"
 #include "audio/audio.hpp"
 
-class flClientSystemLocal : public flClientSystem {
+#include "client/client.hpp"
+
+class flClientManagerLocal final : public flClientManager {
   public:
+    flClientManagerLocal();
+    virtual ~flClientManagerLocal();
+
     virtual void Start() override;
     virtual void Stop() override;
     virtual void Frame() override;
 };
 
-flClientSystemLocal client_system_local;
+static flClientManagerLocal client_manager_local;
 
-flClientSystem* client_system = &client_system_local;
+flClientManager* client_manager = &client_manager_local;
 
-void flClientSystemLocal::Start() {
-    video_system->Start();
-    audio_system->Start();
+flClientManagerLocal::flClientManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flClientSystemLocal::Stop() {
-    audio_system->Stop();
-    video_system->Stop();
+flClientManagerLocal::~flClientManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flClientSystemLocal::Frame() {
-    video_system->Frame();
-    audio_system->Frame();
+void flClientManagerLocal::Start() {
+    GENERATE_STACK_RECORD();
+
+    video_manager->Start();
+    audio_manager->Start();
+}
+
+void flClientManagerLocal::Stop() {
+    GENERATE_STACK_RECORD();
+
+    audio_manager->Stop();
+    video_manager->Stop();
+}
+
+void flClientManagerLocal::Frame() {
+    GENERATE_STACK_RECORD();
+
+    video_manager->Frame();
+    audio_manager->Frame();
 }

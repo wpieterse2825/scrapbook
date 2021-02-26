@@ -1,21 +1,37 @@
+#include "foundation/stack_record.hpp"
+
 #include "server/server.hpp"
 
-class flServerSystemLocal : public flServerSystem {
+class flServerManagerLocal final : public flServerManager {
   public:
+    flServerManagerLocal();
+    virtual ~flServerManagerLocal();
+
     virtual void Start() override;
     virtual void Stop() override;
     virtual void Frame() override;
 };
 
-flServerSystemLocal server_system_local;
+static flServerManagerLocal server_manager_local;
 
-flServerSystem* server_system = &server_system_local;
+flServerManager* server_manager = &server_manager_local;
 
-void flServerSystemLocal::Start() {
+flServerManagerLocal::flServerManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flServerSystemLocal::Stop() {
+flServerManagerLocal::~flServerManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flServerSystemLocal::Frame() {
+void flServerManagerLocal::Start() {
+    GENERATE_STACK_RECORD();
+}
+
+void flServerManagerLocal::Stop() {
+    GENERATE_STACK_RECORD();
+}
+
+void flServerManagerLocal::Frame() {
+    GENERATE_STACK_RECORD();
 }

@@ -1,21 +1,37 @@
+#include "foundation/stack_record.hpp"
+
 #include "audio/audio.hpp"
 
-class flAudioSystemLocal : public flAudioSystem {
+class flAudioManagerLocal final : public flAudioManager {
   public:
+    flAudioManagerLocal();
+    virtual ~flAudioManagerLocal();
+
     virtual void Start() override;
     virtual void Stop() override;
     virtual void Frame() override;
 };
 
-flAudioSystemLocal audio_system_local;
+static flAudioManagerLocal audio_manager_local;
 
-flAudioSystem* audio_system = &audio_system_local;
+flAudioManager* audio_manager = &audio_manager_local;
 
-void flAudioSystemLocal::Start() {
+flAudioManagerLocal::flAudioManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flAudioSystemLocal::Stop() {
+flAudioManagerLocal::~flAudioManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flAudioSystemLocal::Frame() {
+void flAudioManagerLocal::Start() {
+    GENERATE_STACK_RECORD();
+}
+
+void flAudioManagerLocal::Stop() {
+    GENERATE_STACK_RECORD();
+}
+
+void flAudioManagerLocal::Frame() {
+    GENERATE_STACK_RECORD();
 }

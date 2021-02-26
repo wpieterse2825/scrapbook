@@ -1,10 +1,13 @@
 #pragma once
 
-class flClientSystem {
+class flClientManager {
   public:
+    virtual ~flClientManager() {
+    }
+
     virtual void Start() = 0;
     virtual void Stop()  = 0;
     virtual void Frame() = 0;
 };
 
-extern flClientSystem* client_system;
+extern flClientManager* client_manager;

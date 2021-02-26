@@ -1,21 +1,37 @@
+#include "foundation/stack_record.hpp"
+
 #include "video/video.hpp"
 
-class flVideoSystemLocal : public flVideoSystem {
+class flVideoManagerLocal final : public flVideoManager {
   public:
+    flVideoManagerLocal();
+    virtual ~flVideoManagerLocal();
+
     virtual void Start() override;
     virtual void Stop() override;
     virtual void Frame() override;
 };
 
-flVideoSystemLocal video_system_local;
+static flVideoManagerLocal video_manager_local;
 
-flVideoSystem* video_system = &video_system_local;
+flVideoManager* video_manager = &video_manager_local;
 
-void flVideoSystemLocal::Start() {
+flVideoManagerLocal::flVideoManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flVideoSystemLocal::Stop() {
+flVideoManagerLocal::~flVideoManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flVideoSystemLocal::Frame() {
+void flVideoManagerLocal::Start() {
+    GENERATE_STACK_RECORD();
+}
+
+void flVideoManagerLocal::Stop() {
+    GENERATE_STACK_RECORD();
+}
+
+void flVideoManagerLocal::Frame() {
+    GENERATE_STACK_RECORD();
 }

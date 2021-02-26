@@ -3,8 +3,12 @@ include_directories(
 )
 
 set(FOLKLORE_FOUNDATION_SOURCES
+    foundation/exception.cpp
+    foundation/exception.hpp
     foundation/parser.cpp
     foundation/parser.hpp
+    foundation/stack_record.cpp
+    foundation/stack_record.hpp
 )
 
 set(FOLKLORE_FRAMEWORK_SOURCES
@@ -12,6 +16,10 @@ set(FOLKLORE_FRAMEWORK_SOURCES
     framework/common.hpp
     framework/console_command.cpp
     framework/console_command.hpp
+    framework/console_game.cpp
+    framework/console_game.hpp
+    framework/console_system.cpp
+    framework/console_system.hpp
     framework/console_variable.cpp
     framework/console_variable.hpp
     framework/console.cpp

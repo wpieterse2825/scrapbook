@@ -1,10 +1,13 @@
 #pragma once
 
-class flVideoSystem {
+class flVideoManager {
   public:
+    virtual ~flVideoManager() {
+    }
+
     virtual void Start() = 0;
     virtual void Stop()  = 0;
     virtual void Frame() = 0;
 };
 
-extern flVideoSystem* video_system;
+extern flVideoManager* video_manager;

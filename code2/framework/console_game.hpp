@@ -1,8 +1,8 @@
 #pragma once
 
-class flConsoleManager {
+class flConsoleGameManager {
   public:
-    virtual ~flConsoleManager() {
+    virtual ~flConsoleGameManager() {
     }
 
     virtual void Start() = 0;
@@ -12,4 +12,4 @@ class flConsoleManager {
     virtual void Print(const char* message) = 0;
 };
 
-extern flConsoleManager* console_manager;
+extern flConsoleGameManager* console_game_manager;

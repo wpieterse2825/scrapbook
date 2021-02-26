@@ -1,21 +1,58 @@
+#include "foundation/stack_record.hpp"
+
+#include "framework/console_system.hpp"
+#include "framework/console_game.hpp"
+
 #include "framework/console.hpp"
 
-class flConsoleSystemLocal : public flConsoleSystem {
+class flConsoleManagerLocal final : public flConsoleManager {
   public:
+    flConsoleManagerLocal();
+    virtual ~flConsoleManagerLocal();
+
     virtual void Start() override;
     virtual void Stop() override;
     virtual void Frame() override;
+
+    virtual void Print(const char* message) override;
 };
 
-flConsoleSystemLocal console_system_local;
+static flConsoleManagerLocal console_manager_local;
 
-flConsoleSystem* console_system = &console_system_local;
+flConsoleManager* console_manager = &console_manager_local;
 
-void flConsoleSystemLocal::Start() {
+flConsoleManagerLocal::flConsoleManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flConsoleSystemLocal::Stop() {
+flConsoleManagerLocal::~flConsoleManagerLocal() {
+    GENERATE_STACK_RECORD();
 }
 
-void flConsoleSystemLocal::Frame() {
+void flConsoleManagerLocal::Start() {
+    GENERATE_STACK_RECORD();
+
+    console_system_manager->Start();
+    console_game_manager->Start();
+}
+
+void flConsoleManagerLocal::Stop() {
+    GENERATE_STACK_RECORD();
+
+    console_game_manager->Stop();
+    console_system_manager->Stop();
+}
+
+void flConsoleManagerLocal::Frame() {
+    GENERATE_STACK_RECORD();
+
+    console_system_manager->Frame();
+    console_game_manager->Frame();
+}
+
+void flConsoleManagerLocal::Print(const char* message) {
+    GENERATE_STACK_RECORD();
+
+    console_system_manager->Print(message);
+    console_game_manager->Print(message);
 }
