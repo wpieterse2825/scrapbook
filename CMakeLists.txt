@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(code)
+project(wpietersexyz_code)
 
 enable_language(C)
 enable_language(CXX)
@@ -16,7 +16,4 @@ find_package(Threads REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(Vulkan REQUIRED)
 
-set(VOLK_STATIC_DEFINES VK_USE_PLATFORM_WIN32_KHR)
-
-add_subdirectory(external)
-add_subdirectory(code2)
+add_subdirectory(randoms)
