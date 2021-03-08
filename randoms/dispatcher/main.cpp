@@ -18,14 +18,10 @@ struct VkLayerInstanceDispatchTable;
 
 typedef void* (*PFN_GetInstanceProcAddress)(VkInstance instance, const char* procedure_name);
 typedef VkResult (*PFN_CreateInstance)(VkInstanceCreateInfo* create_info, VkInstance* out_instace);
+typedef void (*PFN_DestroyInstance)(VkInstance instance);
 typedef void (*PFN_Draw)(VkInstance instance);
 
 struct VkStructure {
-    uint64_t structure_type;
-    void*    next_structure;
-};
-
-struct VkInstanceCreateInfo {
     uint64_t structure_type;
     void*    next_structure;
 };
@@ -45,27 +41,30 @@ struct VkLoaderInstanceCreateInfo {
     VkLoaderLayer* layers;
 };
 
-struct VkLayerInstanceDispatchTable {
+struct VkInstanceCreateInfo {
     uint64_t structure_type;
     void*    next_structure;
+};
 
+struct VkLayerInstanceDispatchTable {
     PFN_GetInstanceProcAddress GetInstanceProcAddress;
     PFN_CreateInstance         CreateInstance;
+    PFN_DestroyInstance        DestroyInstance;
     PFN_Draw                   Draw;
 };
 
-struct VkDispatcherBlock {
-    uint64_t structure_type;
-    void*    next_structure;
-
-    VkLayerInstanceDispatchTable dispatch_table;
-};
-
 struct VkICDInstance {
-    VkDispatcherBlock dispatcher_block;
+    VkLayerInstanceDispatchTable dispatcher_block;
 
     const char* name;
 };
+
+void PopulateDispatcherTable(VkLayerInstanceDispatchTable* dispatch_table, VkInstance instance, PFN_GetInstanceProcAddress gipa) {
+    dispatch_table->GetInstanceProcAddress = (PFN_GetInstanceProcAddress)gipa(instance, "VkGetInstanceProcAddress");
+    dispatch_table->CreateInstance         = (PFN_CreateInstance)gipa(instance, "VkCreateInstance");
+    dispatch_table->DestroyInstance        = (PFN_DestroyInstance)gipa(instance, "VkDestroyInstance");
+    dispatch_table->Draw                   = (PFN_Draw)gipa(instance, "VkDraw");
+}
 
 VkResult VkCreateInstanceICD(VkInstanceCreateInfo* create_info, VkInstance* out_instance) {
     VkICDInstance* our_instance = (VkICDInstance*)malloc(sizeof(VkICDInstance));
@@ -75,6 +74,12 @@ VkResult VkCreateInstanceICD(VkInstanceCreateInfo* create_info, VkInstance* out_
     *out_instance = (VkInstance)our_instance;
 
     return 0;
+}
+
+void VkDestroyInstanceICD(VkInstance instance) {
+    VkICDInstance* our_instance = (VkICDInstance*)instance;
+
+    free(our_instance);
 }
 
 void VkDrawICD(VkInstance instance) {
@@ -92,6 +97,10 @@ void* VkGetInstanceProcAddressICD(VkInstance instance, const char* name) {
         return (void*)&VkCreateInstanceICD;
     }
 
+    if (!strcmp(name, "VkDestroyInstance")) {
+        return (void*)&VkDestroyInstanceICD;
+    }
+
     if (!strcmp(name, "VkDraw")) {
         return (void*)&VkDrawICD;
     }
@@ -100,7 +109,9 @@ void* VkGetInstanceProcAddressICD(VkInstance instance, const char* name) {
 }
 
 struct VkLayerInstance {
-    VkDispatcherBlock dispatcher_block;
+    VkLayerInstanceDispatchTable dispatcher_block;
+
+    const char* layer_name;
 
     VkInstance                   inner_instance;
     VkLayerInstanceDispatchTable inner_dispatcher;
@@ -131,26 +142,31 @@ VkResult VkCreateInstanceLayer_1(VkInstanceCreateInfo* create_info, VkInstance* 
     VkLayerInstance* our_instance = (VkLayerInstance*)malloc(sizeof(VkLayerInstance));
     *out_instance                 = (VkInstance)our_instance;
 
+    our_instance->layer_name = "Debug Layer";
+
     our_instance->inner_instance = next_instance;
 
-    our_instance->inner_dispatcher.structure_type = VK_STRUCTURE_TYPE_LAYER_INSTANCE_DISPATCH_TABLE;
-
-    our_instance->inner_dispatcher.GetInstanceProcAddress =
-      (PFN_GetInstanceProcAddress)next_gipa(next_instance, "VkGetInstanceProcAddress");
-    our_instance->inner_dispatcher.CreateInstance = (PFN_CreateInstance)next_gipa(next_instance, "VkCreateInstance");
-    our_instance->inner_dispatcher.Draw           = (PFN_Draw)next_gipa(next_instance, "VkDraw");
+    PopulateDispatcherTable(&our_instance->inner_dispatcher, next_instance, next_gipa);
 
     return 0;
+}
+
+void VkDestroyInstanceLayer_1(VkInstance instance) {
+    VkLayerInstance* our_instance = (VkLayerInstance*)instance;
+
+    our_instance->inner_dispatcher.DestroyInstance(our_instance->inner_instance);
+
+    free(our_instance);
 }
 
 void VkDrawLayer_1(VkInstance instance) {
     VkLayerInstance* our_instance = (VkLayerInstance*)instance;
 
-    std::cout << "Draw - Layer 1 - Pre" << std::endl;
+    std::cout << "Draw - Layer 1 - " << our_instance->layer_name << " - Pre" << std::endl;
 
     our_instance->inner_dispatcher.Draw(our_instance->inner_instance);
 
-    std::cout << "Draw - Layer 1 - Post" << std::endl;
+    std::cout << "Draw - Layer 1 - " << our_instance->layer_name << " - Post" << std::endl;
 }
 
 void* VkGetInstanceProcAddressLayer_1(VkInstance instance, const char* name) {
@@ -160,6 +176,10 @@ void* VkGetInstanceProcAddressLayer_1(VkInstance instance, const char* name) {
 
     if (!strcmp(name, "VkCreateInstance")) {
         return (void*)&VkCreateInstanceLayer_1;
+    }
+
+    if (!strcmp(name, "VkDestroyInstance")) {
+        return (void*)&VkDestroyInstanceLayer_1;
     }
 
     if (!strcmp(name, "VkDraw")) {
@@ -196,26 +216,31 @@ VkResult VkCreateInstanceLayer_2(VkInstanceCreateInfo* create_info, VkInstance* 
     VkLayerInstance* our_instance = (VkLayerInstance*)malloc(sizeof(VkLayerInstance));
     *out_instance                 = (VkInstance)our_instance;
 
+    our_instance->layer_name = "Validation Layer";
+
     our_instance->inner_instance = next_instance;
 
-    our_instance->inner_dispatcher.structure_type = VK_STRUCTURE_TYPE_LAYER_INSTANCE_DISPATCH_TABLE;
-
-    our_instance->inner_dispatcher.GetInstanceProcAddress =
-      (PFN_GetInstanceProcAddress)next_gipa(next_instance, "VkGetInstanceProcAddress");
-    our_instance->inner_dispatcher.CreateInstance = (PFN_CreateInstance)next_gipa(next_instance, "VkCreateInstance");
-    our_instance->inner_dispatcher.Draw           = (PFN_Draw)next_gipa(next_instance, "VkDraw");
+    PopulateDispatcherTable(&our_instance->inner_dispatcher, next_instance, next_gipa);
 
     return 0;
+}
+
+void VkDestroyInstanceLayer_2(VkInstance instance) {
+    VkLayerInstance* our_instance = (VkLayerInstance*)instance;
+
+    our_instance->inner_dispatcher.DestroyInstance(our_instance->inner_instance);
+
+    free(our_instance);
 }
 
 void VkDrawLayer_2(VkInstance instance) {
     VkLayerInstance* our_instance = (VkLayerInstance*)instance;
 
-    std::cout << "Draw - Layer 2 - Pre" << std::endl;
+    std::cout << "Draw - Layer 2 - " << our_instance->layer_name << " - Pre" << std::endl;
 
     our_instance->inner_dispatcher.Draw(our_instance->inner_instance);
 
-    std::cout << "Draw - Layer 2 - Post" << std::endl;
+    std::cout << "Draw - Layer 2 - " << our_instance->layer_name << " - Post" << std::endl;
 }
 
 void* VkGetInstanceProcAddressLayer_2(VkInstance instance, const char* name) {
@@ -225,6 +250,10 @@ void* VkGetInstanceProcAddressLayer_2(VkInstance instance, const char* name) {
 
     if (!strcmp(name, "VkCreateInstance")) {
         return (void*)&VkCreateInstanceLayer_2;
+    }
+
+    if (!strcmp(name, "VkDestroyInstance")) {
+        return (void*)&VkDestroyInstanceLayer_2;
     }
 
     if (!strcmp(name, "VkDraw")) {
@@ -259,25 +288,29 @@ VkResult VkCreateInstance(VkInstanceCreateInfo* create_info, VkInstance* out_ins
 
     create_instance(create_info, out_instance);
 
-    VkDispatcherBlock* dispatcher_block = (VkDispatcherBlock*)*out_instance;
+    VkLayerInstanceDispatchTable* dispatch_table = (VkLayerInstanceDispatchTable*)*out_instance;
 
-    dispatcher_block->dispatch_table.GetInstanceProcAddress = (PFN_GetInstanceProcAddress)gipa(*out_instance, "VkGetInstanceProcAddress");
-    dispatcher_block->dispatch_table.CreateInstance         = (PFN_CreateInstance)gipa(*out_instance, "VkCreateInstance");
-    dispatcher_block->dispatch_table.Draw                   = (PFN_Draw)gipa(*out_instance, "VkDraw");
+    PopulateDispatcherTable(dispatch_table, *out_instance, gipa);
 
     return 0;
 }
 
-void* VkGetInstanceProcAddress(VkInstance instance, const char* name) {
-    VkDispatcherBlock* dispatcher_block = (VkDispatcherBlock*)instance;
+void VkDestroyInstance(VkInstance instance) {
+    VkLayerInstanceDispatchTable* dispatch_table = (VkLayerInstanceDispatchTable*)instance;
 
-    return dispatcher_block->dispatch_table.GetInstanceProcAddress(instance, name);
+    dispatch_table->DestroyInstance(instance);
+}
+
+void* VkGetInstanceProcAddress(VkInstance instance, const char* name) {
+    VkLayerInstanceDispatchTable* dispatch_table = (VkLayerInstanceDispatchTable*)instance;
+
+    return dispatch_table->GetInstanceProcAddress(instance, name);
 }
 
 void VkDraw(VkInstance instance) {
-    VkDispatcherBlock* dispatcher_block = (VkDispatcherBlock*)instance;
+    VkLayerInstanceDispatchTable* dispatch_table = (VkLayerInstanceDispatchTable*)instance;
 
-    dispatcher_block->dispatch_table.Draw(instance);
+    dispatch_table->Draw(instance);
 }
 
 int main() {
@@ -288,6 +321,7 @@ int main() {
 
     VkCreateInstance(&instance_create_info, &out_instance);
     VkDraw(out_instance);
+    VkDestroyInstance(out_instance);
 
     return 0;
 }
