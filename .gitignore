@@ -1,1 +1,6 @@
-build/
+# SPDX-License-Identifier: MIT
+
+bazel-bin
+bazel-code
+bazel-out
+bazel-testlogs

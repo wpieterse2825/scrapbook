@@ -137,7 +137,7 @@ VkResult VkCreateInstanceLayer_1(VkInstanceCreateInfo* create_info, VkInstance* 
     PFN_CreateInstance next_ci = (PFN_CreateInstance)next_gipa(0, "VkCreateInstance");
 
     VkInstance next_instance = 0;
-    VkResult   next_result   = next_ci(create_info, &next_instance);
+    /* VkResult   next_result = */ next_ci(create_info, &next_instance);
 
     VkLayerInstance* our_instance = (VkLayerInstance*)malloc(sizeof(VkLayerInstance));
     *out_instance                 = (VkInstance)our_instance;
@@ -211,7 +211,7 @@ VkResult VkCreateInstanceLayer_2(VkInstanceCreateInfo* create_info, VkInstance* 
     PFN_CreateInstance next_ci = (PFN_CreateInstance)next_gipa(0, "VkCreateInstance");
 
     VkInstance next_instance = 0;
-    VkResult   next_result   = next_ci(create_info, &next_instance);
+    /*VkResult   next_result = */ next_ci(create_info, &next_instance);
 
     VkLayerInstance* our_instance = (VkLayerInstance*)malloc(sizeof(VkLayerInstance));
     *out_instance                 = (VkInstance)our_instance;

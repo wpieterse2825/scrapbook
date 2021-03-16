@@ -4,7 +4,7 @@
 #include <sys/syscall.h>
 #include <iostream>
 
-#include "parallel_job_list.hpp"
+#include "randoms/parallel_job_list/parallel_job_list.hpp"
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
 

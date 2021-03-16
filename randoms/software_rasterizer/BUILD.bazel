@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+)
+
+cc_binary(
+    name = "software_rasterizer",
+    srcs = [
+        "main.cpp",
+    ],
+    copts = [
+        "-I/usr/include/SDL2",
+        "-D_REENTRANT",
+    ],
+    deps = [
+        "//:system_sdl2",
+    ],
+)

@@ -2,9 +2,9 @@
 #include <mutex>
 #include <iostream>
 
-#include "other.hpp"
+#include "randoms/device/other.hpp"
 
-constexpr size_t GraphicsEngineBufferSize = 16;
+constexpr size_t GraphicsEngineBufferSize = 256;
 
 struct FRingBuffer {
     uint64_t* buffer;
@@ -239,7 +239,6 @@ int main() {
     system("clear");
 
     uint64_t* ring_buffer = (uint64_t*)malloc(sizeof(uint64_t) * GraphicsEngineBufferSize);
-    uint64_t  stalls      = 0;
 
     CreateRingBuffer(&graphics_engine_ring, ring_buffer, GraphicsEngineBufferSize);
 

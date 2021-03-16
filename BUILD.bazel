@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: MIT
+
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_library",
+)
+
+cc_library(
+    name = "system_threading",
+    linkopts = [
+        "-pthread",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)
+
+cc_library(
+    name = "system_sdl2",
+    copts = [
+        "-I/usr/include/SDL2",
+        "-D_REENTRANT",
+    ],
+    linkopts = [
+        "-lSDL2",
+        "-Wl,--no-undefined",
+        "-lm",
+        "-ldl",
+        "-lasound",
+        "-lm",
+        "-ldl",
+        "-lpulse-simple",
+        "-lpulse",
+        "-lX11",
+        "-lXext",
+        "-lXcursor",
+        "-lXinerama",
+        "-lXi",
+        "-lXrandr",
+        "-lXss",
+        "-lXxf86vm",
+        "-lwayland-egl",
+        "-lwayland-client",
+        "-lwayland-cursor",
+        "-lxkbcommon",
+        "-lrt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        ":system_threading",
+    ],
+)
